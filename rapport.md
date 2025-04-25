@@ -15,16 +15,19 @@ Voici un  tableau présentant les valeurs pour les colonnes HOBBIES, GENDER, PAI
 
 | name | role    | hobbies           | gender | pair_gender | birth_date  |
 |------|---------|-------------------|--------|-------------|-------------|
-| h1   | host    | reading, music    | m      | f           | 2000-05-12  |
-| h2   | host    | sports, cinema    | f      | m           | 1998-11-23  |
-| h3   | host    | video games, travel | m    | m           | 2002-07-08  |
-| h4   | host    | cooking, reading  | f      | f           | 2001-03-15  |
-| h5   | host    | cooking, reading  | m      | f           | 2001-03-15  |
-| v1   | guest   | reading, music    | f      | m           | 2001-06-30  |
-| v2   | guest   | sports, cinema    | m      | f           | 1999-09-17  |
-| v3   | guest   | video games, travel | m    | m           | 2003-12-01  |
-| v4   | guest   | cooking, reading  | f      | f           | 2000-02-20  |
-| v5   | guest   | cooking, reading  | f      | f           | 2000-02-20  |
+| h1   | host    | painting, yoga    | m      | f           | 2000-05-12  |
+| h2   | host    | hiking, photography | f    | m           | 1997-11-23  |
+| h3   | host    | chess, gardening  | m      | m           | 2002-07-08  |
+| h4   | host    | dancing, swimming | f      | f           | 2000-03-15  |
+| h5   | host    | coding, music     | m      | f           | 1998-08-15  |
+
+| name | role    | hobbies           | gender | pair_gender | birth_date  |
+|------|---------|-------------------|--------|-------------|-------------|
+| v1   | guest   | sculpting, tennis | f      | m           | 2002-06-30  |
+| v2   | guest   | cooking, poetry   | m      | f           | 1999-01-17  |
+| v3   | guest   | gaming, astronomy | m      | m           | 2004-12-01  |
+| v4   | guest   | writing, theater  | f      | f           | 2001-02-20  |
+| v5   | guest   | skating, singing  | f      | f           | 1997-02-20  |
 
 ### Forte affinité
 _Donnez une paire (H1, V1) qui présente une forte affinité. Expliquez pourquoi._
