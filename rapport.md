@@ -16,27 +16,36 @@ Voici un  tableau présentant les valeurs pour les colonnes HOBBIES, GENDER, PAI
 | name | role    | hobbies           | gender | pair_gender | birth_date  |
 |------|---------|-------------------|--------|-------------|-------------|
 | h1   | host    | painting, yoga    | m      | f           | 2000-05-12  |
-| h2   | host    | hiking, photography | f    | m           | 1997-11-23  |
-| h3   | host    | chess, gardening  | m      | m           | 2002-07-08  |
+| h2   | host    | hiking, photography | f    | f           | 1997-11-23  |
+| h3   | host    | chess, gardening  | m      | m           | 2003-07-08  |
 | h4   | host    | dancing, swimming | f      | f           | 2000-03-15  |
 | h5   | host    | coding, music     | m      | f           | 1998-08-15  |
 
 | name | role    | hobbies           | gender | pair_gender | birth_date  |
 |------|---------|-------------------|--------|-------------|-------------|
 | v1   | guest   | sculpting, tennis | f      | m           | 2002-06-30  |
-| v2   | guest   | cooking, poetry   | m      | f           | 1999-01-17  |
+| v2   | guest   | cooking, poetry   | m      | m           | 2000-01-17  |
 | v3   | guest   | gaming, astronomy | m      | m           | 2004-12-01  |
 | v4   | guest   | writing, theater  | f      | f           | 2001-02-20  |
 | v5   | guest   | skating, singing  | f      | f           | 1997-02-20  |
 
 ### Forte affinité
-_Donnez une paire (H1, V1) qui présente une forte affinité. Expliquez pourquoi._
+| h1   | host    | painting, yoga    | m      | f           | 2000-05-12  |
+| v1   | guest   | sculpting, tennis | f      | m           | 2002-06-30  |
+
+Forte affinité puisque même hobbies, même paire de genre voulu et écart d'age de moins d'1 an et demi d'écart.
 
 ### Faible affinité
-_Donnez une paire (H2, V2) qui présente une faible affinité. Expliquez pourquoi_
+| h2   | host    | hiking, photography | f    | f           | 1997-11-23  |
+| v2   | guest   | cooking, poetry   | m      | m           | 2000-01-17  |
+
+Faible affinité puisque hobbies différent, paire de genre pas voulu des deux cotés et plus d'1 an et demi d'écart.
 
 ### Arbitrage entre les critères d'affinité
-_Donnez trois paires hôte-visiteur (H3, V3), (H4, V4), (H5, V5) d'affinités à peu près équivalentes. Ces paires doivent illustrer comment vous arbitrez entre les différents critères d'affinité (passe-temps, préférences de genre, différence d'âge). Donc, idéalement, les raisons d'affinité seraient différentes dans les trois paires._
+| h3   | host    | chess, gardening  | m      | f           | 2003-07-08  |
+| v3   | guest   | gaming, astronomy | m      | m           | 2004-12-01  |
+
+Hobbies différent, paire de genre voulu pour un des deux cotés et moins d'1 an et demi d'écart.
 
 ## Exemple complet
 _Donnez un exemple de quatre hôtes A, B, C, D et quatre visiteurs W, X, Y, Z. Puis, donnez l'appariement qui vous considérez le meilleur entre ces hôtes et visiteurs._
