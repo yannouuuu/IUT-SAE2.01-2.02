@@ -125,14 +125,19 @@ _Donnez la matrice d'adjacence du graphe biparti complet entre les hôtes A, B, 
 ```
 # Matrice d'adjacence
    ;A;B;C;D
-  W; ; ; ;   
-  X; ; ; ;   
-  Y; ; ; ;   
-  Z; ; ; ;   
-```
+  W;0;4;2;3   
+  X;3;4;3;3  
+  Y;3;3;3;2  
+  Z;2;1;3;2  
 
-_Calculez l'appariement de poids minimal pour ce graphe. Obtenez-vous l'appariement que vous aviez identifié comme le meilleur ?_
 
+Affectation de cout minimal 6,000000 :
+(Z, B, 1,000000)
+(X, C, 3,000000)
+(W, A, 0,000000)
+(Y, D, 2,000000)
+
+Oui on trouve le même agecement que trouvé précédemment. 
 
 # Version 2
 
