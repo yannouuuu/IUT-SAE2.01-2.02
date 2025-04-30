@@ -129,4 +129,4 @@ Affectation de cout minimal 6,000000 :
 (W, A, 0,000000)
 (Y, D, 2,000000)
 
-Oui on trouve le même agecement que trouvé précédemment. 
+Oui on trouve le même agencement que trouvé précédemment. 
