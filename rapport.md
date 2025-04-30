@@ -70,9 +70,9 @@ Un hobbie en commun, paire de genre voulue pour un des deux cotés et moins d'1 
 
 Ideal pour nous :
 
-A avec W
-B avec Z 
-C avec x
+A avec W,<br>
+B avec Z,<br>
+C avec X,<br>
 D avec Y
 
 
@@ -122,19 +122,21 @@ fin fonction
 
 _Donnez la matrice d'adjacence du graphe biparti complet entre les hôtes A, B, C, D et les visiteurs W, X, Y, Z que vous avez introduit plus haut. Les poids des arêtes sont donnés par la fonction `score_affinité_1`._
 
-```
 # Matrice d'adjacence
-   ;A;B;C;D
-  W;0;4;2;3   
-  X;3;4;3;3  
-  Y;3;3;3;2  
-  Z;2;1;3;2  
+
+|  | A    | B    | C | D | 
+|------|---------|---------------------|--------|-------------|
+| W    | 0    | 4     | 2      | 3           |
+| X    | 3    | 3 | 3      | 3           |
+| Y    | 3    | 3    | 3      | 2           |
+| Z    | 2    | 1   | 3      | 2           |
 
 
-Affectation de cout minimal 6,000000 :
-(Z, B, 1,000000)
-(X, C, 3,000000)
-(W, A, 0,000000)
+
+Affectation de cout minimal 6,000000 :<br>
+(Z, B, 1,000000)<br>
+(X, C, 3,000000)<br>
+(W, A, 0,000000)<br>
 (Y, D, 2,000000)
 
 Oui on trouve le même agencement que trouvé précédemment. 
