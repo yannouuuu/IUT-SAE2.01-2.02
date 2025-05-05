@@ -114,13 +114,15 @@ fin fonction
 
 ## Retour sur l'exemple
 
-```
-# Matrice d'adjacence
-   ;A;B;C;D
-  W;0;4;2;3   
-  X;3;4;3;3  
-  Y;3;3;3;2  
-  Z;2;1;3;2  
+
+Matrice d'adjacence
+  |   | A | B | C | D |
+  |---|---|---|---|---|
+  | W | 0 | 4 | 2 | 3 |
+  | X | 3 | 4 | 3 | 3 |
+  | Y | 3 | 3 | 3 | 2 |
+  | Z | 2 | 1 | 3 | 2 |
+  
 
 
 Affectation de cout minimal 6,000000 :

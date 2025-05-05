@@ -122,7 +122,7 @@ fin fonction
 
 _Donnez la matrice d'adjacence du graphe biparti complet entre les hôtes A, B, C, D et les visiteurs W, X, Y, Z que vous avez introduit plus haut. Les poids des arêtes sont donnés par la fonction `score_affinité_1`._
 
-# Matrice d'adjacence
+## Matrice d'adjacence
 
 |  | A    | B    | C | D | 
 |------|---------|---------------------|--------|-------------|
