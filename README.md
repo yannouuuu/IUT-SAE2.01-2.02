@@ -1,4 +1,4 @@
-# Projet SAE D7
+# IUT-SAE2.01-2.02
 
 Ce projet est structuré en trois grandes parties : **Graphes**, **POO**, et **IHM**. Vous trouverez ci-dessous les détails pour chaque partie.
 
@@ -20,7 +20,8 @@ Pour convertir les fichiers `.md` en un format lisible (par exemple, PDF), vous 
 Voici la commande pour convertir un fichier `.md` en PDF à l'aide de Pandoc et du fichier de styles :
 
 ```bash
-pandoc rapport.md -o rapport.pdf --metadata-file=style-rapport-graphes.yaml
+cd docs/graphes
+pandoc rapport.md -o rapport.pdf --metadata-file=./styles/style-rapport-graphes.yaml
 ```
 
 Remplacez rapport_vX.md par la version souhaitée (rapport_v1.md, rapport_v2.md, ou rapport_v3.md).
