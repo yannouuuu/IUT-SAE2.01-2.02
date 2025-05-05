@@ -5,7 +5,7 @@ author: Yann Renard, Yanis Mekki, Rémy Martin
 date: 2025
 ---
 
-# Version 1
+# SAE S2.02 - Rapport Graphes - Première Version
 
 ## Choix pour la modélisation
           

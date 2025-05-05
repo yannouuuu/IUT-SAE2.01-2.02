@@ -1,0 +1,7 @@
+---
+papersize: a4
+geometry: margin=2cm
+documentclass: article
+numbersections: true
+secnumdepth: 2
+---
