@@ -1,31 +1,35 @@
 package main;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
 /**
- * Classe principale simplifiée pour la démonstration des classes de base
- * et de la logique de compatibilité (Semaines 1-2).
+ * Classe principale
+ * Gère le chargement des données, le lancement de l'affectation et l'affichage des résultats.
  */
 
- public class Main {
+public class Main {
 
-    public void chargerDonneesInitiales() {
+    /**
+     * Charge les données initiales nécessaires pour le programme.
+     * Dans les versions futures, cela pourrait impliquer la lecture de CSV
+     */
+    public void loadInitialData() {
         // Logique pour charger les données (depuis CSV plus tard)
         System.out.println("Chargement des données initiales...");
-        // Exemple: Création manuelle de quelques ados pour les tests initiaux
     }
 
-    public void lancerAffectation() {
-        // Logique pour lancer le calcul de l'affectation
+    /**
+     * Lance le processus d'affectation des adolescents visiteurs aux adolescents hôtes.
+     */
+    public void launchAssignment() {
         System.out.println("Lancement du calcul de l'affectation...");
-        // Appel à la classe Affectation
     }
 
-    public void afficherResultats(Affectation affectation) {
-        // Logique pour afficher les paires résultantes
+    /**
+     * Affiche les résultats de l'affectation.
+     * @param assignment L'objet Affectation contenant les paires réalisées.
+     */
+    public void displayResults(Affectation assignment) {
         System.out.println("Affichage des résultats...");
     }
 
+    // public static void main(String[] args) {    }
 }

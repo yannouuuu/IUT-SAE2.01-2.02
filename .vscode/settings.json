@@ -1,8 +1,7 @@
 {
     "java.project.sourcePaths": [
         "src",
-        "test",
-        "bin"
+        "test"
     ],
     "java.format.settings.url": ".vscode/java-formatter.xml",
     "[java]": {
@@ -14,5 +13,6 @@
         "c:\\Users\\Yann\\Desktop\\SAE\\D7\\lib\\jheaps-0.14.jar",
         "c:\\Users\\Yann\\Desktop\\SAE\\D7\\lib\\junit-platform-console-standalone-1.13.0-M3.jar",
         "c:\\Users\\Yann\\Desktop\\SAE\\D7\\lib\\calcul-affectation.jar"
-    ]
+    ],
+    "java.project.outputPath": "bin"
 }

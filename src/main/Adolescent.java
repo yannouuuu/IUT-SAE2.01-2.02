@@ -2,12 +2,9 @@ package main;
 
 import java.util.Map;
 import java.util.HashMap;
-import java.util.Date;
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 import java.time.LocalDate;
-import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
 
 /**
@@ -16,86 +13,119 @@ import java.time.temporal.ChronoUnit;
  * qui seront utilisés pour l'appariement.
  */
 public class Adolescent {
-    // Attributs
-    private String nom;
-    private String prenom;
-    private String genre;
-    private String paysOrigine;
-    private Map<Criteres, String> criteres;
-    private LocalDate dateNaissance;
+    private String lastName;
+    private String firstName;
+    private String gender;
+    private String countryOfOrigin;
+    private Map<Criteres, String> criteria;
+    private LocalDate dateOfBirth;
 
     /**
      * Constructeur de la classe Adolescent
-     * @param nom le nom de famille de l'adolescent
-     * @param prenom le prénom de l'adolescent
-     * @param genre le genre de l'adolescent (male, female, other)
-     * @param paysOrigine le pays d'origine de l'adolescent
-     * @param dateNaissance la date de naissance de l'adolescent
+     * @param lastName le nom de famille de l'adolescent
+     * @param firstName le prénom de l'adolescent
+     * @param gender le genre de l'adolescent (male, female, other)
+     * @param countryOfOrigin le pays d'origine de l'adolescent
+     * @param criteria les critères de l'adolescent
+     * @param dateOfBirth la date de naissance de l'adolescent
      */
 
-    public Adolescent(String nom, String prenom, String genre, String paysOrigine, Map<Criteres, String> criteres,
-            LocalDate dateNaissance) {
-        this.nom = nom;
-        this.prenom = prenom;
-        this.genre = genre;
-        this.paysOrigine = paysOrigine;
-        this.criteres = new HashMap<>();;
-        this.dateNaissance = dateNaissance;
+    public Adolescent(String lastName, String firstName, String gender, String countryOfOrigin, Map<Criteres, String> criteria,
+            LocalDate dateOfBirth) {
+        this.lastName = lastName;
+        this.firstName = firstName;
+        this.gender = gender;
+        this.countryOfOrigin = countryOfOrigin;
+        this.criteria = new HashMap<>(criteria);
+        this.dateOfBirth = dateOfBirth;
     }
 // Adolescent("Hote", "A", "FR", LocalDate.now(), "male", Map.of(Criteres.HOST_FOOD, "vegetarian"));
-    public Adolescent(String nom, String prenom, String genre, String paysOrigine, LocalDate dateNaissance) {
-        this(nom, prenom, genre, paysOrigine, new HashMap<>(), dateNaissance);
+    /**
+     * Constructeur simplifié de la classe Adolescent sans critères initiaux.
+     * @param lastName le nom de famille de l'adolescent
+     * @param firstName le prénom de l'adolescent
+     * @param gender le genre de l'adolescent (male, female, other)
+     * @param countryOfOrigin le pays d'origine de l'adolescent
+     * @param dateOfBirth la date de naissance de l'adolescent
+     */
+    public Adolescent(String lastName, String firstName, String gender, String countryOfOrigin, LocalDate dateOfBirth) {
+        this(lastName, firstName, gender, countryOfOrigin, new HashMap<>(), dateOfBirth);
     }
 
 
     /**
      * Ajoute ou modifie un critère pour cet adolescent
-     * @param critere le type de critère à ajouter
-     * @param valeur la valeur du critère
+     * @param criterion le type de critère à ajouter
+     * @param value la valeur du critère
      */
-    public void ajouterCritere(Criteres critere, String valeur) {
-        if (critere.estValide(valeur)) {
-            criteres.put(critere, valeur);
+    public void addCriterion(Criteres criterion, String value) {
+        if (criterion.isValid(value)) {
+            criteria.put(criterion, value);
         }
     }
 
-        // Getters
-    public String getNom() {
-        return nom;
+     // Getters
+    /**
+     * Récupère le nom de famille de l'adolescent.
+     * @return le nom de famille de l'adolescent.
+     */
+    public String getLastName() {
+        return lastName;
     }
     
-    public String getPrenom() {
-        return prenom;
+    /**
+     * Récupère le prénom de l'adolescent.
+     * @return le prénom de l'adolescent.
+     */
+    public String getFirstName() {
+        return firstName;
     }
     
-    public String getGenre() {
-        return genre;
+    /**
+     * Récupère le genre de l'adolescent.
+     * @return le genre de l'adolescent.
+     */
+    public String getGender() {
+        return gender;
     }
     
-    public String getPaysOrigine() {
-        return paysOrigine;
+    /**
+     * Récupère le pays d'origine de l'adolescent.
+     * @return le pays d'origine de l'adolescent.
+     */
+    public String getCountryOfOrigin() {
+        return countryOfOrigin;
     }
     
-    public LocalDate getDateNaissance() {
-        return dateNaissance;
+    /**
+     * Récupère la date de naissance de l'adolescent.
+     * @return la date de naissance de l'adolescent.
+     */
+    public LocalDate getDateOfBirth() {
+        return dateOfBirth;
     }
     
-    public Map<Criteres, String> getCriteres() {
-        return new HashMap<>(criteres);
+    /**
+     * Récupère une copie des critères de l'adolescent.
+     * @return une map contenant les critères de l'adolescent.
+     */
+    public Map<Criteres, String> getCriteria() {
+        return new HashMap<>(criteria);
     }
     
     @Override
     public String toString() {
-        return prenom + " " + nom + " (" + paysOrigine + ")";
+        return firstName + " " + lastName + " (" + countryOfOrigin + ")";
     }
 
     /**
      * Récupère la valeur d'un critère
-     * @param critere le critère à récupérer
+     * @param criterion le critère à récupérer
      * @return la valeur du critère ou null si non défini
      */
-    public String getCritere(Criteres critere) {
-        return criteres.get(critere);
+
+    public String getCriterion(Criteres criterion) {
+        return criteria.get(criterion);
     }
 
     /**
@@ -104,99 +134,162 @@ public class Adolescent {
      * @param other l'adolescent visiteur
      * @return true si les deux adolescents sont compatibles, false sinon
      */
-    public boolean estCompatible(Adolescent other) {
+    public boolean isCompatible(Adolescent other) {
         // Vérification de la comptabilité des critères
-        return CompatibleAnimal(other) && CompatibleRegime(other); // Si toutes les vérifications ont passé, les adolescents sont compatibles
+        return isAnimalCompatible(other) && isDietCompatible(other) && isHistoryCompatible(other); // Si toutes les vérifications ont passé, les adolescents sont compatibles
     }
 
-    public boolean CompatibleAnimal(Adolescent other) {
+    /**
+     * Vérifie la compatibilité concernant les animaux entre cet adolescent (hôte) et un autre (visiteur).
+     * L'adolescent est compatible si le visiteur n'est pas allergique aux animaux OU si l'hôte n'a pas d'animaux.
+     * @param other l'adolescent visiteur.
+     * @return true si compatible concernant les animaux, false sinon.
+     */
+    public boolean isAnimalCompatible(Adolescent other) {
         // Vérification des allergies aux animaux
-        String hostHasAnimal = this.getCritere(Criteres.HOST_HAS_ANIMAL);
-        String guestAllergy = other.getCritere(Criteres.GUEST_ANIMAL_ALLERGY);
+        String hostHasAnimal = this.getCriterion(Criteres.HOST_HAS_ANIMAL);
+        String guestAllergy = other.getCriterion(Criteres.GUEST_ANIMAL_ALLERGY);
         
         if ((guestAllergy != null && guestAllergy.equals("yes")) && (hostHasAnimal != null && hostHasAnimal.equals("yes"))) {
-                return false; // Non compatible: visiteur allergique et hôte avec animal
+                return false;
         }
-        return true; // Si toutes les vérifications ont passé, les adolescents sont compatibles
+        return true;
     }
 
-    public boolean CompatibleRegime(Adolescent other) {
+    /**
+     * Vérifie la compatibilité des régimes alimentaires entre cet adolescent (hôte) et un autre (visiteur).
+     * Compatible si le visiteur n'a pas de régime spécifique, ou si l'hôte peut satisfaire tous les régimes du visiteur.
+     * @param other l'adolescent visiteur.
+     * @return true si les régimes sont compatibles, false sinon.
+     */
+    public boolean isDietCompatible(Adolescent other) {
         // Vérification des régimes alimentaires
-        String hostDiet = this.getCritere(Criteres.HOST_FOOD);
-        String guestDiet = other.getCritere(Criteres.GUEST_FOOD);
+        String hostDiet = this.getCriterion(Criteres.HOST_FOOD);
+        String guestDiet = other.getCriterion(Criteres.GUEST_FOOD);
         
-        if ((guestDiet != null && !guestDiet.isEmpty()) && (hostDiet == null || hostDiet.isEmpty())) {
-                return false; // L'hôte n'accepte aucun régime particulier
-        } else{
+        // Si le visiteur n'a pas de régime spécial, c'est toujours compatible
+        if (guestDiet == null || guestDiet.isEmpty()) {
+            return true;
+        }
+        
+        // Si l'hôte n'accepte aucun régime particulier
+        if (hostDiet == null || hostDiet.isEmpty()) {
+            return false;
+        }
 
-            // Vérification si tous les régimes du visiteur sont satisfaits par l'hôte
-            String[] guestDiets = guestDiet.split(",");
-            String[] hostDiets = hostDiet.split(",");
-            Set<String> hostDietsSet = new HashSet<String>(Arrays.asList(hostDiets));
-            
-            for (String diet : guestDiets) {
-                if (!hostDietsSet.contains(diet)) {
-                    return false; // L'hôte ne peut pas satisfaire ce régime alimentaire
-                }
+        // Vérification si tous les régimes du visiteur sont satisfaits par l'hôte
+        String[] guestDiets = guestDiet.split(",");
+        String[] hostDiets = hostDiet.split(",");
+        
+        Set<String> hostDietsSet = new HashSet<>();
+        for (String diet : hostDiets) {
+            hostDietsSet.add(diet.trim());
+        }
+        
+        for (String diet : guestDiets) {
+            if (!hostDietsSet.contains(diet.trim())) {
+                return false;
             }
         }
-        return true; // Si toutes les vérifications ont passé, les adolescents sont compatibles
+        
+        return true;
     }
 
-    // Vérification de l'historique à implémenter
-        
-    //String myHistory = this.getCritere(Criteres.HISTORY);
-    //String otherHistory = other.getCritere(Criteres.HISTORY);
+        /**
+     * Vérifie la compatibilité des historiques entre cet adolescent (hôte) et un autre (visiteur).
+     * @param other l'adolescent visiteur.
+     * @return true si les historiques sont compatibles, false sinon.
+     */
+    public boolean isHistoryCompatible(Adolescent other) {
+        String myHistory = this.getCriterion(Criteres.HISTORY);
+        String otherHistory = other.getCriterion(Criteres.HISTORY);
 
-    // Pour simplifier, on suppose qu'il n'y a pas d'historique pour l'instant
-    // Pour l'implémentation complète, il faudra vérifier l'historique des appariements
-       
+        // Si l'un des deux a la contrainte "other", ils sont incompatibles
+        if ((myHistory != null && myHistory.equals("other")) || 
+            (otherHistory != null && otherHistory.equals("other"))) {
+            return false;
+        }
 
+        // Si les deux ont la contrainte "same", ils doivent être compatibles
+        if (myHistory != null && myHistory.equals("same") &&
+            otherHistory != null && otherHistory.equals("same")) {
+            return true;
+        }
+        return true;
+    }
+
+    /**
+     * Calcule le bonus d'affinité lié à l'historique entre cet adolescent et un autre.
+     * @param other l'autre adolescent.
+     * @return le bonus d'affinité (entier).
+     */
+    public int getHistoryAffinityBonus(Adolescent other) {
+        String myHistory = this.getCriterion(Criteres.HISTORY);
+        String otherHistory = other.getCriterion(Criteres.HISTORY);
+
+        // Si l'un a exprimé "same" et l'autre n'a rien exprimé, bonus d'affinité
+        if ((myHistory != null && myHistory.equals("same") && (otherHistory == null || otherHistory.isEmpty())) ||
+            (otherHistory != null && otherHistory.equals("same") && (myHistory == null || myHistory.isEmpty()))) {
+            return 3;
+        }
+        return 0;
+    }
 
     /**
      * Calcule l'affinité entre cet adolescent et un autre
      * @param other l'autre adolescent
      * @return un score d'affinité sous forme d'entier
      */
-    public int calculerAffinite(Adolescent other) {
+    public int calculateAffinity(Adolescent other) {
         int score = 0;
+
+        if (!isCompatible(other)) {
+            return 0;
+        }
         
         // Bonus pour les passe-temps communs
-        String myHobbies = this.getCritere(Criteres.HOBBIES);
-        String otherHobbies = other.getCritere(Criteres.HOBBIES);
+        String myHobbies = this.getCriterion(Criteres.HOBBIES);
+        String otherHobbies = other.getCriterion(Criteres.HOBBIES);
         
         if (myHobbies != null && otherHobbies != null) {
             String[] myHobbiesList = myHobbies.split(",");
-            Set<String> myHobbiesSet = new HashSet<String>(Arrays.asList(myHobbiesList));
+            Set<String> myHobbiesSet = new HashSet<>();
+            for (String hobby : myHobbiesList) {
+                myHobbiesSet.add(hobby.trim());
+            }
         
             String[] otherHobbiesList = otherHobbies.split(",");
-            Set<String> otherHobbiesSet = new HashSet<String>(Arrays.asList(otherHobbiesList));            
+            Set<String> otherHobbiesSet = new HashSet<>();
+            for (String hobby : otherHobbiesList) {
+                otherHobbiesSet.add(hobby.trim());
+            }            
 
-            for (String myHobby : myHobbiesList) {
+            for (String myHobby : myHobbiesSet) {
                 if (otherHobbiesSet.contains(myHobby)) {
                     score += 5; // +5 points pour chaque passe-temps commun
                 }
             }
         }
         
-        // Bonus pour les préférences de genre satisfaites
-        String myGender = this.genre;
-        String otherGender = other.genre;
-        String myPrefGender = this.getCritere(Criteres.PAIR_GENDER);
-        String otherPrefGender = other.getCritere(Criteres.PAIR_GENDER);
+        String myGender = this.gender;
+        String otherGender = other.gender;
+        String myPrefGender = this.getCriterion(Criteres.PAIR_GENDER);
+        String otherPrefGender = other.getCriterion(Criteres.PAIR_GENDER);
         
         if (myPrefGender == null || myPrefGender.isEmpty() || myPrefGender.equals(otherGender)) {
-            score += 3; // +3 points si ma préférence est satisfaite ou pas de préférence
+            score += 3;
         }
         
         if (otherPrefGender == null || otherPrefGender.isEmpty() || otherPrefGender.equals(myGender)) {
-            score += 3; // +3 points si sa préférence est satisfaite ou pas de préférence
+            score += 3;
         }
         
-        // Bonus pour la différence d'âge
-        if (calculerDifferenceAge(other) < 1.5) { // moins de 1 an et demi d'écart
+        if (calculateAgeDifference(other) < 1.5) { // moins de 1 an et demi d'écart
             score += 4;
         }
+
+        // Ajout du bonus d'affinité pour l'historique
+        score += getHistoryAffinityBonus(other);
         
         return score;
     }
@@ -206,9 +299,8 @@ public class Adolescent {
      * @param other l'autre adolescent
      * @return la différence d'âge en années (valeur absolue)
      */
-    private double calculerDifferenceAge(Adolescent other) {
-        // Plus besoin de conversion ! On utilise directement les LocalDate.
-        long days = Math.abs(ChronoUnit.DAYS.between(this.dateNaissance, other.dateNaissance));
-        return days / 365.25; // approximation du nombre d'années
+    private double calculateAgeDifference(Adolescent other) {
+        long days = Math.abs(ChronoUnit.DAYS.between(this.dateOfBirth, other.dateOfBirth));
+        return days / 365.25;
     }
 }

@@ -1,0 +1,73 @@
+\documentclass[fontsize=10pt,oneside]{scrreprt}
+\usepackage{ulille-rapport}
+\usepackage{lipsum}
+
+%%%% Choix de la langue du document
+\selectlanguage{french}
+%\selectlanguage{english}
+
+%%%% Choix des couleurs du document
+%% (la commande \ListeCouleurs génère une table des couleurs disponibles)
+%% /!\ Les modifications de couleurs ci-dessous ne devraient être utilisées
+%% que dans le préambule et être valables pour tout le document.
+% \colorlet{ULilleFond}{Blanc}                % fond de page
+% \colorlet{ULilleCrayon}{Noir}               % texte courant
+% \colorlet{ULilleSurligneur}{JauneDetermine} % fond de la commande \surligne{...}
+% \colorlet{ULilleStructure}{Noir}            % couleur des éléments de structure
+% \colorlet{ULilleSecondaire}{RougeAction}    % couleur de texte utilisée par
+                                              % la commande \colorie{...}
+% \colorlet{ULilleLiens}{BleuHorizon}         % couleur des liens URL
+
+%%%% Titre, auteur, pied de page
+%% Le logo en haut à gauche de la page est chargé par les commandes
+%% \maketitle ou \logoULille
+%% Il peut être adapté en redéfinissant la commande \includeLogo comme suit :
+% \renewcommand{\includeLogo}{\includegraphics[height=2cm]{Logo.sans.baseline-Horizontal-RVB-Noir.pdf}}
+\subject{Rapport}
+\title{Exemple d'utilisation du style ULille}
+\author{Pierre Boulet}
+\direction{VP Numérique}
+
+\begin{document}
+\maketitle
+
+\pagecolor{Blanc}
+
+\tableofcontents
+
+\part*{Partie/intercalaire}
+
+\chapter{Chapitre}
+
+\section{Gestion des couleurs}
+
+Liste des couleurs disponibles (voir le site \url{https://identite.univ-lille.fr}) :
+
+\ListeCouleurs
+
+Mise en valeur par la couleur : \surligne{texte surligné}, \colorie{texte colorié}.
+\emph{La mise en valeur par l'italique reste disponible.}
+
+\section{Polices}
+La police de texte par défaut est la Marianne. La police complémentaire \textsf{Spectral} est disponible par la commande \verb|\textsf|. Et le texte à chasse fixe est composé en \texttt{Droid Sans Mono}.
+
+\section{Section}
+\lipsum[1-2]
+
+
+\section{Section}
+\subsection{Sous-section}
+\lipsum[3]
+\subsection{Sous-section}
+\lipsum[4]
+
+\section*{Section non numérotée}
+Exemple de liste :
+\begin{itemize}
+  \item item
+  \begin{itemize}
+    \item sous item.
+  \end{itemize}
+\end{itemize}
+
+\end{document}

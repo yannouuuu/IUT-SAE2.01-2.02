@@ -1,0 +1,95 @@
+\documentclass[fontsize=10pt,oneside]{scrreprt}
+\usepackage{ulille-rapport}
+\usepackage{lipsum}
+
+%%%% Choix de la langue du document
+\selectlanguage{french}
+%\selectlanguage{english}
+
+%%%% Choix des couleurs du document
+%% (la commande \ListeCouleurs génère une table des couleurs disponibles)
+%% /!\ Les modifications de couleurs ci-dessous ne devraient être utilisées
+%% que dans le préambule et être valables pour tout le document.
+% \colorlet{ULilleFond}{Blanc}                % fond de page
+% \colorlet{ULilleCrayon}{Noir}               % texte courant
+% \colorlet{ULilleSurligneur}{JauneDetermine} % fond de la commande \surligne{...}
+% \colorlet{ULilleStructure}{Noir}            % couleur des éléments de structure
+% \colorlet{ULilleSecondaire}{RougeAction}    % couleur de texte utilisée par
+                                              % la commande \colorie{...}
+% \colorlet{ULilleLiens}{BleuHorizon}         % couleur des liens URL
+
+%%%% Titre, auteur, pied de page
+%% Le logo en haut à gauche de la page est chargé par les commandes
+%% \maketitle ou \logoULille
+%% Il peut être adapté en redéfinissant la commande \includeLogo comme suit :
+% \renewcommand{\includeLogo}{\includegraphics[height=2cm]{Logo.sans.baseline-Horizontal-RVB-Noir.pdf}}
+\subject{Rapport}
+\title{Exemple d'utilisation du style ULille}
+\author{Pierre Boulet}
+\direction{VP Numérique}
+
+\begin{document}
+\maketitle
+
+\pagecolor{Blanc}
+
+\tableofcontents
+
+\chapter{Rendu 1 : Initialisation du projet et fonctionnalités de base}
+% Introduction brève du contenu de ce rendu
+
+\section{Explication des fonctionnalités et des choix de conception}
+% Ici, votre texte détaillé expliquant les fonctionnalités implémentées,
+% les choix architecturaux, etc.
+
+\section*{Diagramme UML du Rendu 1} % Section non numérotée pour le diagramme
+% Vous pouvez inclure votre diagramme UML ici.
+% Si c'est une image (ex: PNG, PDF, JPG), assurez-vous d'avoir \\usepackage{graphicx}
+% dans votre préambule, puis utilisez :
+% \\begin{figure}[h!] % Option [h!] pour tenter de placer l'image ici
+%   \\centering
+%   \\includegraphics[width=0.8\\textwidth]{chemin/vers/votre/uml_rendu1.png}
+%   \\caption{Diagramme UML des fonctionnalités du Rendu 1.}
+%   \\label{fig:uml_rendu1}
+% \\end{figure}
+
+% Texte accompagnant l'UML : expliquez ce qui est représenté,
+% en vous concentrant sur les aspects importants (pas d'IHM, pas de getters/setters superflus, etc.)
+% comme demandé.
+
+\part*{Partie/intercalaire}
+
+\chapter{Chapitre}
+
+\section{Gestion des couleurs}
+
+Liste des couleurs disponibles (voir le site \url{https://identite.univ-lille.fr}) :
+
+\ListeCouleurs
+
+Mise en valeur par la couleur : \surligne{texte surligné}, \colorie{texte colorié}.
+\emph{La mise en valeur par l'italique reste disponible.}
+
+\section{Polices}
+La police de texte par défaut est la Marianne. La police complémentaire \textsf{Spectral} est disponible par la commande \verb|\textsf|. Et le texte à chasse fixe est composé en \texttt{Droid Sans Mono}.
+
+\section{Section}
+\lipsum[1-2]
+
+
+\section{Section}
+\subsection{Sous-section}
+\lipsum[3]
+\subsection{Sous-section}
+\lipsum[4]
+
+\section*{Section non numérotée}
+Exemple de liste :
+\begin{itemize}
+  \item item
+  \begin{itemize}
+    \item sous item.
+  \end{itemize}
+\end{itemize}
+
+\end{document}

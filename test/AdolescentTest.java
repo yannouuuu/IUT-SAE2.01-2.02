@@ -7,124 +7,270 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class AdolescentTest {
 
-    // --- Tests pour estCompatibleAllergieAnimal ---
+    // --- Tests pour la compatibilité des animaux ---
 
     @Test
-    void testCompatibiliteAllergies() {
+    void testAllergiesCompatibility() {
         // Hôte SANS animal, Visiteur allergique -> Compatible
-        Adolescent hote1 = new Adolescent("Hote", "A", "male", "FR", Map.of(Criteres.HOST_HAS_ANIMAL, "no"), LocalDate.now());
-        Adolescent visiteur1 = new Adolescent("Visiteur", "X", "female", "IT", Map.of(Criteres.GUEST_ANIMAL_ALLERGY, "yes"), LocalDate.now());
-        assertTrue(hote1.CompatibleAnimal(visiteur1), "Hôte sans animal, Visiteur allergique");
+        Adolescent host1 = new Adolescent("Host", "A", "male", "FR", Map.of(Criteres.HOST_HAS_ANIMAL, "no"), LocalDate.now());
+        Adolescent visitor1 = new Adolescent("Visitor", "X", "female", "IT", Map.of(Criteres.GUEST_ANIMAL_ALLERGY, "yes"), LocalDate.now());
+        assertTrue(host1.isAnimalCompatible(visitor1), "Hôte sans animal, Visiteur allergique");
 
         // Hôte AVEC animal, Visiteur NON allergique -> Compatible
-        Adolescent hote2 = new Adolescent("Hote", "B", "male", "FR", Map.of(Criteres.HOST_HAS_ANIMAL, "yes"), LocalDate.now());
-        Adolescent visiteur2 = new Adolescent("Visiteur", "Y", "female", "IT", Map.of(Criteres.GUEST_ANIMAL_ALLERGY, "no"), LocalDate.now());
-        assertTrue(hote2.CompatibleAnimal(visiteur2), "Hôte avec animal, Visiteur non allergique");
+        Adolescent host2 = new Adolescent("Host", "B", "male", "FR", Map.of(Criteres.HOST_HAS_ANIMAL, "yes"), LocalDate.now());
+        Adolescent visitor2 = new Adolescent("Visitor", "Y", "female", "IT", Map.of(Criteres.GUEST_ANIMAL_ALLERGY, "no"), LocalDate.now());
+        assertTrue(host2.isAnimalCompatible(visitor2), "Hôte avec animal, Visiteur non allergique");
 
         // Hôte SANS animal, Visiteur NON allergique -> Compatible
-        Adolescent hote3 = new Adolescent("Hote", "C", "male", "FR", Map.of(Criteres.HOST_HAS_ANIMAL, "no"), LocalDate.now());
-        Adolescent visiteur3 = new Adolescent("Visiteur", "Z", "female", "IT", Map.of(Criteres.GUEST_ANIMAL_ALLERGY, "no"), LocalDate.now());
-        assertTrue(hote3.CompatibleAnimal(visiteur3), "Hôte sans animal, Visiteur non allergique");
+        Adolescent host3 = new Adolescent("Host", "C", "male", "FR", Map.of(Criteres.HOST_HAS_ANIMAL, "no"), LocalDate.now());
+        Adolescent visitor3 = new Adolescent("Visitor", "Z", "female", "IT", Map.of(Criteres.GUEST_ANIMAL_ALLERGY, "no"), LocalDate.now());
+        assertTrue(host3.isAnimalCompatible(visitor3), "Hôte sans animal, Visiteur non allergique");
 
         // Hôte SANS animal, Visiteur sans info allergie (défaut non) -> Compatible
-        Adolescent hote4 = new Adolescent("Hote", "D", "male", "FR", Map.of(Criteres.HOST_HAS_ANIMAL, "no"), LocalDate.now());
-        Adolescent visiteur4 = new Adolescent("Visiteur", "W", "female", "IT", Map.of(), LocalDate.now()); // Pas d'info allergie
-        assertTrue(hote4.CompatibleAnimal(visiteur4), "Hôte sans animal, Visiteur sans info allergie");
+        Adolescent host4 = new Adolescent("Host", "D", "male", "FR", Map.of(Criteres.HOST_HAS_ANIMAL, "no"), LocalDate.now());
+        Adolescent visitor4 = new Adolescent("Visitor", "W", "female", "IT", Map.of(), LocalDate.now()); // Pas d'info allergie
+        assertTrue(host4.isAnimalCompatible(visitor4), "Hôte sans animal, Visiteur sans info allergie");
 
         // Hôte sans info animal (défaut non interprété comme false), Visiteur allergique -> Compatible
-        Adolescent hote5 = new Adolescent("Hote", "E", "male", "FR", Map.of(), LocalDate.now());
-        Adolescent visiteur5 = new Adolescent("Visiteur", "V", "female", "IT", Map.of(Criteres.GUEST_ANIMAL_ALLERGY, "yes"), LocalDate.now());
-        assertTrue(hote5.CompatibleAnimal(visiteur5), "Hôte sans info animal, Visiteur allergique");
+        Adolescent host5 = new Adolescent("Host", "E", "male", "FR", Map.of(), LocalDate.now());
+        Adolescent visitor5 = new Adolescent("Visitor", "V", "female", "IT", Map.of(Criteres.GUEST_ANIMAL_ALLERGY, "yes"), LocalDate.now());
+        assertTrue(host5.isAnimalCompatible(visitor5), "Hôte sans info animal, Visiteur allergique");
     }
 
     @Test
-    void testIncompatibiliteAllergies() {
+    void testAllergiesIncompatibility() {
         // Hôte AVEC animal, Visiteur allergique -> Incompatible
-        Adolescent hote1 = new Adolescent("Hote", "A", "male", "FR", Map.of(Criteres.HOST_HAS_ANIMAL, "yes"), LocalDate.now());
-        Adolescent visiteur1 = new Adolescent("Visiteur", "X", "female", "IT", Map.of(Criteres.GUEST_ANIMAL_ALLERGY, "yes"), LocalDate.now());
-        assertFalse(hote1.CompatibleAnimal(visiteur1), "Hôte avec animal, Visiteur allergique");
+        Adolescent host1 = new Adolescent("Host", "A", "male", "FR", Map.of(Criteres.HOST_HAS_ANIMAL, "yes"), LocalDate.now());
+        Adolescent visitor1 = new Adolescent("Visitor", "X", "female", "IT", Map.of(Criteres.GUEST_ANIMAL_ALLERGY, "yes"), LocalDate.now());
+        assertFalse(host1.isAnimalCompatible(visitor1), "Hôte avec animal, Visiteur allergique");
     }
 
-    // --- Tests pour estCompatibleRegimeAlimentaire ---
+    // --- Tests pour la compatibilité des régimes alimentaires ---
     @Test
-    void testCompatibiliteRegimeOk() {
-        // Hôte accepte vegetarien, Visiteur demande vegetarien -> Compatible
-        Adolescent hote1 = new Adolescent("Hote", "A", "male", "FR", Map.of(Criteres.HOST_FOOD, "vegetarian, nonuts"), LocalDate.now());
-        Adolescent visiteur1 = new Adolescent("Visiteur", "X", "female", "IT", Map.of(Criteres.GUEST_FOOD, "vegetarian"), LocalDate.now());
-        assertTrue(hote1.CompatibleRegime(visiteur1), "Hôte ok pour végétarien, Visiteur végétarien");
+    void testDietCompatibilityOk() {
+        // Hôte accepte végétarien, Visiteur demande végétarien -> Compatible
+        Adolescent host1 = new Adolescent("Host", "A", "male", "FR", Map.of(Criteres.HOST_FOOD, "vegetarian, nonuts"), LocalDate.now());
+        Adolescent visitor1 = new Adolescent("Visitor", "X", "female", "IT", Map.of(Criteres.GUEST_FOOD, "vegetarian"), LocalDate.now());
+        assertTrue(host1.isDietCompatible(visitor1), "Hôte ok pour végétarien, Visiteur végétarien");
 
-        // Hôte accepte vegetarien et sans noix, Visiteur demande vegetarien et sans noix -> Compatible
-        Adolescent hote2 = new Adolescent("Hote", "B", "male", "FR", Map.of(Criteres.HOST_FOOD, "vegetarian, nonuts"), LocalDate.now());
-        Adolescent visiteur2 = new Adolescent("Visiteur", "Y", "female", "IT", Map.of(Criteres.GUEST_FOOD, "nonuts, vegetarian"), LocalDate.now());
-        assertTrue(hote2.CompatibleRegime(visiteur2), "Hôte ok pour plusieurs, Visiteur demande plusieurs");
+        // Hôte accepte végétarien et sans noix, Visiteur demande végétarien et sans noix -> Compatible
+        Adolescent host2 = new Adolescent("Host", "B", "male", "FR", Map.of(Criteres.HOST_FOOD, "vegetarian, nonuts"), LocalDate.now());
+        Adolescent visitor2 = new Adolescent("Visitor", "Y", "female", "IT", Map.of(Criteres.GUEST_FOOD, "nonuts, vegetarian"), LocalDate.now());
+        assertTrue(host2.isDietCompatible(visitor2), "Hôte ok pour plusieurs, Visiteur demande plusieurs");
 
-        // Hôte accepte vegetarien et sans noix, Visiteur demande juste sans noix -> Compatible
-        Adolescent hote3 = new Adolescent("Hote", "C", "male", "FR", Map.of(Criteres.HOST_FOOD, "vegetarian, nonuts"), LocalDate.now());
-        Adolescent visiteur3 = new Adolescent("Visiteur", "Z", "female", "IT", Map.of(Criteres.GUEST_FOOD, "nonuts"), LocalDate.now());
-        assertTrue(hote3.CompatibleRegime(visiteur3), "Hôte ok pour plusieurs, Visiteur demande un seul");
-    }
-
-    @Test
-    void testCompatibiliteRegimeNon() {
-        // Hôte accepte juste vegetarien, Visiteur demande sans noix -> Incompatible
-        Adolescent hote1 = new Adolescent("Hote", "A", "male", "FR", Map.of(Criteres.HOST_FOOD, "vegetarian"), LocalDate.now());
-        Adolescent visiteur1 = new Adolescent("Visiteur", "X", "female", "IT", Map.of(Criteres.GUEST_FOOD, "nonuts"), LocalDate.now());
-        assertFalse(hote1.CompatibleRegime(visiteur1), "Hôte pas ok pour sans noix, Visiteur demande sans noix");
-
-        // Hôte accepte vegetarien, Visiteur demande vegetarien ET sans noix -> Incompatible
-        Adolescent hote2 = new Adolescent("Hote", "B", "male", "FR", Map.of(Criteres.HOST_FOOD, "vegetarian"), LocalDate.now());
-        Adolescent visiteur2 = new Adolescent("Visiteur", "Y", "female", "IT", Map.of(Criteres.GUEST_FOOD, "vegetarian, nonuts"), LocalDate.now());
-        assertFalse(hote2.CompatibleRegime(visiteur2), "Hôte ok pour un seul, Visiteur demande plusieurs");
+        // Hôte accepte végétarien et sans noix, Visiteur demande juste sans noix -> Compatible
+        Adolescent host3 = new Adolescent("Host", "C", "male", "FR", Map.of(Criteres.HOST_FOOD, "vegetarian, nonuts"), LocalDate.now());
+        Adolescent visitor3 = new Adolescent("Visitor", "Z", "female", "IT", Map.of(Criteres.GUEST_FOOD, "nonuts"), LocalDate.now());
+        assertTrue(host3.isDietCompatible(visitor3), "Hôte ok pour plusieurs, Visiteur demande un seul");
     }
 
     @Test
-    void testCompatibiliteRegimeVisiteurSansBesoin() {
-        // Hôte accepte vegetarien, Visiteur n'a pas de régime -> Compatible
-        Adolescent hote1 = new Adolescent("Hote", "A", "male", "FR", Map.of(Criteres.HOST_FOOD, "vegetarian"), LocalDate.now());
-        Adolescent visiteur1 = new Adolescent("Visiteur", "X", "female", "IT", Map.of(), LocalDate.now()); // Pas de GUEST_FOOD
-        assertTrue(hote1.CompatibleRegime(visiteur1), "Hôte ok végétarien, Visiteur sans régime");
+    void testDietIncompatibility() {
+        // Hôte accepte juste végétarien, Visiteur demande sans noix -> Incompatible
+        Adolescent host1 = new Adolescent("Host", "A", "male", "FR", Map.of(Criteres.HOST_FOOD, "vegetarian"), LocalDate.now());
+        Adolescent visitor1 = new Adolescent("Visitor", "X", "female", "IT", Map.of(Criteres.GUEST_FOOD, "nonuts"), LocalDate.now());
+        assertFalse(host1.isDietCompatible(visitor1), "Hôte pas ok pour sans noix, Visiteur demande sans noix");
+
+        // Hôte accepte végétarien, Visiteur demande végétarien ET sans noix -> Incompatible
+        Adolescent host2 = new Adolescent("Host", "B", "male", "FR", Map.of(Criteres.HOST_FOOD, "vegetarian"), LocalDate.now());
+        Adolescent visitor2 = new Adolescent("Visitor", "Y", "female", "IT", Map.of(Criteres.GUEST_FOOD, "vegetarian, nonuts"), LocalDate.now());
+        assertFalse(host2.isDietCompatible(visitor2), "Hôte ok pour un seul, Visiteur demande plusieurs");
+    }
+
+    @Test
+    void testDietCompatibilityVisitorWithoutNeeds() {
+        // Hôte accepte végétarien, Visiteur n'a pas de régime -> Compatible
+        Adolescent host1 = new Adolescent("Host", "A", "male", "FR", Map.of(Criteres.HOST_FOOD, "vegetarian"), LocalDate.now());
+        Adolescent visitor1 = new Adolescent("Visitor", "X", "female", "IT", Map.of(), LocalDate.now()); // Pas de GUEST_FOOD
+        assertTrue(host1.isDietCompatible(visitor1), "Hôte ok végétarien, Visiteur sans régime");
 
         // Hôte n'accepte rien, Visiteur n'a pas de régime -> Compatible
-        Adolescent hote2 = new Adolescent("Hote", "B", "male", "FR", Map.of(), LocalDate.now()); // Pas de HOST_FOOD
-        Adolescent visiteur2 = new Adolescent("Visiteur", "Y", "female", "IT", Map.of(), LocalDate.now()); // Pas de GUEST_FOOD
-        assertTrue(hote2.CompatibleRegime(visiteur2), "Hôte sans offre, Visiteur sans régime");
+        Adolescent host2 = new Adolescent("Host", "B", "male", "FR", Map.of(), LocalDate.now()); // Pas de HOST_FOOD
+        Adolescent visitor2 = new Adolescent("Visitor", "Y", "female", "IT", Map.of(), LocalDate.now()); // Pas de GUEST_FOOD
+        assertTrue(host2.isDietCompatible(visitor2), "Hôte sans offre, Visiteur sans régime");
     }
 
     @Test
-    void testCompatibiliteRegimeHoteNeProposeRien() {
-        // Hôte n'accepte rien (pas de HOST_FOOD), Visiteur demande vegetarien -> Incompatible
-        Adolescent hote1 = new Adolescent("Hote", "A", "male", "FR", Map.of(), LocalDate.now());
-        Adolescent visiteur1 = new Adolescent("Visiteur", "X", "female", "IT", Map.of(Criteres.GUEST_FOOD, "vegetarian"), LocalDate.now());
-        assertFalse(hote1.CompatibleRegime(visiteur1), "Hôte sans offre, Visiteur végétarien");
+    void testDietCompatibilityHostOffersNothing() {
+        // Hôte n'accepte rien (pas de HOST_FOOD), Visiteur demande végétarien -> Incompatible
+        Adolescent host1 = new Adolescent("Host", "A", "male", "FR", Map.of(), LocalDate.now());
+        Adolescent visitor1 = new Adolescent("Visitor", "X", "female", "IT", Map.of(Criteres.GUEST_FOOD, "vegetarian"), LocalDate.now());
+        assertFalse(host1.isDietCompatible(visitor1), "Hôte sans offre, Visiteur végétarien");
 
-        // Hôte a HOST_FOOD vide, Visiteur demande vegetarien -> Incompatible
-        Adolescent hote2 = new Adolescent("Hote", "B", "male", "FR", Map.of(Criteres.HOST_FOOD, ""), LocalDate.now());
-        Adolescent visiteur2 = new Adolescent("Visiteur", "Y", "female", "IT", Map.of(Criteres.GUEST_FOOD, "vegetarian"), LocalDate.now());
-        assertFalse(hote2.CompatibleRegime(visiteur2), "Hôte offre vide, Visiteur végétarien");
+        // Hôte a HOST_FOOD vide, Visiteur demande végétarien -> Incompatible
+        Adolescent host2 = new Adolescent("Host", "B", "male", "FR", Map.of(Criteres.HOST_FOOD, ""), LocalDate.now());
+        Adolescent visitor2 = new Adolescent("Visitor", "Y", "female", "IT", Map.of(Criteres.GUEST_FOOD, "vegetarian"), LocalDate.now());
+        assertFalse(host2.isDietCompatible(visitor2), "Hôte offre vide, Visiteur végétarien");
     }
 
-    // --- Tests pour estCompatible (global) ---
+    // --- Tests pour la compatibilité d'historique ---
     @Test
-    void testCompatibiliteGlobaleOk() {
+    void testHistoryCompatibilityOk() {
+        // Les deux adolescents n'ont pas de contrainte d'historique -> Compatible
+        Adolescent host1 = new Adolescent("Host", "A", "male", "FR", Map.of(), LocalDate.now());
+        Adolescent visitor1 = new Adolescent("Visitor", "X", "female", "IT", Map.of(), LocalDate.now());
+        assertTrue(host1.isHistoryCompatible(visitor1), "Aucune contrainte d'historique");
+
+        // Les deux adolescents veulent être ensemble (same) -> Compatible
+        Adolescent host2 = new Adolescent("Host", "B", "male", "FR", Map.of(Criteres.HISTORY, "same"), LocalDate.now());
+        Adolescent visitor2 = new Adolescent("Visitor", "Y", "female", "IT", Map.of(Criteres.HISTORY, "same"), LocalDate.now());
+        assertTrue(host2.isHistoryCompatible(visitor2), "Les deux veulent rester ensemble");
+
+        // Un adolescent veut être ensemble (same), l'autre n'a pas de préférence -> Compatible
+        Adolescent host3 = new Adolescent("Host", "C", "male", "FR", Map.of(Criteres.HISTORY, "same"), LocalDate.now());
+        Adolescent visitor3 = new Adolescent("Visitor", "Z", "female", "IT", Map.of(), LocalDate.now());
+        assertTrue(host3.isHistoryCompatible(visitor3), "Un veut rester, l'autre sans préférence");
+    }
+
+    @Test
+    void testHistoryIncompatibility() {
+        // Un adolescent ne veut pas être avec le même (other) -> Incompatible
+        Adolescent host1 = new Adolescent("Host", "A", "male", "FR", Map.of(Criteres.HISTORY, "other"), LocalDate.now());
+        Adolescent visitor1 = new Adolescent("Visitor", "X", "female", "IT", Map.of(), LocalDate.now());
+        assertFalse(host1.isHistoryCompatible(visitor1), "Hôte veut changer de correspondant");
+
+        // L'autre adolescent ne veut pas être avec le même (other) -> Incompatible
+        Adolescent host2 = new Adolescent("Host", "B", "male", "FR", Map.of(), LocalDate.now());
+        Adolescent visitor2 = new Adolescent("Visitor", "Y", "female", "IT", Map.of(Criteres.HISTORY, "other"), LocalDate.now());
+        assertFalse(host2.isHistoryCompatible(visitor2), "Visiteur veut changer de correspondant");
+
+        // Les deux adolescents ne veulent pas être ensemble (other) -> Incompatible
+        Adolescent host3 = new Adolescent("Host", "C", "male", "FR", Map.of(Criteres.HISTORY, "other"), LocalDate.now());
+        Adolescent visitor3 = new Adolescent("Visitor", "Z", "female", "IT", Map.of(Criteres.HISTORY, "other"), LocalDate.now());
+        assertFalse(host3.isHistoryCompatible(visitor3), "Les deux veulent changer de correspondant");
+    }
+
+    @Test
+    void testHistoryAffinityBonus() {
+        // Un adolescent veut être avec le même (same), l'autre n'a pas de préférence -> Bonus d'affinité
+        Adolescent host = new Adolescent("Host", "A", "male", "FR", 
+            Map.of(Criteres.HISTORY, "same", 
+                   Criteres.HOST_HAS_ANIMAL, "no", 
+                   Criteres.HOST_FOOD, "vegetarian"), 
+            LocalDate.of(2008, 5, 15));
+        
+        Adolescent visitor = new Adolescent("Visitor", "X", "female", "IT", 
+            Map.of(Criteres.GUEST_ANIMAL_ALLERGY, "no", 
+                   Criteres.GUEST_FOOD, "vegetarian"), 
+            LocalDate.of(2008, 6, 10));
+        
+        // Le score devrait inclure un bonus pour l'historique
+        int scoreWithHistoryBonus = host.calculateAffinity(visitor);
+        
+        // Création d'adolescents identiques mais sans contrainte d'historique
+        Adolescent hostNoHistory = new Adolescent("Host", "A", "male", "FR", 
+            Map.of(Criteres.HOST_HAS_ANIMAL, "no", 
+                   Criteres.HOST_FOOD, "vegetarian"), 
+            LocalDate.of(2008, 5, 15));
+        
+        Adolescent visitorNoHistory = new Adolescent("Visitor", "X", "female", "IT", 
+            Map.of(Criteres.GUEST_ANIMAL_ALLERGY, "no", 
+                   Criteres.GUEST_FOOD, "vegetarian"), 
+            LocalDate.of(2008, 6, 10));
+        
+        int scoreWithoutHistoryBonus = hostNoHistory.calculateAffinity(visitorNoHistory);
+        
+        // Vérification que le score avec l'historique est plus élevé
+        assertTrue(scoreWithHistoryBonus > scoreWithoutHistoryBonus, 
+            "Le bonus d'historique devrait augmenter le score d'affinité");
+    }
+
+    // --- Tests pour la compatibilité globale ---
+    @Test
+    void testGlobalCompatibilityOk() {
         // Compatible sur allergie ET régime
-        Adolescent hote1 = new Adolescent("Hote", "A", "male", "FR", Map.of(Criteres.HOST_HAS_ANIMAL, "no", Criteres.HOST_FOOD, "vegetarian"), LocalDate.now());
-        Adolescent visiteur1 = new Adolescent("Visiteur", "X", "female", "IT", Map.of(Criteres.GUEST_ANIMAL_ALLERGY, "yes", Criteres.GUEST_FOOD, "vegetarian"), LocalDate.now());
-        assertTrue(hote1.estCompatible(visiteur1), "Compatible globalement (allergie ok, régime ok)");
+        Adolescent host1 = new Adolescent("Host", "A", "male", "FR", Map.of(Criteres.HOST_HAS_ANIMAL, "no", Criteres.HOST_FOOD, "vegetarian"), LocalDate.now());
+        Adolescent visitor1 = new Adolescent("Visitor", "X", "female", "IT", Map.of(Criteres.GUEST_ANIMAL_ALLERGY, "yes", Criteres.GUEST_FOOD, "vegetarian"), LocalDate.now());
+        assertTrue(host1.isCompatible(visitor1), "Compatible globalement (allergie ok, régime ok)");
     }
 
     @Test
-    void testIncompatibiliteGlobaleAllergie() {
+    void testGlobalIncompatibilityAllergy() {
         // Incompatible sur allergie, compatible sur régime
-        Adolescent hote1 = new Adolescent("Hote", "A", "male", "FR", Map.of(Criteres.HOST_HAS_ANIMAL, "yes", Criteres.HOST_FOOD, "vegetarian"), LocalDate.now());
-        Adolescent visiteur1 = new Adolescent("Visiteur", "X", "female", "IT", Map.of(Criteres.GUEST_ANIMAL_ALLERGY, "yes", Criteres.GUEST_FOOD, "vegetarian"), LocalDate.now());
-        assertFalse(hote1.estCompatible(visiteur1), "Incompatible globalement (allergie ko)");
+        Adolescent host1 = new Adolescent("Host", "A", "male", "FR", Map.of(Criteres.HOST_HAS_ANIMAL, "yes", Criteres.HOST_FOOD, "vegetarian"), LocalDate.now());
+        Adolescent visitor1 = new Adolescent("Visitor", "X", "female", "IT", Map.of(Criteres.GUEST_ANIMAL_ALLERGY, "yes", Criteres.GUEST_FOOD, "vegetarian"), LocalDate.now());
+        assertFalse(host1.isCompatible(visitor1), "Incompatible globalement (problème allergie)");
     }
 
     @Test
-    void testIncompatibiliteGlobaleRegime() {
+    void testGlobalIncompatibilityDiet() {
         // Compatible sur allergie, incompatible sur régime
-        Adolescent hote1 = new Adolescent("Hote", "A", "male", "FR", Map.of(Criteres.HOST_HAS_ANIMAL, "no", Criteres.HOST_FOOD, "nonuts"), LocalDate.now());
-        Adolescent visiteur1 = new Adolescent("Visiteur", "X", "female", "IT", Map.of(Criteres.GUEST_ANIMAL_ALLERGY, "yes", Criteres.GUEST_FOOD, "vegetarian"), LocalDate.now());
-        assertFalse(hote1.estCompatible(visiteur1), "Incompatible globalement (régime ko)");
+        Adolescent host1 = new Adolescent("Host", "A", "male", "FR", Map.of(Criteres.HOST_HAS_ANIMAL, "no", Criteres.HOST_FOOD, "nonuts"), LocalDate.now());
+        Adolescent visitor1 = new Adolescent("Visitor", "X", "female", "IT", Map.of(Criteres.GUEST_ANIMAL_ALLERGY, "yes", Criteres.GUEST_FOOD, "vegetarian"), LocalDate.now());
+        assertFalse(host1.isCompatible(visitor1), "Incompatible globalement (problème régime)");
+    }
+
+    @Test
+    void testGlobalIncompatibilityHistory() {
+        // Compatible sur allergie et régime, incompatible sur historique
+        Adolescent host1 = new Adolescent("Host", "A", "male", "FR", 
+            Map.of(Criteres.HOST_HAS_ANIMAL, "no", 
+                   Criteres.HOST_FOOD, "vegetarian",
+                   Criteres.HISTORY, "other"), 
+            LocalDate.now());
+        Adolescent visitor1 = new Adolescent("Visitor", "X", "female", "IT", 
+            Map.of(Criteres.GUEST_ANIMAL_ALLERGY, "no", 
+                   Criteres.GUEST_FOOD, "vegetarian"), 
+            LocalDate.now());
+        assertFalse(host1.isCompatible(visitor1), "Incompatible globalement (problème historique)");
+    }
+
+    // --- Tests pour le calcul d'affinité ---
+
+    @Test
+    void testAffinityCommonHobbies() {
+        // Deux adolescents compatibles avec des hobbies communs
+        Adolescent host = new Adolescent("Host", "A", "male", "FR", 
+            Map.of(Criteres.HOST_HAS_ANIMAL, "no", 
+                   Criteres.HOST_FOOD, "vegetarian", 
+                   Criteres.HOBBIES, "football,reading,music"), 
+            LocalDate.of(2008, 5, 15));
+        
+        Adolescent visitor = new Adolescent("Visitor", "X", "female", "IT", 
+            Map.of(Criteres.GUEST_ANIMAL_ALLERGY, "no", 
+                   Criteres.GUEST_FOOD, "vegetarian", 
+                   Criteres.HOBBIES, "dance,reading,music"), 
+            LocalDate.of(2008, 8, 10));
+        
+        int score = host.calculateAffinity(visitor);
+        assertEquals(20, score, "Le score d'affinité devrait être 20 avec 2 hobbies communs et différence d'âge < 1,5 an");
+    }
+
+    @Test
+    void testAffinityGenderPreference() {
+        // Test d'affinité avec préférences de genre satisfaites
+        Adolescent host = new Adolescent("Host", "B", "male", "FR", 
+            Map.of(Criteres.HOST_HAS_ANIMAL, "no", 
+                   Criteres.HOST_FOOD, "vegetarian", 
+                   Criteres.PAIR_GENDER, "female"), 
+            LocalDate.of(2007, 6, 20));
+        
+        Adolescent visitor = new Adolescent("Visitor", "Y", "female", "IT", 
+            Map.of(Criteres.GUEST_ANIMAL_ALLERGY, "no", 
+                   Criteres.GUEST_FOOD, "vegetarian", 
+                   Criteres.PAIR_GENDER, "male"), 
+            LocalDate.of(2007, 9, 15));
+        
+        int score = host.calculateAffinity(visitor);
+        assertEquals(10, score, "Le score d'affinité devrait être 10 avec préférences de genre satisfaites et différence d'âge < 1,5 an");
+    }
+
+    @Test
+    void testAffinityIncompatibleTeenagers() {
+        // Test d'affinité entre adolescents incompatibles (devrait être 0)
+        Adolescent host = new Adolescent("Host", "C", "male", "FR", 
+            Map.of(Criteres.HOST_HAS_ANIMAL, "yes", 
+                   Criteres.HOST_FOOD, "vegetarian", 
+                   Criteres.HOBBIES, "football,reading,music"), 
+            LocalDate.of(2008, 5, 15));
+        
+        Adolescent visitor = new Adolescent("Visitor", "Z", "female", "IT", 
+            Map.of(Criteres.GUEST_ANIMAL_ALLERGY, "yes", 
+                   Criteres.GUEST_FOOD, "vegetarian", 
+                   Criteres.HOBBIES, "football,reading,music"), 
+            LocalDate.of(2008, 7, 10));
+        
+        int score = host.calculateAffinity(visitor);
+        assertEquals(0, score, "Le score d'affinité devrait être 0 pour des adolescents incompatibles");
     }
 }
