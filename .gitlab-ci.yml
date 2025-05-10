@@ -8,3 +8,13 @@ pages:
       - public
   only:
     - main
+
+deploy_to_yannouuuu_github:
+  stage: deploy
+  script:
+    - git config --global user.email "yannrenard1025@gmail.com"
+    - git config --global user.name "yannouuuu"
+    - git remote add github https://$GITHUB_TOKEN@github.com/yannouuuu/IUT-SAE2.01-2.02.git
+    - git push github HEAD:main
+  only:
+    - main
