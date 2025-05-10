@@ -18,7 +18,7 @@ deploy_to_yannouuuu_github:
     - git remote rm github || true
     - git remote add github https://$GITHUB_TOKEN@github.com/yannouuuu/IUT-SAE2.01-2.02.git
     - git fetch github
-    - git merge github/main --allow-unrelated-histories
+    - git merge -X ours github/main --allow-unrelated-histories
     - git push github HEAD:main
   only:
     - main
