@@ -10,7 +10,7 @@ import java.util.Map;
 public class Affectation {
     private List<Adolescent> hosts;
     private List<Adolescent> visitors;
-    private List<Map<Adolescent, Adolescent>> pairs; // Liste des paires
+    private <Map<Adolescent, Adolescent> pairs; // Liste des paires
 
     /**
      * Construit une nouvelle instance d'Affectation.
