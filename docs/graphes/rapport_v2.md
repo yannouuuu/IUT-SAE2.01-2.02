@@ -48,6 +48,8 @@ A1 avec W1 contraintes alimentaire et animal respectés, même hobbies, genre de
 A2 avec X2 contraintes alimentaire et animal respectés, même hobbies, genre demandé et moins d'1 an et demi.
 B1 avec X1 contraintes alimentaire et animal respectés, 1 hobbies en commun, genre demandé.
 W2 et X1 etant tous deux allergique au animaux et allergie alimentaires. Ils restent donc W2 et B2 sans paire.
+On peut former 3 paires.
+
 
 ## Score d’affinité
 
@@ -138,6 +140,9 @@ Affectation de cout minimal 10001,000000 :
 (X2, A2, 0,000000)
 (W2, B2, 9999,000000)
 (X1, B1, 2,000000)
+
+
+On obtient dans les deux cas l'appatriement trouvé auparavant.
 
 ## Robustesse de la modélisation (question difficile)
 
