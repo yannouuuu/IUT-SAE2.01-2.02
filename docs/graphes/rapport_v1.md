@@ -2,10 +2,14 @@
 title: SAE S2.02 -- Rapport graphes -- Première Version
 subtitle: Équipe D7
 author: Yann Renard, Yanis Mekki, Rémy Martin 
+toc: 3
+toc-title: "Table des matières"
 date: 2025
 ---
 
-# SAE S2.02 - Rapport Graphes - Première Version
+\pagebreak
+
+# Première version
 
 ## Choix pour la modélisation
           
@@ -68,9 +72,9 @@ Un hobbie en commun, paire de genre voulue pour un des deux cotés et moins d'1 
 
 Ideal pour nous :
 
-A avec W
-B avec Z 
-C avec x
+A avec W,<br>
+B avec Z,<br>
+C avec X,<br>
 D avec Y
 
 
@@ -114,21 +118,20 @@ fin fonction
 
 ## Retour sur l'exemple
 
+### Matrice d'adjacence
 
-Matrice d'adjacence
-  |   | A | B | C | D |
-  |---|---|---|---|---|
-  | W | 0 | 4 | 2 | 3 |
-  | X | 3 | 4 | 3 | 3 |
-  | Y | 3 | 3 | 3 | 2 |
-  | Z | 2 | 1 | 3 | 2 |
-  
+|      | A | B | C | D |
+|------|---|---|---|----|
+| W    | 0 | 4 | 2 | 3  |
+| X    | 3 | 3 | 3 | 3  |
+| Y    | 3 | 3 | 3 | 2  |
+| Z    | 2 | 1 | 3 | 2  |
 
 
-Affectation de cout minimal 6,000000 :
-(Z, B, 1,000000)
-(X, C, 3,000000)
-(W, A, 0,000000)
-(Y, D, 2,000000)
+Affectation de coût minimal 6,000000 :<br>
+- (Z, B, 1,000000)<br>
+- (X, C, 3,000000)<br>
+- (W, A, 0,000000)<br>
+- (Y, D, 2,000000)
 
 Oui on trouve le même agencement que trouvé précédemment. 

@@ -7,21 +7,21 @@ date: 2025
 
 # SAE S2.02 - Rapport Graphes - Troisième Version
 
-## Equilibrage entre affinité / incompatibilité
+## Équilibrage entre affinité / incompatibilité
 
 | name | role    | hobbies             | gender | pair_gender | birth_date  | HOST_HAS_ANIMAL | HOST_FOOD
 |------|---------|---------------------|--------|-------------|-------------|-----------------|-------------
 | H1   | host    | painting, yoga      | m      | f           | 2001-05-12  | YES             | vegetarian
-| H2   | host    | hiking, photography | f      | f           | 1997-11-23  | NO             | nonuts
-| H3   | host    | chess, gardening    | m      | m           | 2003-07-08  | YES              | NA
-| H4   | host    | music  , swimming   | f      | f           | 2000-03-15  | NO              | vegetarian
+| H2   | host    | hiking, photography | f      | f           | 1997-11-23  | NO              | nonuts
+| H3   | host    | chess, gardening    | m      | m           | 2003-07-08  | YES             | NA
+| H4   | host    | music, swimming     | f      | f           | 2000-03-15  | NO              | vegetarian
 
 | name | role    | hobbies           | gender | pair_gender | birth_date  | GUEST_ANIMAL_ALLERGY |  GUEST_FOOD_CONSTRAINT 
 |------|---------|-------------------|--------|-------------|-------------|-----------------------|-------------------------
-| V1    | guest  | painting, yoga    | f      | m           | 2002-06-30  | YES                    | NA
-| v2    | guest  | hiking, photography   | f      | f           | 1998-02-20 | NO                   | nonuts
-| V3    | guest  | gardening, yoga   | m      | m           | 2004-12-01  | NO                   | vegetarian
-| V4    | guest  | music, swimming |  m  | f       | 2001-02-20  | YES                    | NA
+| V1   | guest   | painting, yoga    | f      | m           | 2002-06-30  | YES                  | NA
+| V2   | guest   | hiking, photography| f     | f           | 1998-02-20  | NO                   | nonuts
+| V3   | guest   | gardening, yoga   | m      | m           | 2004-12-01  | NO                   | vegetarian
+| V4   | guest   | music, swimming   | m      | f           | 2001-02-20  | YES                  | NA
 
 
 Paire (H1, V1) :
@@ -41,7 +41,7 @@ Affinité : Élevée (mêmes passe-temps : music, swimming ; préférences de ge
 Incompatibilité : Aucune (H4 n'a pas d'animal, V4 est allergique mais cela n'a pas d'impact ; NA alimentaire est compatible).
 
 
-## Score d’affinité
+## Score d'affinité
 
 ```
 fonction score_affinité_3(hôte, visiteur) : nombre // Retourne un nombre représentant l'affinité
@@ -88,13 +88,14 @@ fonction score_affinité_3(hôte, visiteur) : nombre // Retourne un nombre repr�
 fin fonction
 ```
 
-## Retour sur l’exemple
+## Retour sur l'exemple
 
-;H1;H2;H3;H4
-V1;10;4;13;4
-V2;14;0;15;14
-V3;3;14;11;4
-V4;14;4;13;1
+|      |  H1  |  H2  |  H3  |  H4  |
+|------|------|------|------|------|
+| V1   | 10   | 4    | 13   | 4    |
+| V2   | 14   | 0    | 15   | 14   |
+| V3   | 3    | 14   | 11   | 4    |
+| V4   | 14   | 4    | 13   | 1    |
 
 Score de :
 
@@ -103,12 +104,12 @@ Score de :
 (H3/V3) = 11
 (H4/V4) = 1
 
-Mais si on éxecute la matrice d'adjacence avec le jar on trouve d'autres pairs : 
+Mais si on exécute la matrice d'adjacence avec le JAR on trouve d'autres paires : 
 
-Affectation de cout minimal 17,000000 :
+Affectation de coût minimal 17,000000 :
 (V4, H4, 0,000000)
 (V3, H1, 3,000000)
 (V2, H2, 1,000000)
 (V1, H3, 13,000000)
 
-Dans ce cas les scores sont plûtot proches sauf pour la pair V1 et H3 ou c'est éloignés.
+Dans ce cas les scores sont plutôt proches sauf pour la paire V1 et H3 où c'est éloigné.

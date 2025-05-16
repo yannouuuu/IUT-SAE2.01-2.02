@@ -21,7 +21,7 @@ Voici la commande pour convertir un fichier `.md` en PDF à l'aide de Pandoc et 
 
 ```bash
 cd docs/graphes
-pandoc rapport_v1.md -o ./pdf/rapport_v1.pdf --metadata-file=./styles/style-rapport-graphes.yaml
+pandoc rapport_full.md -o ./pdf/rapport_full.pdf --metadata-file=./styles/style-rapport-graphes.yaml
 ```
 
 Remplacez rapport_vX.md par la version souhaitée (rapport_v1.md, rapport_v2.md, ou rapport_v3.md).
