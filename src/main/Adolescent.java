@@ -15,7 +15,6 @@ import java.time.temporal.ChronoUnit;
 public class Adolescent {
     private String lastName;
     private String firstName;
-    private String gender;
     private String countryOfOrigin;
     private Map<Criteres, String> criteria;
     private LocalDate dateOfBirth;
@@ -34,12 +33,23 @@ public class Adolescent {
             LocalDate dateOfBirth) {
         this.lastName = lastName;
         this.firstName = firstName;
-        this.gender = gender;
         this.countryOfOrigin = countryOfOrigin;
-        this.criteria = new HashMap<>(criteria);
+        this.criteria = new HashMap<>(criteria)
+        this.criteria.put(Criteres.GENDER,this.gender);
+        for (Map.Entry<Criteres, String> entry : criteria.entrySet()) {
+            Criteres critere = entry.getKey();
+            String valeur = entry.getValue();
+            try {
+                if (critere.isValid(valeur)) {
+                    this.criteria.put(critere, valeur);
+                }
+            } catch (IllegalArgumentException e) {
+                System.err.println("Erreur lors de la validation du critère " + critere + " avec la valeur '" + valeur + "' pour " + firstName + " " + lastName + ": " + e.getMessage());
+            }
+        }
         this.dateOfBirth = dateOfBirth;
     }
-// Adolescent("Hote", "A", "FR", LocalDate.now(), "male", Map.of(Criteres.HOST_FOOD, "vegetarian"));
+    // Adolescent("Hote", "A", "FR", LocalDate.now(), "male", Map.of(Criteres.HOST_FOOD, "vegetarian"));
     /**
      * Constructeur simplifié de la classe Adolescent sans critères initiaux.
      * @param lastName le nom de famille de l'adolescent
@@ -59,8 +69,13 @@ public class Adolescent {
      * @param value la valeur du critère
      */
     public void addCriterion(Criteres criterion, String value) {
-        if (criterion.isValid(value)) {
-            criteria.put(criterion, value);
+        try {
+            if (criterion.isValid(value)) {
+                criteria.put(criterion, value);
+            }
+        } catch (Exception e) {
+            System.err.println("Erreur lors de la validation du critère " + criterion + " avec la valeur '" + value + "': " + e.getMessage());
+            // Gérer l'erreur comme tu le souhaites (ne pas ajouter le critère, etc.)
         }
     }
 
@@ -79,14 +94,6 @@ public class Adolescent {
      */
     public String getFirstName() {
         return firstName;
-    }
-    
-    /**
-     * Récupère le genre de l'adolescent.
-     * @return le genre de l'adolescent.
-     */
-    public String getGender() {
-        return gender;
     }
     
     /**
@@ -136,66 +143,65 @@ public class Adolescent {
      */
     public boolean isCompatible(Adolescent other) {
         // Vérification de la comptabilité des critères
-        return isAnimalCompatible(other) && isDietCompatible(other) && isHistoryCompatible(other); // Si toutes les vérifications ont passé, les adolescents sont compatibles
+        return isFrenchCompatible(other) && isHistoryCompatible(other); // Si toutes les vérifications ont passé, les adolescents sont compatibles
     }
 
     /**
-     * Vérifie la compatibilité concernant les animaux entre cet adolescent (hôte) et un autre (visiteur).
-     * L'adolescent est compatible si le visiteur n'est pas allergique aux animaux OU si l'hôte n'a pas d'animaux.
+     * Vérifie la compatibilité entre cet adolescent (hôte) et un autre (visiteur) si l'un des deux est Français.
      * @param other l'adolescent visiteur.
-     * @return true si compatible concernant les animaux, false sinon.
+     * @return true si ils ont un passe temps en commun ou qu'aucun n'est français, false sinon.
      */
-    public boolean isAnimalCompatible(Adolescent other) {
-        // Vérification des allergies aux animaux
-        String hostHasAnimal = this.getCriterion(Criteres.HOST_HAS_ANIMAL);
-        String guestAllergy = other.getCriterion(Criteres.GUEST_ANIMAL_ALLERGY);
-        
-        if ((guestAllergy != null && guestAllergy.equals("yes")) && (hostHasAnimal != null && hostHasAnimal.equals("yes"))) {
-                return false;
-        }
-        return true;
-    }
+    public boolean isFrenchCompatible(Adolescent other) {
+        String myCountry = this.countryOfOrigin;
+        String otherCountry = other.countryOfOrigin;
 
-    /**
-     * Vérifie la compatibilité des régimes alimentaires entre cet adolescent (hôte) et un autre (visiteur).
-     * Compatible si le visiteur n'a pas de régime spécifique, ou si l'hôte peut satisfaire tous les régimes du visiteur.
-     * @param other l'adolescent visiteur.
-     * @return true si les régimes sont compatibles, false sinon.
-     */
-    public boolean isDietCompatible(Adolescent other) {
-        // Vérification des régimes alimentaires
-        String hostDiet = this.getCriterion(Criteres.HOST_FOOD);
-        String guestDiet = other.getCriterion(Criteres.GUEST_FOOD);
-        
-        // Si le visiteur n'a pas de régime spécial, c'est toujours compatible
-        if (guestDiet == null || guestDiet.isEmpty()) {
+        // Si aucun n'est français pas de problèmes
+        if ((myCountry == null || !myCountry.equals("France")) &&
+            (otherCountry == null || !otherCountry.equals("France"))) {
             return true;
         }
-        
-        // Si l'hôte n'accepte aucun régime particulier
-        if (hostDiet == null || hostDiet.isEmpty()) {
-            return false;
-        }
 
-        // Vérification si tous les régimes du visiteur sont satisfaits par l'hôte
-        String[] guestDiets = guestDiet.split(",");
-        String[] hostDiets = hostDiet.split(",");
-        
-        Set<String> hostDietsSet = new HashSet<>();
-        for (String diet : hostDiets) {
-            hostDietsSet.add(diet.trim());
-        }
-        
-        for (String diet : guestDiets) {
-            if (!hostDietsSet.contains(diet.trim())) {
-                return false;
+        // Si l'un des deux est français on s'intéresse aux pase temps'
+        if (myCountry != null && myCountry.equals("France") ||
+            otherCountry != null && otherCountry.equals("France")) {
+            String myHobbies = this.getCriterion(Criteres.HOBBIES);
+            String otherHobbies = other.getCriterion(Criteres.HOBBIES);
+
+            if (myHobbies != null && otherHobbies != null) {
+                Set<String> myHobbiesSet = new HashSet<>();
+                try {
+                    String[] myHobbiesList = myHobbies.split(",");
+                    for (String hobby : myHobbiesList) {
+                        myHobbiesSet.add(hobby.trim());
+                    }
+                } catch (NullPointerException e) {
+                    System.err.println("Erreur lors du traitement des hobbies de " + this.firstName + ": " + e.getMessage());
+                    return false;
+                }
+
+                Set<String> otherHobbiesSet = new HashSet<>();
+                try {
+                    String[] otherHobbiesList = otherHobbies.split(",");
+                    for (String hobby : otherHobbiesList) {
+                        otherHobbiesSet.add(hobby.trim());
+                    }
+                } catch (NullPointerException e) {
+                    System.err.println("Erreur lors du traitement des hobbies de " + other.firstName + ": " + e.getMessage());
+                    return false;
+                }
+
+                for (String myHobby : myHobbiesSet) {
+                    if (otherHobbiesSet.contains(myHobby)) {
+                        return true;
+                    }
+                }
             }
         }
-        
-        return true;
+        return false;
     }
 
-        /**
+
+    /**
      * Vérifie la compatibilité des historiques entre cet adolescent (hôte) et un autre (visiteur).
      * @param other l'adolescent visiteur.
      * @return true si les historiques sont compatibles, false sinon.
@@ -219,6 +225,75 @@ public class Adolescent {
     }
 
     /**
+     * Vérifie la compatibilité concernant les animaux entre cet adolescent (hôte) et un autre (visiteur).
+     * L'adolescent est compatible si le visiteur n'est pas allergique aux animaux OU si l'hôte n'a pas d'animaux.
+     * @param other l'adolescent visiteur.
+     * @return 0 si compatible concernant les animaux, -25 sinon.
+     */
+    public int animalScore(Adolescent other) {
+        // Vérification des allergies aux animaux
+        String hostHasAnimal = this.getCriterion(Criteres.HOST_HAS_ANIMAL);
+        String guestAllergy = other.getCriterion(Criteres.GUEST_ANIMAL_ALLERGY);
+        
+        if ((guestAllergy != null && guestAllergy.equals("yes")) && (hostHasAnimal != null && hostHasAnimal.equals("yes"))) {
+                return -25;
+        }
+        return 0;
+    }
+
+    /**
+     * Vérifie la compatibilité des régimes alimentaires entre cet adolescent (hôte) et un autre (visiteur).
+     * Compatible si le visiteur n'a pas de régime spécifique, ou si l'hôte peut satisfaire tous les régimes du visiteur.
+     * @param other l'adolescent visiteur.
+     * @return 0 si les régimes sont compatibles, -5*(Nbr de régimes non-respectés) sinon.
+     */
+    public int dietScore(Adolescent other) {
+        // Vérification des régimes alimentaires
+        String hostDiet = this.getCriterion(Criteres.HOST_FOOD);
+        String guestDiet = other.getCriterion(Criteres.GUEST_FOOD);
+
+        // Si le visiteur n'a pas de régime spécial, c'est toujours compatible
+        if (guestDiet == null || guestDiet.isEmpty()) {
+            return 0;
+        }
+
+        // Si l'hôte n'accepte aucun régime particulier
+        if (hostDiet == null || hostDiet.isEmpty() and (guestDiet!=null ||!guestDiet.isEmpty())) {
+            return 0;
+        }
+
+        Set<String> hostDietsSet = new HashSet<>();
+        try {
+            if (hostDiet != null) {
+                String[] hostDiets = hostDiet.split(",");
+                for (String diet : hostDiets) {
+                    hostDietsSet.add(diet.trim());
+                }
+            }
+        } catch (NullPointerException e) {
+            System.err.println("Erreur lors du traitement des régimes de l'hôte " + this.firstName + ": " + e.getMessage());
+            return 0; // Ou une autre logique de gestion d'erreur
+        }
+
+        int incompatiblesDiets=0;
+        try {
+            if (guestDiet != null) {
+                String[] guestDiets = guestDiet.split(",");
+                for (String diet : guestDiets) {
+                    if (!hostDietsSet.contains(diet.trim())) {
+                        incompatiblesDiets-=5;
+                    }
+                }
+            }
+        } catch (NullPointerException e) {
+            System.err.println("Erreur lors du traitement des régimes du visiteur " + other.firstName + ": " + e.getMessage());
+            return 0; // Ou une autre logique de gestion d'erreur
+        }
+
+        return incompatiblesDiets;
+    }
+
+    /**
      * Calcule le bonus d'affinité lié à l'historique entre cet adolescent et un autre.
      * @param other l'autre adolescent.
      * @return le bonus d'affinité (entier).
@@ -230,7 +305,7 @@ public class Adolescent {
         // Si l'un a exprimé "same" et l'autre n'a rien exprimé, bonus d'affinité
         if ((myHistory != null && myHistory.equals("same") && (otherHistory == null || otherHistory.isEmpty())) ||
             (otherHistory != null && otherHistory.equals("same") && (myHistory == null || myHistory.isEmpty()))) {
-            return 3;
+            return 10;
         }
         return 0;
     }
@@ -241,13 +316,21 @@ public class Adolescent {
      * @return un score d'affinité sous forme d'entier
      */
     public int calculateAffinity(Adolescent other) {
-        int score = 0;
+        int score = 50;
 
         if (!isCompatible(other)) {
             return 0;
         }
         
+        //Malus éventuel pour les régimes non respectés (au mieux 0)
+        score+=dietScore(other);
+
+        //Malus éventuel pour les alergies aux animaux (au mieux 0)
+        score+=animalScore(other);
+
         // Bonus pour les passe-temps communs
+
+        //Pas besoins de try catch puisque les cas potentiels sont déjà vérifiés plus tôt
         String myHobbies = this.getCriterion(Criteres.HOBBIES);
         String otherHobbies = other.getCriterion(Criteres.HOBBIES);
         
@@ -271,8 +354,8 @@ public class Adolescent {
             }
         }
         
-        String myGender = this.gender;
-        String otherGender = other.gender;
+        String myGender = this.getCriterion(Criteres.GENDER);
+        String otherGender = other.getCriterion(Criteres.GENDER);
         String myPrefGender = this.getCriterion(Criteres.PAIR_GENDER);
         String otherPrefGender = other.getCriterion(Criteres.PAIR_GENDER);
         

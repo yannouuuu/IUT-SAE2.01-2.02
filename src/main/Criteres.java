@@ -45,17 +45,25 @@ public enum Criteres {
      */
     public boolean isValid(String valeur) {
         if (valeur == null) {
-            return true;
+            return false;
         }
         if (this == GUEST_ANIMAL_ALLERGY || this == HOST_HAS_ANIMAL) {
-            return valeur.equals("yes") || valeur.equals("no");
-        }
-        else if (this == GENDER || this == PAIR_GENDER) {
-            return valeur.equals("male") || valeur.equals("female") || valeur.equals("other") || valeur.isEmpty();
-        }
-        else if (this == HISTORY) {
-            return valeur.equals("same") || valeur.equals("other") || valeur.isEmpty();
+            if (!valeur.equals("yes") && !valeur.equals("no")) {
+                throw new IllegalArgumentException("La valeur pour " + this + " doit être 'yes' ou 'no'.");
+            }
+            return true;
+        } else if (this == GENDER || this == PAIR_GENDER) {
+            if (!valeur.equals("male") && !valeur.equals("female") && !valeur.equals("other") && !valeur.isEmpty()) {
+                throw new IllegalArgumentException("La valeur pour " + this + " doit être 'male', 'female', 'other' ou vide.");
+            }
+            return true;
+        } else if (this == HISTORY) {
+            if (!valeur.equals("same") && !valeur.equals("other") && !valeur.isEmpty()) {
+                throw new IllegalArgumentException("La valeur pour " + this + " doit être 'same', 'other' ou vide.");
+            }
+            return true;
         }
         return true;
     }
+
 }
