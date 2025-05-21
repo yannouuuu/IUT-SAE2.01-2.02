@@ -34,8 +34,10 @@ public class Adolescent {
         this.lastName = lastName;
         this.firstName = firstName;
         this.countryOfOrigin = countryOfOrigin;
-        this.criteria = new HashMap<>(criteria)
-        this.criteria.put(Criteres.GENDER,this.gender);
+        this.criteria = new HashMap<>(criteria);
+        if (gender != null && !gender.isEmpty()) {
+            this.criteria.put(Criteres.GENDER, gender);
+        }
         for (Map.Entry<Criteres, String> criterion : criteria.entrySet()) {
             Criteres critere = criterion.getKey();
             String valeur = criterion.getValue();
@@ -143,7 +145,10 @@ public class Adolescent {
      */
     public boolean isCompatible(Adolescent other) {
         // Vérification de la comptabilité des critères
-        return isFrenchCompatible(other) && isHistoryCompatible(other); // Si toutes les vérifications ont passé, les adolescents sont compatibles
+        return isFrenchCompatible(other) && 
+               isHistoryCompatible(other) && 
+               animalScore(other) == 0 && 
+               dietScore(other) == 0; // Si toutes les vérifications ont passé, les adolescents sont compatibles
     }
 
     /**
@@ -257,9 +262,17 @@ public class Adolescent {
             return 0;
         }
 
-        // Si l'hôte n'accepte aucun régime particulier
-        if (hostDiet == null || hostDiet.isEmpty() and (guestDiet!=null ||!guestDiet.isEmpty())) {
-            return 0;
+        // Si l'hôte n'accepte aucun régime particulier et que le visiteur en a un
+        if ((hostDiet == null || hostDiet.isEmpty()) && (guestDiet != null && !guestDiet.isEmpty())) {
+            // On compte le nombre de régimes demandés par le visiteur comme incompatibles
+            int incompatiblesDiets = 0;
+            String[] guestDiets = guestDiet.split(",");
+            for (String diet : guestDiets) {
+                if (diet != null && !diet.trim().isEmpty()) {
+                    incompatiblesDiets -= 5;
+                }
+            }
+            return incompatiblesDiets;
         }
 
         Set<String> hostDietsSet = new HashSet<>();
