@@ -14,27 +14,27 @@ public class AdolescentTest {
         // Hôte SANS animal, Visiteur allergique -> Compatible
         Adolescent host1 = new Adolescent("Host", "A", "male", "France", Map.of(Criteres.HOST_HAS_ANIMAL, "no"), LocalDate.now());
         Adolescent visitor1 = new Adolescent("Visitor", "X", "female", "Italia", Map.of(Criteres.GUEST_ANIMAL_ALLERGY, "yes"), LocalDate.now());
-        assertTrue(host1.isAnimalCompatible(visitor1), "Hôte sans animal, Visiteur allergique");
+        assertTrue(host1.animalScore(visitor1) == 0, "Hôte sans animal, Visiteur allergique");
 
         // Hôte AVEC animal, Visiteur NON allergique -> Compatible
         Adolescent host2 = new Adolescent("Host", "B", "male", "France", Map.of(Criteres.HOST_HAS_ANIMAL, "yes"), LocalDate.now());
         Adolescent visitor2 = new Adolescent("Visitor", "Y", "female", "Italia", Map.of(Criteres.GUEST_ANIMAL_ALLERGY, "no"), LocalDate.now());
-        assertTrue(host2.isAnimalCompatible(visitor2), "Hôte avec animal, Visiteur non allergique");
+        assertTrue(host2.animalScore(visitor2) == 0, "Hôte avec animal, Visiteur non allergique");
 
         // Hôte SANS animal, Visiteur NON allergique -> Compatible
         Adolescent host3 = new Adolescent("Host", "C", "male", "France", Map.of(Criteres.HOST_HAS_ANIMAL, "no"), LocalDate.now());
         Adolescent visitor3 = new Adolescent("Visitor", "Z", "female", "Italia", Map.of(Criteres.GUEST_ANIMAL_ALLERGY, "no"), LocalDate.now());
-        assertTrue(host3.isAnimalCompatible(visitor3), "Hôte sans animal, Visiteur non allergique");
+        assertTrue(host3.animalScore(visitor3) == 0, "Hôte sans animal, Visiteur non allergique");
 
         // Hôte SANS animal, Visiteur sans info allergie (défaut non) -> Compatible
         Adolescent host4 = new Adolescent("Host", "D", "male", "France", Map.of(Criteres.HOST_HAS_ANIMAL, "no"), LocalDate.now());
         Adolescent visitor4 = new Adolescent("Visitor", "W", "female", "Italia", Map.of(), LocalDate.now()); // Pas d'info allergie
-        assertTrue(host4.isAnimalCompatible(visitor4), "Hôte sans animal, Visiteur sans info allergie");
+        assertTrue(host4.animalScore(visitor4) == 0, "Hôte sans animal, Visiteur sans info allergie");
 
         // Hôte sans info animal (défaut non interprété comme false), Visiteur allergique -> Compatible
         Adolescent host5 = new Adolescent("Host", "E", "male", "France", Map.of(), LocalDate.now());
         Adolescent visitor5 = new Adolescent("Visitor", "V", "female", "Italia", Map.of(Criteres.GUEST_ANIMAL_ALLERGY, "yes"), LocalDate.now());
-        assertTrue(host5.isAnimalCompatible(visitor5), "Hôte sans info animal, Visiteur allergique");
+        assertTrue(host5.animalScore(visitor5) == 0, "Hôte sans info animal, Visiteur allergique");
     }
 
     @Test
@@ -42,7 +42,7 @@ public class AdolescentTest {
         // Hôte AVEC animal, Visiteur allergique -> Incompatible
         Adolescent host1 = new Adolescent("Host", "A", "male", "France", Map.of(Criteres.HOST_HAS_ANIMAL, "yes"), LocalDate.now());
         Adolescent visitor1 = new Adolescent("Visitor", "X", "female", "Italia", Map.of(Criteres.GUEST_ANIMAL_ALLERGY, "yes"), LocalDate.now());
-        assertFalse(host1.isAnimalCompatible(visitor1), "Hôte avec animal, Visiteur allergique");
+        assertFalse(host1.animalScore(visitor1) == 0, "Hôte avec animal, Visiteur allergique");
     }
 
     // --- Tests pour la compatibilité des régimes alimentaires ---
@@ -51,17 +51,17 @@ public class AdolescentTest {
         // Hôte accepte végétarien, Visiteur demande végétarien -> Compatible
         Adolescent host1 = new Adolescent("Host", "A", "male", "France", Map.of(Criteres.HOST_FOOD, "vegetarian, nonuts"), LocalDate.now());
         Adolescent visitor1 = new Adolescent("Visitor", "X", "female", "Italia", Map.of(Criteres.GUEST_FOOD, "vegetarian"), LocalDate.now());
-        assertTrue(host1.isDietCompatible(visitor1), "Hôte ok pour végétarien, Visiteur végétarien");
+        assertTrue(host1.dietScore(visitor1) == 0, "Hôte ok pour végétarien, Visiteur végétarien");
 
         // Hôte accepte végétarien et sans noix, Visiteur demande végétarien et sans noix -> Compatible
         Adolescent host2 = new Adolescent("Host", "B", "male", "France", Map.of(Criteres.HOST_FOOD, "vegetarian, nonuts"), LocalDate.now());
         Adolescent visitor2 = new Adolescent("Visitor", "Y", "female", "Italia", Map.of(Criteres.GUEST_FOOD, "nonuts, vegetarian"), LocalDate.now());
-        assertTrue(host2.isDietCompatible(visitor2), "Hôte ok pour plusieurs, Visiteur demande plusieurs");
+        assertTrue(host2.dietScore(visitor2) == 0, "Hôte ok pour plusieurs, Visiteur demande plusieurs");
 
         // Hôte accepte végétarien et sans noix, Visiteur demande juste sans noix -> Compatible
         Adolescent host3 = new Adolescent("Host", "C", "male", "France", Map.of(Criteres.HOST_FOOD, "vegetarian, nonuts"), LocalDate.now());
         Adolescent visitor3 = new Adolescent("Visitor", "Z", "female", "Italia", Map.of(Criteres.GUEST_FOOD, "nonuts"), LocalDate.now());
-        assertTrue(host3.isDietCompatible(visitor3), "Hôte ok pour plusieurs, Visiteur demande un seul");
+        assertTrue(host3.dietScore(visitor3) == 0, "Hôte ok pour plusieurs, Visiteur demande un seul");
     }
 
     @Test
@@ -69,12 +69,12 @@ public class AdolescentTest {
         // Hôte accepte juste végétarien, Visiteur demande sans noix -> Incompatible
         Adolescent host1 = new Adolescent("Host", "A", "male", "France", Map.of(Criteres.HOST_FOOD, "vegetarian"), LocalDate.now());
         Adolescent visitor1 = new Adolescent("Visitor", "X", "female", "Italia", Map.of(Criteres.GUEST_FOOD, "nonuts"), LocalDate.now());
-        assertFalse(host1.isDietCompatible(visitor1), "Hôte pas ok pour sans noix, Visiteur demande sans noix");
+        assertFalse(host1.dietScore(visitor1) == 0, "Hôte pas ok pour sans noix, Visiteur demande sans noix");
 
         // Hôte accepte végétarien, Visiteur demande végétarien ET sans noix -> Incompatible
         Adolescent host2 = new Adolescent("Host", "B", "male", "France", Map.of(Criteres.HOST_FOOD, "vegetarian"), LocalDate.now());
         Adolescent visitor2 = new Adolescent("Visitor", "Y", "female", "Italia", Map.of(Criteres.GUEST_FOOD, "vegetarian, nonuts"), LocalDate.now());
-        assertFalse(host2.isDietCompatible(visitor2), "Hôte ok pour un seul, Visiteur demande plusieurs");
+        assertFalse(host2.dietScore(visitor2) == 0, "Hôte ok pour un seul, Visiteur demande plusieurs");
     }
 
     @Test
@@ -82,12 +82,12 @@ public class AdolescentTest {
         // Hôte accepte végétarien, Visiteur n'a pas de régime -> Compatible
         Adolescent host1 = new Adolescent("Host", "A", "male", "France", Map.of(Criteres.HOST_FOOD, "vegetarian"), LocalDate.now());
         Adolescent visitor1 = new Adolescent("Visitor", "X", "female", "Italia", Map.of(), LocalDate.now()); // Pas de GUEST_FOOD
-        assertTrue(host1.isDietCompatible(visitor1), "Hôte ok végétarien, Visiteur sans régime");
+        assertTrue(host1.dietScore(visitor1) == 0, "Hôte ok végétarien, Visiteur sans régime");
 
         // Hôte n'accepte rien, Visiteur n'a pas de régime -> Compatible
         Adolescent host2 = new Adolescent("Host", "B", "male", "France", Map.of(), LocalDate.now()); // Pas de HOST_FOOD
         Adolescent visitor2 = new Adolescent("Visitor", "Y", "female", "Italia", Map.of(), LocalDate.now()); // Pas de GUEST_FOOD
-        assertTrue(host2.isDietCompatible(visitor2), "Hôte sans ofFrancee, Visiteur sans régime");
+        assertTrue(host2.dietScore(visitor2) == 0, "Hôte sans ofFrancee, Visiteur sans régime");
     }
 
     @Test
@@ -95,12 +95,12 @@ public class AdolescentTest {
         // Hôte n'accepte rien (pas de HOST_FOOD), Visiteur demande végétarien -> Incompatible
         Adolescent host1 = new Adolescent("Host", "A", "male", "France", Map.of(), LocalDate.now());
         Adolescent visitor1 = new Adolescent("Visitor", "X", "female", "Italia", Map.of(Criteres.GUEST_FOOD, "vegetarian"), LocalDate.now());
-        assertFalse(host1.isDietCompatible(visitor1), "Hôte sans ofFrancee, Visiteur végétarien");
+        assertFalse(host1.dietScore(visitor1) == 0, "Hôte sans ofFrancee, Visiteur végétarien");
 
         // Hôte a HOST_FOOD vide, Visiteur demande végétarien -> Incompatible
         Adolescent host2 = new Adolescent("Host", "B", "male", "France", Map.of(Criteres.HOST_FOOD, ""), LocalDate.now());
         Adolescent visitor2 = new Adolescent("Visitor", "Y", "female", "Italia", Map.of(Criteres.GUEST_FOOD, "vegetarian"), LocalDate.now());
-        assertFalse(host2.isDietCompatible(visitor2), "Hôte ofFrancee vide, Visiteur végétarien");
+        assertFalse(host2.dietScore(visitor2) == 0, "Hôte ofFrancee vide, Visiteur végétarien");
     }
 
     // --- Tests pour la compatibilité d'historique ---
