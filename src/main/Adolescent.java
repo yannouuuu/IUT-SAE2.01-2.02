@@ -36,9 +36,9 @@ public class Adolescent {
         this.countryOfOrigin = countryOfOrigin;
         this.criteria = new HashMap<>(criteria)
         this.criteria.put(Criteres.GENDER,this.gender);
-        for (Map.Entry<Criteres, String> entry : criteria.entrySet()) {
-            Criteres critere = entry.getKey();
-            String valeur = entry.getValue();
+        for (Map.Entry<Criteres, String> criterion : criteria.entrySet()) {
+            Criteres critere = criterion.getKey();
+            String valeur = criterion.getValue();
             try {
                 if (critere.isValid(valeur)) {
                     this.criteria.put(critere, valeur);
