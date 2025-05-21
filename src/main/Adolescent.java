@@ -34,22 +34,30 @@ public class Adolescent {
         this.lastName = lastName;
         this.firstName = firstName;
         this.countryOfOrigin = countryOfOrigin;
-        this.criteria = new HashMap<>(criteria);
+        this.criteria = new HashMap<>(); // Initialiser vide, puis ajouter les critères validés
+        this.dateOfBirth = dateOfBirth;
+
+        // Ajouter le genre en premier s'il est fourni et valide
         if (gender != null && !gender.isEmpty()) {
-            this.criteria.put(Criteres.GENDER, gender);
-        }
-        for (Map.Entry<Criteres, String> criterion : criteria.entrySet()) {
-            Criteres critere = criterion.getKey();
-            String valeur = criterion.getValue();
             try {
-                if (critere.isValid(valeur)) {
-                    this.criteria.put(critere, valeur);
+                if (Criteres.GENDER.isValid(gender)) {
+                    this.criteria.put(Criteres.GENDER, gender);
                 }
             } catch (IllegalArgumentException e) {
-                System.err.println("Erreur lors de la validation du critère " + critere + " avec la valeur '" + valeur + "' pour " + firstName + " " + lastName + ": " + e.getMessage());
+                System.err.println("Erreur lors de la validation du GENDER '" + gender + "' pour " + firstName + " " + lastName + ": " + e.getMessage());
             }
         }
-        this.dateOfBirth = dateOfBirth;
+
+        // Ajouter les autres critères
+        for (Map.Entry<Criteres, String> entry : criteria.entrySet()) {
+            Criteres critere = entry.getKey();
+            String valeur = entry.getValue();
+            try {
+                addCriterionInner(critere, valeur); // Utiliser une méthode interne pour éviter la redondance et gérer l'exclusivité
+            } catch (IllegalArgumentException e) {
+                System.err.println("Erreur pour " + firstName + " " + lastName + " avec le critère " + critere + " et valeur '" + valeur + "': " + e.getMessage());
+            }
+        }
     }
     // Adolescent("Hote", "A", "FR", LocalDate.now(), "male", Map.of(Criteres.HOST_FOOD, "vegetarian"));
     /**
@@ -66,19 +74,44 @@ public class Adolescent {
 
 
     /**
-     * Ajoute ou modifie un critère pour cet adolescent
+     * Ajoute ou modifie un critère pour cet adolescent.
+     * Lance une IllegalArgumentException si le critère est invalide ou viole les règles d'exclusivité.
      * @param criterion le type de critère à ajouter
      * @param value la valeur du critère
      */
-    public void addCriterion(Criteres criterion, String value) {
-        try {
-            if (criterion.isValid(value)) {
-                criteria.put(criterion, value);
+    public void addCriterion(Criteres criterion, String value) throws IllegalArgumentException {
+        addCriterionInner(criterion, value);
+    }
+
+    /**
+     * Méthode interne pour ajouter un critère, gérant la validation et l'exclusivité.
+     */
+    private void addCriterionInner(Criteres criterion, String value) throws IllegalArgumentException {
+        // 1. Valider la valeur pour le critère (lance une exception si invalide)
+        criterion.isValid(value);
+
+        // 2. Vérifier l'exclusivité HOST/GUEST
+        boolean isGuestCriterion = criterion.name().startsWith("GUEST_");
+        boolean isHostCriterion = criterion.name().startsWith("HOST_");
+
+        if (isGuestCriterion) {
+            for (Criteres existingCriterion : this.criteria.keySet()) {
+                if (existingCriterion.name().startsWith("HOST_")) {
+                    throw new IllegalArgumentException("Conflit de critère: Impossible d'ajouter " + criterion +
+                                                   " car l'adolescent a déjà des critères HOST (" + existingCriterion + ").");
+                }
             }
-        } catch (Exception e) {
-            System.err.println("Erreur lors de la validation du critère " + criterion + " avec la valeur '" + value + "': " + e.getMessage());
-            // Gérer l'erreur comme tu le souhaites (ne pas ajouter le critère, etc.)
+        } else if (isHostCriterion) {
+            for (Criteres existingCriterion : this.criteria.keySet()) {
+                if (existingCriterion.name().startsWith("GUEST_")) {
+                    throw new IllegalArgumentException("Conflit de critère: Impossible d'ajouter " + criterion +
+                                                   " car l'adolescent a déjà des critères GUEST (" + existingCriterion + ").");
+                }
+            }
         }
+        // Si GENDER est ajouté via cette méthode et qu'il existe déjà, il sera remplacé.
+        // Si un autre critère est ajouté et qu'il existe déjà, il sera aussi remplacé.
+        criteria.put(criterion, value);
     }
 
      // Getters
