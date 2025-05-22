@@ -54,20 +54,14 @@ public enum Criteres {
             } else if (this == GUEST_ANIMAL_ALLERGY || this == HOST_HAS_ANIMAL || this == GENDER) {
                 throw new IllegalArgumentException("La valeur pour " + this + " ne peut pas être null.");
             }
-            // Pour les autres cas non spécifiés où valeur est null, on pourrait décider de lancer une exception ou retourner false.
-            // Pour l'instant, si ce n'est pas explicitement permis d'être null, et que ce n'est pas un des cas ci-dessus, la suite de la logique (si valeur non null) s'appliquera ou non.
-            // Cependant, les cas principaux (GUEST_ANIMAL_ALLERGY, HOST_HAS_ANIMAL, GENDER) sont couverts pour le cas null.
         }
-
-        // Si la valeur est null et que ce n'était pas un cas autorisé ci-dessus, les vérifications suivantes basées sur la valeur échoueront ou passeront si la valeur n'est pas null.
-        // Cela dit, la logique précédente pour les null devrait avoir traité la plupart des cas.
 
         if (this == GUEST_ANIMAL_ALLERGY || this == HOST_HAS_ANIMAL) {
             if (!"yes".equalsIgnoreCase(valeur) && !"no".equalsIgnoreCase(valeur)) {
                 throw new IllegalArgumentException("La valeur pour " + this + " doit être 'yes' ou 'no'. Valeur reçue: " + valeur);
             }
         } else if (this == GENDER) {
-            if (valeur == null) { // Redondant si déjà traité, mais assure la non-nullité ici
+            if (valeur == null) { 
                  throw new IllegalArgumentException("La valeur pour " + this + " ne peut pas être null.");
             }
             if (!"male".equalsIgnoreCase(valeur) && !"female".equalsIgnoreCase(valeur) && !"other".equalsIgnoreCase(valeur)) {
@@ -88,12 +82,7 @@ public enum Criteres {
                 if (valeur.contains(";")) {
                     throw new IllegalArgumentException("La valeur pour " + this + " ne peut pas contenir de point-virgule. Valeur reçue: " + valeur);
                 }
-                // Aucune autre validation spécifique pour l'instant pour ces champs à part le point-virgule.
             }
-        } else {
-            // Ce cas ne devrait pas être atteint si tous les membres de l'enum sont gérés au-dessus.
-            // Mais par sécurité, si un nouveau critère est ajouté et non géré ici:
-            throw new IllegalStateException("Validation non implémentée pour le critère: " + this);
         }
         return true; // Si on arrive ici, la valeur est valide
     }

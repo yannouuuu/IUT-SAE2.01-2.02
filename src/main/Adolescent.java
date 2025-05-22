@@ -30,14 +30,14 @@ public class Adolescent {
      */
 
     public Adolescent(String lastName, String firstName, String gender, String countryOfOrigin, Map<Criteres, String> criteria,
-            LocalDate dateOfBirth) {
+            LocalDate dateOfBirth,boolean isHost) {
         this.lastName = lastName;
         this.firstName = firstName;
         this.countryOfOrigin = countryOfOrigin;
         this.criteria = new HashMap<>(); // Initialiser vide, puis ajouter les critères validés
         this.dateOfBirth = dateOfBirth;
 
-        // Ajouter le genre en premier s'il est fourni et valide
+        // D'abord on rahoute le genre préalablement fourni en paramètre mais qui est en fait en un critère
         if (gender != null && !gender.isEmpty()) {
             try {
                 if (Criteres.GENDER.isValid(gender)) {
@@ -48,18 +48,18 @@ public class Adolescent {
             }
         }
 
-        // Ajouter les autres critères
+        // Puis on ajoute les autres critères si ils y en à
         for (Map.Entry<Criteres, String> entry : criteria.entrySet()) {
             Criteres critere = entry.getKey();
             String valeur = entry.getValue();
             try {
-                addCriterionInner(critere, valeur); // Utiliser une méthode interne pour éviter la redondance et gérer l'exclusivité
+                addCriterion(critere, valeur,isHost);
             } catch (IllegalArgumentException e) {
                 System.err.println("Erreur pour " + firstName + " " + lastName + " avec le critère " + critere + " et valeur '" + valeur + "': " + e.getMessage());
             }
         }
     }
-    // Adolescent("Hote", "A", "FR", LocalDate.now(), "male", Map.of(Criteres.HOST_FOOD, "vegetarian"));
+
     /**
      * Constructeur simplifié de la classe Adolescent sans critères initiaux.
      * @param lastName le nom de famille de l'adolescent
@@ -68,10 +68,9 @@ public class Adolescent {
      * @param countryOfOrigin le pays d'origine de l'adolescent
      * @param dateOfBirth la date de naissance de l'adolescent
      */
-    public Adolescent(String lastName, String firstName, String gender, String countryOfOrigin, LocalDate dateOfBirth) {
-        this(lastName, firstName, gender, countryOfOrigin, new HashMap<>(), dateOfBirth);
+    public Adolescent(String lastName, String firstName, String gender, String countryOfOrigin, LocalDate dateOfBirth, boolean isHost) {
+        this(lastName, firstName, gender, countryOfOrigin, new HashMap<>(), dateOfBirth,isHost);
     }
-
 
     /**
      * Ajoute ou modifie un critère pour cet adolescent.
@@ -79,14 +78,7 @@ public class Adolescent {
      * @param criterion le type de critère à ajouter
      * @param value la valeur du critère
      */
-    public void addCriterion(Criteres criterion, String value) throws IllegalArgumentException {
-        addCriterionInner(criterion, value);
-    }
-
-    /**
-     * Méthode interne pour ajouter un critère, gérant la validation et l'exclusivité.
-     */
-    private void addCriterionInner(Criteres criterion, String value) throws IllegalArgumentException {
+    private void addCriterion(Criteres criterion, String value, boolean isHost) throws IllegalArgumentException {
         // 1. Valider la valeur pour le critère (lance une exception si invalide)
         criterion.isValid(value);
 
@@ -94,21 +86,15 @@ public class Adolescent {
         boolean isGuestCriterion = criterion.name().startsWith("GUEST_");
         boolean isHostCriterion = criterion.name().startsWith("HOST_");
 
-        if (isGuestCriterion) {
-            for (Criteres existingCriterion : this.criteria.keySet()) {
-                if (existingCriterion.name().startsWith("HOST_")) {
-                    throw new IllegalArgumentException("Conflit de critère: Impossible d'ajouter " + criterion +
-                                                   " car l'adolescent a déjà des critères HOST (" + existingCriterion + ").");
-                }
-            }
-        } else if (isHostCriterion) {
-            for (Criteres existingCriterion : this.criteria.keySet()) {
-                if (existingCriterion.name().startsWith("GUEST_")) {
-                    throw new IllegalArgumentException("Conflit de critère: Impossible d'ajouter " + criterion +
-                                                   " car l'adolescent a déjà des critères GUEST (" + existingCriterion + ").");
-                }
-            }
+        if (isGuestCriterion && isHost==true) {
+            throw new IllegalArgumentException("Conflit de critère: Impossible d'ajouter " + criterion +
+                                            " car l'adolescent est un HOST");
+                    
+        } else if (isHostCriterion && isHost==false) {
+            throw new IllegalArgumentException("Conflit de critère: Impossible d'ajouter " + criterion +
+                                            " car l'adolescent est un GUEST");
         }
+
         // Si GENDER est ajouté via cette méthode et qu'il existe déjà, il sera remplacé.
         // Si un autre critère est ajouté et qu'il existe déjà, il sera aussi remplacé.
         criteria.put(criterion, value);
@@ -151,7 +137,7 @@ public class Adolescent {
      * Récupère une copie des critères de l'adolescent.
      * @return une map contenant les critères de l'adolescent.
      */
-    public Map<Criteres, String> getCriteria() {
+    public HashMap<Criteres, String> getCriteria() {
         return new HashMap<>(criteria);
     }
     
@@ -302,7 +288,7 @@ public class Adolescent {
             String[] guestDiets = guestDiet.split(",");
             for (String diet : guestDiets) {
                 if (diet != null && !diet.trim().isEmpty()) {
-                    incompatiblesDiets -= 5;
+                    incompatiblesDiets -= 10;
                 }
             }
             return incompatiblesDiets;
@@ -327,7 +313,7 @@ public class Adolescent {
                 String[] guestDiets = guestDiet.split(",");
                 for (String diet : guestDiets) {
                     if (!hostDietsSet.contains(diet.trim())) {
-                        incompatiblesDiets-=5;
+                        incompatiblesDiets-=10;
                     }
                 }
             }
