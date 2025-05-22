@@ -37,7 +37,7 @@ public class Adolescent {
         this.criteria = new HashMap<>(); // Initialiser vide, puis ajouter les critères validés
         this.dateOfBirth = dateOfBirth;
 
-        // D'abord on rahoute le genre préalablement fourni en paramètre mais qui est en fait en un critère
+        // D'abord on rajoute le genre préalablement fourni en paramètre mais qui est en fait en un critère
         if (gender != null && !gender.isEmpty()) {
             try {
                 if (Criteres.GENDER.isValid(gender)) {
@@ -48,12 +48,12 @@ public class Adolescent {
             }
         }
 
-        // Puis on ajoute les autres critères si ils y en à
+        // Puis on ajoute les autres critères s'ils existent
         for (Map.Entry<Criteres, String> entry : criteria.entrySet()) {
             Criteres critere = entry.getKey();
             String valeur = entry.getValue();
             try {
-                addCriterion(critere, valeur,isHost);
+                addCriterion(critere, valeur, isHost);
             } catch (IllegalArgumentException e) {
                 System.err.println("Erreur pour " + firstName + " " + lastName + " avec le critère " + critere + " et valeur '" + valeur + "': " + e.getMessage());
             }
@@ -69,7 +69,7 @@ public class Adolescent {
      * @param dateOfBirth la date de naissance de l'adolescent
      */
     public Adolescent(String lastName, String firstName, String gender, String countryOfOrigin, LocalDate dateOfBirth, boolean isHost) {
-        this(lastName, firstName, gender, countryOfOrigin, new HashMap<>(), dateOfBirth,isHost);
+        this(lastName, firstName, gender, countryOfOrigin, new HashMap<>(), dateOfBirth, isHost);
     }
 
     /**
