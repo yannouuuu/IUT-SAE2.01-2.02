@@ -30,7 +30,7 @@ public class Adolescent {
      */
 
     public Adolescent(String lastName, String firstName, String gender, String countryOfOrigin, Map<Criteres, String> criteria,
-            LocalDate dateOfBirth,boolean isHost) {
+            LocalDate dateOfBirth, boolean isHost) {
         this.lastName = lastName;
         this.firstName = firstName;
         this.countryOfOrigin = countryOfOrigin;
@@ -77,6 +77,7 @@ public class Adolescent {
      * Lance une IllegalArgumentException si le critère est invalide ou viole les règles d'exclusivité.
      * @param criterion le type de critère à ajouter
      * @param value la valeur du critère
+     * @throws IllegalArgumentException si le critère est invalide ou viole les règles d'exclusivité
      */
     private void addCriterion(Criteres criterion, String value, boolean isHost) throws IllegalArgumentException {
         // 1. Valider la valeur pour le critère (lance une exception si invalide)
@@ -95,8 +96,7 @@ public class Adolescent {
                                             " car l'adolescent est un GUEST");
         }
 
-        // Si GENDER est ajouté via cette méthode et qu'il existe déjà, il sera remplacé.
-        // Si un autre critère est ajouté et qu'il existe déjà, il sera aussi remplacé.
+        // Si un critère est ajouté et qu'il existe déjà, il sera aussi remplacé.
         criteria.put(criterion, value);
     }
 
