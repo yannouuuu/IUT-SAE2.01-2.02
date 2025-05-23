@@ -133,8 +133,7 @@ Des exemples visuels du fonctionnement de l'application sont disponibles dans le
 
 ### Remerciements
 
-Nous tenons à créditer **SECQ Yann et ABIDI Sofiene, ALMEIDA COCO Amadeu, BONEVA Iovka, CASTILLON
-Antoine, DELECROIX Fabien, LEPRETRE Éric, SANTANA MAIA Deise** pour la création des diaporamas de cours, des TP, TD et pour la réalisation des SAE. Leur travail a été précieux pour notre apprentissage.
+Nous tenons à créditer **BONEVA Iovka, NONGAILLARD Antoine, SANTANA MAIA Deise, CASIEZ Géry, DELECROIX Fabien, FRUCHARD Bruno et bien d'autres** pour la création des diaporamas de cours, des TP, TD et pour la réalisation des SAE. Leur travail a été précieux pour notre apprentissage.
 
 <br/>
 <p align="center">
