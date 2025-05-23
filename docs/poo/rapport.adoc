@@ -33,6 +33,11 @@ Les modifications se concentrent sur les deux principaux aspects correspondant a
 *   **Méthode `addCriterion(Criteres criterion, String value, boolean isHost)`:**
     **   La signature a changé pour inclure la déclaration `throws IllegalArgumentException`.
     **   **Validation améliorée :** La méthode `criterion.isValid(value)` est appelée en premier et peut lever une `IllegalArgumentException` si la valeur n'est pas valide.
+    **   **Filtre HOST/GUEST :** Empêche d'ajouter un critère de type `GUEST_` à un adolescent hôte et vice-versa pour maintenir la cohérence des données.
+
+*   **Évolution des méthodes de compatibilité :**
+    **   `isAnimalCompatible(Adolescent other)` renommée en `animalScore(Adolescent other)` : retourne maintenant un score numérique (`0` si compatible, `-25` si incompatible).
+    **   `isDietCompatible(Adolescent other)` renommée en `dietScore(Adolescent other)` : retourne un score numérique avec gestion robuste des `NullPointerException` lors du traitement des régimes alimentaires.
 
 *   **Nouvelle méthode `isFrenchCompatible(Adolescent other)`:**
     **   Vérifie la compatibilité si l'un des adolescents est français.
@@ -42,6 +47,7 @@ Les modifications se concentrent sur les deux principaux aspects correspondant a
 
 *   **Méthode `isCompatible(Adolescent other)`:**
     **   La logique de compatibilité a été modifiée pour inclure la vérification `isFrenchCompatible(other)`.
+    **   Utilise maintenant les nouvelles méthodes `animalScore()` et `dietScore()` pour déterminer la compatibilité.
 
 ==== Fichier `src/main/Criteres.java`
 
