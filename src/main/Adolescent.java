@@ -79,7 +79,7 @@ public class Adolescent {
      * @param value la valeur du critère
      * @throws IllegalArgumentException si le critère est invalide ou viole les règles d'exclusivité
      */
-    private void addCriterion(Criteres criterion, String value, boolean isHost) throws IllegalArgumentException {
+    public void addCriterion(Criteres criterion, String value, boolean isHost) throws IllegalArgumentException {
         // 1. Valider la valeur pour le critère (lance une exception si invalide)
         criterion.isValid(value);
 
@@ -414,7 +414,7 @@ public class Adolescent {
      * @param other l'autre adolescent
      * @return la différence d'âge en années (valeur absolue)
      */
-    private double calculateAgeDifference(Adolescent other) {
+    public double calculateAgeDifference(Adolescent other) {
         long days = Math.abs(ChronoUnit.DAYS.between(this.dateOfBirth, other.dateOfBirth));
         return days / 365.25;
     }
