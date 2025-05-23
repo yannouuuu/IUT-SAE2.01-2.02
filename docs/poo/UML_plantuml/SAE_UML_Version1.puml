@@ -1,0 +1,63 @@
+@startuml SAE_UML_Version1
+!theme vibrant
+skinparam classAttributeIconSize 0
+skinparam defaultFontName Arial
+
+left to right direction
+
+together {
+  class Adolescent {
+    - lastName: String
+    - firstName: String
+    - gender: String
+    - countryOfOrigin: String
+    - criteria: Map<Criteres, String>
+    - dateOfBirth: LocalDate
+    --
+    + addCriterion(Criteres, String): void
+    + toString(): String
+    + isCompatible(Adolescent): boolean
+    + isAnimalCompatible(Adolescent): boolean
+    + isDietCompatible(Adolescent): boolean
+    + isHistoryCompatible(Adolescent): boolean
+    + calculateAffinity(Adolescent): int
+    + calculateAgeDifferent(Adolescent): double
+  }
+
+  enum Criteres {
+    GUEST_ANIMAL_ALLERGY
+    HOST_HAS_ANIMAL
+    GUEST_FOOD
+    HOST_FOOD
+    HOBBIES
+    GENDER
+    PAIR_GENDER
+    HISTORY
+    --
+    + isValid(valeur: String): boolean
+    + getType(): char
+  }
+}
+
+together {
+  class Affectation {
+    - host: List<Adolescent>
+    - visitor: List<Adolescent>
+    - pairs: List<Map<Adolescent, Adolescent>>
+    --
+    + calculatePairing(): Map<Adolescent, Adolescent>
+  }
+
+  class Main {
+    --
+    + loadInitialData(): void
+    + launchAssignment(): void
+    + displayResults(): void
+  }
+}
+
+Adolescent --> Criteres : utilise
+Affectation --> Adolescent : concerne
+Main ..> Affectation : créé et utilise
+
+@enduml 
