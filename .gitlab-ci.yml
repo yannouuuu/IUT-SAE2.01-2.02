@@ -20,5 +20,6 @@ deploy_to_yannouuuu_github:
     - git fetch github
     - git merge -X ours github/main --allow-unrelated-histories
     - git push github HEAD:main
+    - git push github --tags
   only:
     - main
