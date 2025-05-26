@@ -80,10 +80,15 @@ public class Adolescent {
      * @throws IllegalArgumentException si le critère est invalide ou viole les règles d'exclusivité
      */
     public void addCriterion(Criteres criterion, String value, boolean isHost) throws IllegalArgumentException {
-        // 1. Valider la valeur pour le critère (lance une exception si invalide)
+        // 1. Vérifier qu'il n'est pas déjà présent
+        if (this.criteria.containsKey(criterion)){
+            throw new IllegalArgumentException("Impossible d'ajouter " + criterion + " car le critère est déjà présent");
+        }
+
+        // 2. Valider la valeur pour le critère (lance une exception si invalide)
         criterion.isValid(value);
 
-        // 2. Vérifier l'exclusivité HOST/GUEST
+        // 3. Vérifier l'exclusivité HOST/GUEST
         boolean isGuestCriterion = criterion.name().startsWith("GUEST_");
         boolean isHostCriterion = criterion.name().startsWith("HOST_");
 
