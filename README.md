@@ -33,6 +33,8 @@
 ├── docs/                  # Documentation
 │   ├── graphes/           # Rapports algorithmes de graphes
 │   └── poo/               # Rapport POO et diagrammes UML
+│   └── ihm/               # Rapport IHM
+├── mockup/                # Relatif à la maquette Figma
 ├── shots/                 # Captures d'écran de l'application
 └── README.md              # Documentation principale
 ```
