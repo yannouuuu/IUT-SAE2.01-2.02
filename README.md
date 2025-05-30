@@ -27,16 +27,21 @@
 
 ```
 /
-├── src/                   # Code source Java (POO)
-│   ├── main/              # Classes principales
-│   └── test/              # Tests unitaires
-├── docs/                  # Documentation
-│   ├── graphes/           # Rapports algorithmes de graphes
-│   └── poo/               # Rapport POO et diagrammes UML
-│   └── ihm/               # Rapport IHM
-├── mockup/                # Relatif à la maquette Figma
-├── shots/                 # Captures d'écran de l'application
-└── README.md              # Documentation principale
+├── src/                 # Code source Java (POO)
+│   ├── main/            # Classes principales
+│   │   └── java/        # Code source Java
+│   │       └── sae/     # Package principal
+│   └── test/            # Tests unitaires
+├── docs/                # Documentation
+│   ├── graphes/         # Rapports algorithmes de graphes
+│   └── poo/             # Rapport POO et diagrammes UML
+│   └── ihm/             # Rapport IHM
+├── lib/                 # Bibliothèques externes
+├── bin/                 # Fichiers binaires
+├── mockup/              # Relatif à la maquette Figma
+├── shots/               # Captures d'écran de l'application
+├── pom.xml              # Configuration Maven
+└── README.md            # Documentation principale
 ```
 
 Ce projet est structuré en trois grandes parties : **Graphes**, **POO**, et **IHM**. Vous trouverez ci-dessous les détails pour chaque partie.
