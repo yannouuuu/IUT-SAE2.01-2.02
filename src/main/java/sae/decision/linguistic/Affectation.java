@@ -11,7 +11,7 @@ import java.io.Serializable;
 public class Affectation implements Serializable {
     private List<Adolescent> hosts;
     private List<Adolescent> visitors;
-    private Map<Adolescent, Adolescent> pairs; // Map des paires
+    // private Map<Adolescent, Adolescent> pairs; // Map des paires (pas utilisée pour l'instant)
     private static final long serialVersionUID = 1L;
     /**
      * Construit une nouvelle instance d'Affectation.
