@@ -19,6 +19,6 @@ public class HistoryServiceTest {
     void testLoadNonExistentHistoryFile() {
         Map<String, Affectation> loadedHistory = historyService.loadAffectationHistory("non_existent_file.dat");
         assertNotNull(loadedHistory);
-        assertTrue(loadedHistory.isEmpty(), "Loading from a non-existent file should return an empty map.");
+        assertTrue(loadedHistory.isEmpty(), "Le chargement depuis un fichier inexistant devrait retourner une map vide.");
     }
 }
