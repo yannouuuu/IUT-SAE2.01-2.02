@@ -83,7 +83,7 @@ public class AdolescentTest {
         // Hôte accepte végétarien, Visiteur n'a pas de régime -> Compatible
         Adolescent host1 = new Adolescent("Host", "A", "male", "France", Map.of(Criteria.HOST_FOOD, "vegetarian"), LocalDate.now(),true);
         Adolescent visitor1 = new Adolescent("Visitor", "X", "female", "Italia", Map.of(), LocalDate.now(),false); // Pas de GUEST_FOOD
-        assertEquals(host1.dietScore(visitor1) ,0, "Hôte propose régime véfgétarien Visiteur vn'a besoin de rien");
+        assertEquals(host1.dietScore(visitor1) ,0, "Hôte propose régime végétarien Visiteur n'a besoin de rien");
 
         // Hôte n'accepte rien, Visiteur n'a pas de régime -> Compatible
         Adolescent host2 = new Adolescent("Host", "B", "male", "France", Map.of(), LocalDate.now(),true); // Pas de HOST_FOOD
@@ -146,8 +146,7 @@ public class AdolescentTest {
         assertFalse(host3.isHistoryCompatible(visitor3), "Les deux veulent changer de correspondant");
     }
 
-    // --- Tests pour lqa compatibilité avec les français ---
-
+    // --- Tests pour la compatibilité avec les français ---
     @Test
     void testFrenchCompatibility() {
         // Deux adolescents compatibles avec des hobbies communs
@@ -257,7 +256,6 @@ public class AdolescentTest {
     }
 
     // --- Tests pour le calcul d'affinité ---
-
     @Test
     void testAffinityCommonHobbies() {
         // Deux adolescents compatibles avec des hobbies communs
@@ -293,7 +291,7 @@ public class AdolescentTest {
                 LocalDate.of(2007, 9, 15),false);
 
         int score = host.calculateAffinity(visitor);
-        assertEquals(60, score, "Le score d'affinité devrait être 10 avec préférences de genre satisfaites et différence d'âge < 1,5 an");
+        assertEquals(60, score, "Le score d'affinité devrait être 60 avec préférences de genre satisfaites et différence d'âge < 1,5 an");
     }
 
     @Test

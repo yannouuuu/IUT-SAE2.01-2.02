@@ -16,14 +16,14 @@ public class CSVService {
     private static final String CSV_DELIMITER = ";";
 
     /**
-     * Imports a list of adolescents from a CSV file.
-     * The first line of the CSV must be a header defining the columns.
-     * Expected headers for basic info: FORENAME, NAME, COUNTRY, BIRTH_DATE, GENDER.
-     * Other headers should match Criteres enum names.
+     * Importe une liste d'adolescents depuis un fichier CSV.
+     * La première ligne du CSV doit être un en-tête définissant les colonnes.
+     * En-têtes attendus pour les informations de base : FORENAME, NAME, COUNTRY, BIRTH_DATE, GENDER.
+     * Les autres en-têtes doivent correspondre aux noms de l'énumération Criteres.
      *
-     * @param filePath Path to the CSV file.
-     * @param isHost   True if the adolescents in this file are hosts, false if they are guests.
-     * @return A list of Adolescent objects.
+     * @param filePath Chemin vers le fichier CSV.
+     * @param isHost   True si les adolescents dans ce fichier sont des hôtes, false s'ils sont des visiteurs.
+     * @return Une liste d'objets Adolescent.
      */
     public List<Adolescent> importAdolescents(String filePath, boolean isHost) {
         List<Adolescent> adolescents = new ArrayList<>();
@@ -34,8 +34,8 @@ public class CSVService {
             br = new BufferedReader(new FileReader(filePath));
             String headerLine = br.readLine();
             if (headerLine == null) {
-                System.err.println("Error: CSV file is empty or header is missing. Path: " + filePath);
-                return adolescents; // Return empty list
+                System.err.println("Erreur : Le fichier CSV est vide ou l'en-tête est manquant. Chemin : " + filePath);
+                return adolescents; // Retourne une liste vide
             }
 
             String[] headers = headerLine.split(CSV_DELIMITER);
@@ -44,24 +44,24 @@ public class CSVService {
                 headerMap.put(headers[i].trim().toUpperCase(), i);
             }
 
-            // Check for essential headers
+            // Vérifier les en-têtes essentiels
             if (!headerMap.containsKey("FORENAME") || !headerMap.containsKey("NAME") ||
                     !headerMap.containsKey("COUNTRY") || !headerMap.containsKey("BIRTH_DATE") ||
                     !headerMap.containsKey("GENDER")) {
-                System.err.println("Error: CSV file is missing one or more essential headers (FORENAME, NAME, COUNTRY, BIRTH_DATE, GENDER). Path: " + filePath);
+                System.err.println("Erreur : Le fichier CSV manque un ou plusieurs en-têtes essentiels (FORENAME, NAME, COUNTRY, BIRTH_DATE, GENDER). Chemin : " + filePath);
                 if (br != null) {
                     try {
                         br.close();
                     } catch (IOException e) {
-                        System.err.println("Error closing BufferedReader: " + e.getMessage());
+                        System.err.println("Erreur lors de la fermeture de BufferedReader : " + e.getMessage());
                     }
                 }
-                return adolescents; // Return empty list
+                return adolescents; // Retourne une liste vide
             }
 
-            line = br.readLine(); // Read the first data line
+            line = br.readLine(); // Lire la première ligne de données
             while (line != null) {
-                String[] data = line.split(CSV_DELIMITER, -1); // Include trailing empty strings
+                String[] data = line.split(CSV_DELIMITER, -1); // Inclure les chaînes vides finales
                 if (data.length == headers.length) {
                     try {
                         String forename = data[headerMap.get("FORENAME")].trim();
@@ -73,51 +73,51 @@ public class CSVService {
                         Map<Criteria, String> criteria = new HashMap<>();
                         for (int i = 0; i < headers.length; i++) {
                             String header = headers[i].trim().toUpperCase();
-                            // GENDER is handled by constructor, other fixed fields are not criteria
+                            // GENDER est géré par le constructeur, les autres champs fixes ne sont pas des critères
                             if (!header.equals("FORENAME") && !header.equals("NAME") &&
                                     !header.equals("COUNTRY") && !header.equals("BIRTH_DATE") &&
                                     !header.equals("GENDER")) {
                                 try {
-                                    Criteria critere = Criteria.valueOf(header); // Assumes header matches enum name
+                                    Criteria critere = Criteria.valueOf(header); // Suppose que l'en-tête correspond au nom de l'énumération
                                     String value = data[i].trim();
-                                    if (!value.isEmpty()) { // Only add if value is not empty
+                                    if (!value.isEmpty()) { // N'ajouter que si la valeur n'est pas vide
                                         criteria.put(critere, value);
                                     } else if (critere == Criteria.PAIR_GENDER || critere == Criteria.HISTORY || critere == Criteria.GUEST_FOOD || critere == Criteria.HOST_FOOD || critere == Criteria.HOBBIES) {
-                                        // These can be legitimately empty/null as per Criteres.isValid logic
+                                        // Ceux-ci peuvent légitimement être vides/nuls selon la logique de Criteres.isValid
                                         criteria.put(critere, null);
                                     }
                                 } catch (IllegalArgumentException e) {
-                                    // Header does not match any Criteres enum name, ignore it or log warning
-                                    // System.err.println("Warning: Header '" + header + "' does not match any known criterion and will be ignored.");
+                                    // L'en-tête ne correspond à aucun nom d'énumération Criteres, l'ignorer ou journaliser un avertissement
+                                    // System.err.println("Avertissement : L'en-tête '" + header + "' ne correspond à aucun critère connu et sera ignoré.");
                                 }
                             }
                         }
 
-                        // The Adolescent constructor will internally add GENDER to its criteria map
+                        // Le constructeur Adolescent ajoutera en interne GENDER à sa map de critères
                         Adolescent ado = new Adolescent(name, forename, gender, country, criteria, birthDate, isHost);
                         adolescents.add(ado);
 
                     } catch (DateTimeParseException e) {
-                        System.err.println("Error parsing date in line: " + line + " - " + e.getMessage());
+                        System.err.println("Erreur lors de l'analyse de la date dans la ligne : " + line + " - " + e.getMessage());
                     } catch (ArrayIndexOutOfBoundsException e) {
-                        System.err.println("Error: Malformed line (not enough columns): " + line + " - " + e.getMessage());
+                        System.err.println("Erreur : Ligne mal formée (pas assez de colonnes) : " + line + " - " + e.getMessage());
                     } catch (IllegalArgumentException e) {
-                        System.err.println("Error creating adolescent from line: " + line + " - " + e.getMessage());
+                        System.err.println("Erreur lors de la création de l'adolescent à partir de la ligne : " + line + " - " + e.getMessage());
                     }
                 } else {
-                    System.err.println("Warning: Skipping malformed line (column count mismatch): " + line);
+                    System.err.println("Avertissement : Ligne mal formée ignorée (nombre de colonnes incorrect) : " + line);
                 }
-                line = br.readLine(); // Read next line
+                line = br.readLine(); // Lire la ligne suivante
             }
 
         } catch (IOException e) {
-            System.err.println("Error reading CSV file: " + filePath + " - " + e.getMessage());
+            System.err.println("Erreur lors de la lecture du fichier CSV : " + filePath + " - " + e.getMessage());
         } finally {
             if (br != null) {
                 try {
                     br.close();
                 } catch (IOException e) {
-                    System.err.println("Error closing BufferedReader: " + e.getMessage());
+                    System.err.println("Erreur lors de la fermeture de BufferedReader : " + e.getMessage());
                 }
             }
         }
@@ -125,23 +125,23 @@ public class CSVService {
     }
 
     /**
-     * Exports the pairings from an Affectation object to a CSV file.
+     * Exporte les appariements d'un objet Affectation vers un fichier CSV.
      *
-     * @param pairings   The map of pairings (Visitor -> Host).
-     * @param filePath   Path to the output CSV file.
+     * @param pairings   La map des appariements (Visiteur -> Hôte).
+     * @param filePath   Chemin vers le fichier CSV de sortie.
      */
     public void exportAffectations(Map<Adolescent, Adolescent> pairings, String filePath) {
         BufferedWriter bw = null;
         try {
             bw = new BufferedWriter(new FileWriter(filePath));
-            // Write header
+            // Écrire l'en-tête
             bw.write("VISITOR_LASTNAME" + CSV_DELIMITER + "VISITOR_FIRSTNAME" + CSV_DELIMITER + "VISITOR_COUNTRY" +
                     CSV_DELIMITER + "HOST_LASTNAME" + CSV_DELIMITER + "HOST_FIRSTNAME" + CSV_DELIMITER + "HOST_COUNTRY");
             bw.newLine();
 
-            // Write data
-            if (pairings != null) { // Check if pairings is null
-                // Need to iterate using an explicit iterator or convert entrySet to List for indexed loop
+            // Écrire les données
+            if (pairings != null) { // Vérifier si pairings est null
+                // Besoin d'itérer en utilisant un itérateur explicite ou convertir entrySet en List pour la boucle indexée
                 List<Map.Entry<Adolescent, Adolescent>> entryList = new ArrayList<>(pairings.entrySet());
                 for (int i = 0; i < entryList.size(); i++) {
                     Map.Entry<Adolescent, Adolescent> entry = entryList.get(i);
@@ -154,15 +154,14 @@ public class CSVService {
                 }
             }
 
-
         } catch (IOException e) {
-            System.err.println("Error writing CSV file: " + filePath + " - " + e.getMessage());
+            System.err.println("Erreur lors de l'écriture du fichier CSV : " + filePath + " - " + e.getMessage());
         } finally {
             if (bw != null) {
                 try {
                     bw.close();
                 } catch (IOException e) {
-                    System.err.println("Error closing BufferedWriter: " + e.getMessage());
+                    System.err.println("Erreur lors de la fermeture de BufferedWriter : " + e.getMessage());
                 }
             }
         }

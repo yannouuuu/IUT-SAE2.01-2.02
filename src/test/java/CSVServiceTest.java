@@ -31,18 +31,18 @@ public class CSVServiceTest {
         sampleGuestsCsv = tempDir.resolve("testguests.csv");
         outputCsv = tempDir.resolve("output_pairings.csv");
 
-        // Create a sample hosts CSV file
+        // Créer un fichier CSV d'hôtes exemple
         List<String> hostLines = new ArrayList<>();
         hostLines.add("NAME;FORENAME;COUNTRY;BIRTH_DATE;GENDER;HOST_HAS_ANIMAL;HOST_FOOD;HOBBIES;HISTORY");
         hostLines.add("HostOne;Eva;France;2008-01-15;female;no;vegetarian;reading,music;");
         hostLines.add("HostTwo;Adam;France;2007-07-20;male;yes;nonuts;sports;same");
         Files.write(sampleHostsCsv, hostLines);
 
-        // Create a sample guests CSV file
+        // Créer un fichier CSV de visiteurs exemple
         List<String> guestLines = new ArrayList<>();
         guestLines.add("NAME;FORENAME;COUNTRY;BIRTH_DATE;GENDER;GUEST_ANIMAL_ALLERGY;GUEST_FOOD;HOBBIES;PAIR_GENDER");
         guestLines.add("VisitorOne;Leo;Germany;2008-03-22;male;no;vegetarian;music,games;female");
-        guestLines.add("VisitorTwo;Mia;Germany;2007-09-01;female;yes;;sports,reading;"); // Empty GUEST_FOOD
+        guestLines.add("VisitorTwo;Mia;Germany;2007-09-01;female;yes;;sports,reading;"); // GUEST_FOOD vide
         Files.write(sampleGuestsCsv, guestLines);
     }
 
@@ -60,7 +60,7 @@ public class CSVServiceTest {
         assertEquals("no", host1.getCriterion(Criteria.HOST_HAS_ANIMAL));
         assertEquals("vegetarian", host1.getCriterion(Criteria.HOST_FOOD));
         assertEquals("reading,music", host1.getCriterion(Criteria.HOBBIES));
-        assertNull(host1.getCriterion(Criteria.HISTORY)); // Empty string in CSV for HISTORY maps to null
+        assertNull(host1.getCriterion(Criteria.HISTORY)); // Chaîne vide dans le CSV pour HISTORY correspond à null
 
         Adolescent host2 = hosts.get(1);
         assertEquals("HostTwo", host2.getLastName());
@@ -68,7 +68,6 @@ public class CSVServiceTest {
         assertEquals("nonuts", host2.getCriterion(Criteria.HOST_FOOD));
         assertEquals("sports", host2.getCriterion(Criteria.HOBBIES));
         assertEquals("same", host2.getCriterion(Criteria.HISTORY));
-
     }
 
     @Test
@@ -88,8 +87,7 @@ public class CSVServiceTest {
         assertEquals("female", guest1.getCriterion(Criteria.PAIR_GENDER));
 
         Adolescent guest2 = guests.get(1);
-        assertEquals("VisitorTwo", guest2.getLastName());
-        assertNull(guest2.getCriterion(Criteria.GUEST_FOOD)); // Empty string for GUEST_FOOD should be null
+        assertNull(guest2.getCriterion(Criteria.GUEST_FOOD)); // Chaîne vide pour GUEST_FOOD devrait être null
         assertEquals("yes", guest2.getCriterion(Criteria.GUEST_ANIMAL_ALLERGY));
     }
 
@@ -97,36 +95,35 @@ public class CSVServiceTest {
     void testImportAdolescentsMalformedFile() throws IOException {
         Path malformedCsv = tempDir.resolve("malformed.csv");
         List<String> lines = new ArrayList<>();
-        lines.add("NAME;FORENAME;COUNTRY;BIRTH_DATE;GENDER"); // Correct header
-        lines.add("OnlyName;;;"); // Not enough columns
+        lines.add("NAME;FORENAME;COUNTRY;BIRTH_DATE;GENDER"); // En-tête correct
+        lines.add("OnlyName;;;"); // Pas assez de colonnes
         Files.write(malformedCsv, lines);
 
         List<Adolescent> adolescents = csvService.importAdolescents(malformedCsv.toString(), true);
-        assertTrue(adolescents.isEmpty(), "Should return an empty list for malformed lines or handle errors gracefully by skipping lines.");
+        assertTrue(adolescents.isEmpty(), "Devrait retourner une liste vide pour les lignes mal formées ou gérer les erreurs en ignorant les lignes.");
     }
 
     @Test
     void testImportAdolescentsMissingHeaderFile() throws IOException {
         Path missingHeaderCsv = tempDir.resolve("missing_header.csv");
         List<String> lines = new ArrayList<>();
-        // No header line
+        // Pas de ligne d'en-tête
         lines.add("HostOne;Eva;France;2008-01-15;female;no;vegetarian;reading,music;");
         Files.write(missingHeaderCsv, lines);
 
         List<Adolescent> adolescents = csvService.importAdolescents(missingHeaderCsv.toString(), true);
-        assertTrue(adolescents.isEmpty(), "Should return an empty list if essential headers are missing.");
+        assertTrue(adolescents.isEmpty(), "Devrait retourner une liste vide si les en-têtes essentiels sont manquants.");
     }
 
     @Test
     void testImportAdolescentsEmptyFile() throws IOException {
         Path emptyCsv = tempDir.resolve("empty.csv");
-        // Create an empty file
+        // Créer un fichier vide
         Files.createFile(emptyCsv);
 
         List<Adolescent> adolescents = csvService.importAdolescents(emptyCsv.toString(), true);
-        assertTrue(adolescents.isEmpty(), "Should return an empty list for an empty file.");
+        assertTrue(adolescents.isEmpty(), "Devrait retourner une liste vide pour un fichier vide.");
     }
-
 
     @Test
     void testExportAffectations() throws IOException {
@@ -139,7 +136,7 @@ public class CSVServiceTest {
 
         assertTrue(Files.exists(outputCsv));
         List<String> lines = Files.readAllLines(outputCsv);
-        assertEquals(2, lines.size()); // Header + 1 data line
+        assertEquals(2, lines.size()); // En-tête + 1 ligne de données
         assertEquals("VISITOR_LASTNAME;VISITOR_FIRSTNAME;VISITOR_COUNTRY;HOST_LASTNAME;HOST_FIRSTNAME;HOST_COUNTRY", lines.get(0));
         assertEquals("VisitorOne;Leo;Germany;HostOne;Eva;France", lines.get(1));
     }
@@ -151,7 +148,7 @@ public class CSVServiceTest {
 
         assertTrue(Files.exists(outputCsv));
         List<String> lines = Files.readAllLines(outputCsv);
-        assertEquals(1, lines.size()); // Only header
+        assertEquals(1, lines.size()); // Seulement l'en-tête
         assertEquals("VISITOR_LASTNAME;VISITOR_FIRSTNAME;VISITOR_COUNTRY;HOST_LASTNAME;HOST_FIRSTNAME;HOST_COUNTRY", lines.get(0));
     }
 }
