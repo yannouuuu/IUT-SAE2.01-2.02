@@ -1,10 +1,10 @@
-package main;
+package sae.decision.linguistic;
 
 /**
  * Énumération des critères pouvant être utilisés pour les appariements
  * entre adolescents lors des séjours linguistiques.
  */
-public enum Criteres {
+public enum Criteria {
     /** Indique si l'adolescent visiteur est allergique aux animaux ("yes", "no"). */
     GUEST_ANIMAL_ALLERGY,
     /** Indique si l'adolescent hôte possède des animaux ("yes", "no"). */
@@ -21,7 +21,7 @@ public enum Criteres {
     PAIR_GENDER,
     /** Historique d'appariement avec un autre adolescent ("same" pour éviter le même type de profil, "other" sinon, ou vide). */
     HISTORY;
-    
+
     /**
      * Permet d'obtenir le type de critère (booléen, texte, numérique ou date)
      * @return un caractère représentant le type du critère
@@ -29,15 +29,15 @@ public enum Criteres {
     public char getType() {
         if (this == GUEST_ANIMAL_ALLERGY || this == HOST_HAS_ANIMAL) {
             return 'B';
-        } 
-        else if (this == GUEST_FOOD || this == HOST_FOOD || this == HOBBIES || 
-                 this == GENDER || this == PAIR_GENDER || this == HISTORY) {
+        }
+        else if (this == GUEST_FOOD || this == HOST_FOOD || this == HOBBIES ||
+                this == GENDER || this == PAIR_GENDER || this == HISTORY) {
             return 'T';
         }
-        
+
         return 'T';
     }
-    
+
     /**
      * Vérifie si la valeur est valide pour ce critère.
      * Lance une IllegalArgumentException si la valeur n'est pas valide.
@@ -61,20 +61,20 @@ public enum Criteres {
                 throw new IllegalArgumentException("La valeur pour " + this + " doit être 'yes' ou 'no'. Valeur reçue: " + valeur);
             }
         } else if (this == GENDER) {
-            if (valeur == null) { 
-                 throw new IllegalArgumentException("La valeur pour " + this + " ne peut pas être null.");
+            if (valeur == null) {
+                throw new IllegalArgumentException("La valeur pour " + this + " ne peut pas être null.");
             }
             if (!"male".equalsIgnoreCase(valeur) && !"female".equalsIgnoreCase(valeur) && !"other".equalsIgnoreCase(valeur)) {
                 throw new IllegalArgumentException("La valeur pour " + this + " doit être 'male', 'female', ou 'other'. Valeur reçue: " + valeur);
             }
         } else if (this == PAIR_GENDER) {
             if (valeur != null && !valeur.isEmpty() &&
-                !"male".equalsIgnoreCase(valeur) && !"female".equalsIgnoreCase(valeur) && !"other".equalsIgnoreCase(valeur)) {
+                    !"male".equalsIgnoreCase(valeur) && !"female".equalsIgnoreCase(valeur) && !"other".equalsIgnoreCase(valeur)) {
                 throw new IllegalArgumentException("La valeur pour " + this + " doit être 'male', 'female', 'other' ou vide. Valeur reçue: " + valeur);
             }
         } else if (this == HISTORY) {
             if (valeur != null && !valeur.isEmpty() &&
-                !"same".equalsIgnoreCase(valeur) && !"other".equalsIgnoreCase(valeur)) {
+                    !"same".equalsIgnoreCase(valeur) && !"other".equalsIgnoreCase(valeur)) {
                 throw new IllegalArgumentException("La valeur pour " + this + " doit être 'same', 'other' ou vide. Valeur reçue: " + valeur);
             }
         } else if (this == GUEST_FOOD || this == HOST_FOOD || this == HOBBIES) {
