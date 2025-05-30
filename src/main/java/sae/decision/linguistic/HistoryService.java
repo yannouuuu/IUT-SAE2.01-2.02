@@ -8,6 +8,11 @@ import java.io.ObjectOutputStream;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Service gérant l'historique des affectations.
+ * Cette classe permet de sauvegarder et charger l'historique des affectations
+ * entre les adolescents (hôtes et visiteurs).
+ */
 public class HistoryService {
 
     /**

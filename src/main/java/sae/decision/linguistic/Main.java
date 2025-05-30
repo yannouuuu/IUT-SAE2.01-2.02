@@ -8,6 +8,11 @@ import java.io.IOException;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 
+/**
+ * Classe principale de l'application de gestion des affectations linguistiques.
+ * Cette classe gère le chargement des données, le calcul des affectations
+ * et la gestion de l'historique.
+ */
 public class Main {
 
     private List<Adolescent> hosts = new ArrayList<>();
@@ -22,6 +27,10 @@ public class Main {
     private static final String EXPORT_CSV_PATH = "data/exported_affectations.csv";
     private static final String HISTORY_FILE_PATH = "data/affectation_history.dat";
 
+    /**
+     * Charge les données initiales des hôtes et des visiteurs depuis les fichiers CSV.
+     * Crée les fichiers d'exemple s'ils n'existent pas.
+     */
     public void loadInitialData() {
         System.out.println("Chargement des données initiales...");
         // S'assurer que le dossier "data" existe ou ajuster les chemins
@@ -43,6 +52,10 @@ public class Main {
         }
     }
 
+    /**
+     * Lance le calcul des affectations entre les hôtes et les visiteurs.
+     * Exporte les résultats dans un fichier CSV.
+     */
     public void launchAssignment() {
         System.out.println("Lancement du calcul de l'affectation...");
         if (hosts.isEmpty() || guests.isEmpty()) {
@@ -76,6 +89,11 @@ public class Main {
         }
     }
 
+    /**
+     * Gère l'historique des affectations.
+     * Charge l'historique existant, ajoute l'affectation actuelle
+     * et sauvegarde l'historique mis à jour.
+     */
     public void manageHistory() {
         System.out.println("Gestion de l'historique...");
         history = historyService.loadAffectationHistory(HISTORY_FILE_PATH);
@@ -163,6 +181,10 @@ public class Main {
         }
     }
 
+    /**
+     * Point d'entrée principal de l'application.
+     * @param args les arguments de la ligne de commande (non utilisés)
+     */
     public static void main(String[] args) {
         Main app = new Main();
         app.loadInitialData();

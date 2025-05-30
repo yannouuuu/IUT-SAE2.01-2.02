@@ -14,11 +14,17 @@ import java.io.Serializable;
  * qui seront utilisés pour l'appariement.
  */
 public class Adolescent implements Serializable {
+    /** Le nom de famille de l'adolescent */
     private String lastName;
+    /** Le prénom de l'adolescent */
     private String firstName;
+    /** Le pays d'origine de l'adolescent */
     private String countryOfOrigin;
+    /** Les critères de l'adolescent stockés sous forme de map */
     private Map<Criteria, String> criteria;
+    /** La date de naissance de l'adolescent */
     private LocalDate dateOfBirth;
+    /** Version de sérialisation */
     private static final long serialVersionUID = 1L;
 
     /**
@@ -29,8 +35,8 @@ public class Adolescent implements Serializable {
      * @param countryOfOrigin le pays d'origine de l'adolescent
      * @param criteria les critères de l'adolescent
      * @param dateOfBirth la date de naissance de l'adolescent
+     * @param isHost indique si l'adolescent est un hôte (true) ou un visiteur (false)
      */
-
     public Adolescent(String lastName, String firstName, String gender, String countryOfOrigin, Map<Criteria, String> criteria,
                       LocalDate dateOfBirth, boolean isHost) {
         this.lastName = lastName;
@@ -69,6 +75,7 @@ public class Adolescent implements Serializable {
      * @param gender le genre de l'adolescent (male, female, other)
      * @param countryOfOrigin le pays d'origine de l'adolescent
      * @param dateOfBirth la date de naissance de l'adolescent
+     * @param isHost indique si l'adolescent est un hôte (true) ou un visiteur (false)
      */
     public Adolescent(String lastName, String firstName, String gender, String countryOfOrigin, LocalDate dateOfBirth, boolean isHost) {
         this(lastName, firstName, gender, countryOfOrigin, new HashMap<>(), dateOfBirth, isHost);
@@ -79,6 +86,7 @@ public class Adolescent implements Serializable {
      * Lance une IllegalArgumentException si le critère est invalide ou viole les règles d'exclusivité.
      * @param criterion le type de critère à ajouter
      * @param value la valeur du critère
+     * @param isHost indique si l'adolescent est un hôte (true) ou un visiteur (false)
      * @throws IllegalArgumentException si le critère est invalide ou viole les règles d'exclusivité
      */
     public void addCriterion(Criteria criterion, String value, boolean isHost) throws IllegalArgumentException {

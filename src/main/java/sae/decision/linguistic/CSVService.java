@@ -12,6 +12,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Service gérant l'importation et l'exportation des données au format CSV.
+ * Cette classe permet de charger les données des adolescents (hôtes et visiteurs)
+ * depuis des fichiers CSV et d'exporter les affectations.
+ */
 public class CSVService {
     private static final String CSV_DELIMITER = ";";
 
