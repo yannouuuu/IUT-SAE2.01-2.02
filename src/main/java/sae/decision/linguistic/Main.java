@@ -1,197 +1,262 @@
 package sae.decision.linguistic;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.HashMap;
 import java.io.IOException;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
+import java.time.LocalDate;
 
 /**
  * Classe principale de l'application de gestion des affectations linguistiques.
- * Cette classe gère le chargement des données, le calcul des affectations
- * et la gestion de l'historique.
+ * Cette classe orchestre le processus complet : chargement des données, calcul des affectations,
+ * export des résultats et gestion de l'historique.
  */
 public class Main {
 
-    private List<Adolescent> hosts = new ArrayList<>();
-    private List<Adolescent> guests = new ArrayList<>();
-    private Affectation currentAffectation;
-    private Map<String, Affectation> history;
-
     private CSVService csvService = new CSVService();
     private HistoryService historyService = new HistoryService();
-    private static final String HOSTS_CSV_PATH = "data/sample_hosts.csv"; // Créer ces fichiers
-    private static final String GUESTS_CSV_PATH = "data/sample_guests.csv";
-    private static final String EXPORT_CSV_PATH = "data/exported_affectations.csv";
-    private static final String HISTORY_FILE_PATH = "data/affectation_history.dat";
+    
+    // Chemins des fichiers
+    private static final String HOSTS_CSV_PATH = "ressources/sample_hosts.csv";
+    private static final String GUESTS_CSV_PATH = "ressources/sample_guests.csv";
+    private static final String EXPORT_CSV_PATH = "ressources/exported_affectations.csv";
+    private static final String HISTORY_FILE_PATH = "ressources/affectation_history.dat";
 
     /**
-     * Charge les données initiales des hôtes et des visiteurs depuis les fichiers CSV.
-     * Crée les fichiers d'exemple s'ils n'existent pas.
+     * Lancement de l'application.
      */
-    public void loadInitialData() {
-        System.out.println("Chargement des données initiales...");
-        // S'assurer que le dossier "data" existe ou ajuster les chemins
-        // Pour cet exemple, créer sample_hosts.csv et sample_guests.csv dans un sous-dossier "data"
+    public static void main(String[] args) {
+        Main app = new Main();
+        app.run();
+    }
 
-        // Créer des fichiers CSV fictifs pour la démonstration s'ils n'existent pas
-        createSampleCsvFilesIfNotExists();
+    /**
+     * Exécute le processus d'affectation optimal.
+     */
+    public void run() {
+        try {
+            // 0. Créer les fichiers d'exemple si nécessaire sinon il s'aperçoit qu'ils existent et ne fait rien
+            createSampleFilesIfNotExists();
 
-        hosts = csvService.importAdolescents(HOSTS_CSV_PATH, true);
-        guests = csvService.importAdolescents(GUESTS_CSV_PATH, false);
+            // 1. Charger les données depuis les fichiers CSV (d'exemples ou réel)
+            System.out.println("1. Chargement des données...");
+            List<Adolescent> hosts = csvService.importAdolescents(HOSTS_CSV_PATH, true);
+            List<Adolescent> guests = csvService.importAdolescents(GUESTS_CSV_PATH, false);
 
-        System.out.println(hosts.size() + " hôtes chargés.");
-        for(int i=0; i<hosts.size(); i++) {
-            System.out.println("- " + hosts.get(i));
-        }
-        System.out.println(guests.size() + " visiteurs chargés.");
-        for(int i=0; i<guests.size(); i++) {
-            System.out.println("- " + guests.get(i));
+            if (hosts.isEmpty() || guests.isEmpty()) {
+                System.err.println("Erreur: Impossible de continuer sans hôtes ou visiteurs.");
+                System.out.println("Vérifiez les fichiers CSV et réessayez.");
+                return;
+            }
+
+            System.out.println("   - " + hosts.size() + " hôtes chargés");
+            System.out.println("   - " + guests.size() + " visiteurs chargés\n");
+
+            // 2. Créer l'affectation et calculer les paires optimales
+            System.out.println("2. Calcul des affectations optimales...");
+            Affectation affectation = new Affectation(hosts, guests);
+            
+            HashMap<Adolescent, Adolescent> pairings;
+            try {
+                pairings = affectation.calculatePairing();
+                System.out.println("   - " + pairings.size() + " paires formées\n");
+            } catch (Exception e) {
+                System.err.println("Erreur lors du calcul des affectations: " + e.getMessage());
+                System.out.println("Le processus va continuer avec des paires vides pour la démonstration.");
+                pairings = new HashMap<>();
+            }
+
+            // 3. Afficher les résultats (Temporaire vu que JavaFX plus tard)
+            displayPairings(pairings);
+
+            // 5. Exporter les résultats
+            System.out.println("3. Export des résultats...");
+            try {
+                csvService.exportAffectations(pairings, EXPORT_CSV_PATH);
+                System.out.println("   - Résultats exportés vers: " + EXPORT_CSV_PATH + "\n");
+            } catch (Exception e) {
+                System.err.println("Erreur lors de l'export: " + e.getMessage());
+                System.out.println("   - Export échoué, mais le processus continue\n");
+            }
+
+            // 6. Gérer l'historique
+            System.out.println("4. Gestion de l'historique...");
+            try {
+                saveToHistory(affectation);
+                System.out.println("   - Historique mis à jour\n");
+            } catch (Exception e) {
+                System.err.println("Erreur lors de la sauvegarde de l'historique: " + e.getMessage());
+                System.out.println("   - Sauvegarde échouée\n");
+            }
+
+            System.out.println("=== Processus terminé ===");
+
+        } catch (Exception e) {
+            System.err.println("Erreur critique dans l'application: " + e.getMessage());
+            System.err.println("L'application s'arrête.");
+            e.printStackTrace();
         }
     }
 
     /**
-     * Lance le calcul des affectations entre les hôtes et les visiteurs.
-     * Exporte les résultats dans un fichier CSV.
+     * Affiche les paires formées de manière lisible (Jusqu'à JavaFX).
      */
-    public void launchAssignment() {
-        System.out.println("Lancement du calcul de l'affectation...");
-        if (hosts.isEmpty() || guests.isEmpty()) {
-            System.out.println("Pas assez d'hôtes ou de visiteurs pour former des paires.");
-            currentAffectation = new Affectation(hosts, guests); // Créer quand même l'objet Affectation
-            // les paires seront vides
+    private void displayPairings(Map<Adolescent, Adolescent> pairings) {
+        System.out.println("Paires formées:");
+        System.out.println("---------------");
+        
+        if (pairings.isEmpty()) {
+            System.out.println("Aucune paire formée.");
         } else {
-            currentAffectation = new Affectation(hosts, guests);
-            // La méthode calculatePairing est un placeholder.
-            // Pour la démonstration, nous allons créer manuellement quelques paires fictives si possible.
-            Map<Adolescent, Adolescent> dummyPairs = new HashMap<>();
-            // Exemple : Associer le premier visiteur avec le premier hôte si disponible
-            if (!guests.isEmpty() && !hosts.isEmpty()) {
-                // C'est un appariement conceptuel pour tester l'export/l'historique.
-                // Dans un scénario réel, Affectation.calculatePairing() remplirait ses paires internes.
-                // Pour l'instant, nous créons directement une map à passer à l'export et l'historique.
-                dummyPairs.put(guests.get(0), hosts.get(0));
+            try {
+                for (Map.Entry<Adolescent, Adolescent> entry : pairings.entrySet()) {
+                    Adolescent visitor = entry.getKey();
+                    Adolescent host = entry.getValue();
+                    
+                    if (visitor == null || host == null) {
+                        System.out.println("Paire invalide détectée (valeur null)");
+                        continue;
+                    }
+                    
+                    try {
+                        int affinity = visitor.calculateAffinity(host);
+                        System.out.printf("Visiteur: %s %s (%s) -> Hôte: %s %s (%s) [Affinité: %d]%n",
+                            visitor.getFirstName(), visitor.getLastName(), visitor.getCountryOfOrigin(),
+                            host.getFirstName(), host.getLastName(), host.getCountryOfOrigin(),
+                            affinity);
+                    } catch (Exception e) {
+                        System.out.printf("Visiteur: %s %s (%s) -> Hôte: %s %s (%s) [Affinité: erreur de calcul]%n",
+                            visitor.getFirstName(), visitor.getLastName(), visitor.getCountryOfOrigin(),
+                            host.getFirstName(), host.getLastName(), host.getCountryOfOrigin());
+                    }
+                }
+            } catch (Exception e) {
+                System.err.println("Erreur lors de l'affichage des paires: " + e.getMessage());
             }
-            // Pour la démonstration, supposons que ces paires sont le résultat
-            // En réalité, currentAffectation.calculatePairing() retournerait cette map
-            // ou Affectation la stockerait en interne.
-            // Pour l'instant, nous utiliserons cette map dummyPairs pour l'export.
-            // Et nous la passerons à un "setPairs" conceptuel si Affectation en avait un, ou l'utiliserons directement.
+        }
+        System.out.println();
+    }
 
-            // Si Affectation doit stocker les paires en interne pour l'export, et calculatePairing est un placeholder :
-            // currentAffectation.setPairs(dummyPairs); // En supposant une telle méthode
-
-            // Pour l'export, nous avons juste besoin d'une Map<Adolescent, Adolescent>, en utilisant dummyPairs ici
-            csvService.exportAffectations(dummyPairs, EXPORT_CSV_PATH);
-            System.out.println("Affectations (potentielles) exportées vers: " + EXPORT_CSV_PATH);
+    /**
+     * Sauvegarde l'affectation dans l'historique.
+     */
+    private void saveToHistory(Affectation affectation) {
+        try {
+            // Charger l'historique existant
+            Map<String, Affectation> history = historyService.loadAffectationHistory(HISTORY_FILE_PATH);
+            
+            // Créer une clé unique basée sur la date et les pays impliqués
+            String historyKey = generateHistoryKey(affectation);
+            
+            // Ajouter l'affectation actuelle
+            history.put(historyKey, affectation);
+            
+            // Sauvegarder l'historique mis à jour
+            historyService.saveAffectationHistory(history, HISTORY_FILE_PATH);
+            
+            System.out.println("   - Affectation sauvegardée avec la clé: " + historyKey);
+            System.out.println("   - Total d'affectations en historique: " + history.size());
+            
+        } catch (Exception e) {
+            System.err.println("Erreur lors de la sauvegarde dans l'historique: " + e.getMessage());
+            throw e; // Relancer pour que l'appelant puisse gérer
         }
     }
 
     /**
-     * Gère l'historique des affectations.
-     * Charge l'historique existant, ajoute l'affectation actuelle
-     * et sauvegarde l'historique mis à jour.
+     * Génère une clé unique pour l'historique basée sur la date et les pays.
      */
-    public void manageHistory() {
-        System.out.println("Gestion de l'historique...");
-        history = historyService.loadAffectationHistory(HISTORY_FILE_PATH);
-        System.out.println(history.size() + " affectations chargées depuis l'historique.");
-
-        // Afficher l'historique chargé (simplifié)
-        if (!history.isEmpty()) {
-            System.out.println("Détails de l'historique chargé:");
-            List<Map.Entry<String, Affectation>> entryList = new ArrayList<>(history.entrySet());
-            for (int i = 0; i < entryList.size(); i++) {
-                Map.Entry<String, Affectation> entry = entryList.get(i);
-                System.out.println("Clé Historique: " + entry.getKey());
-                Affectation pastAff = entry.getValue();
-                System.out.println("  Hôtes: " + pastAff.getHosts().size() + ", Visiteurs: " + pastAff.getVisitors().size());
-            }
+    private String generateHistoryKey(Affectation affectation) {
+        try {
+            String currentDate = LocalDate.now().toString();
+            
+            // Extraire les pays uniques des hôtes et visiteurs
+            String hostCountries = affectation.getHosts().stream()
+                .map(Adolescent::getCountryOfOrigin)
+                .distinct()
+                .sorted()
+                .reduce((a, b) -> a + "_" + b)
+                .orElse("Unknown");
+                
+            String visitorCountries = affectation.getVisitors().stream()
+                .map(Adolescent::getCountryOfOrigin)
+                .distinct()
+                .sorted()
+                .reduce((a, b) -> a + "_" + b)
+                .orElse("Unknown");
+            
+            return currentDate + "_" + visitorCountries + "_to_" + hostCountries;
+            
+        } catch (Exception e) {
+            System.err.println("Erreur lors de la génération de la clé d'historique: " + e.getMessage());
+            // Retourner une clé de fallback
+            return LocalDate.now().toString() + "_ERROR_KEY_" + System.currentTimeMillis();
         }
-
-        // Ajouter l'affectation actuelle à l'historique (si elle existe et a des paires)
-        // Pour cette démo, utilisons currentAffectation, en supposant qu'elle pourrait obtenir des paires
-        // d'un calculatePairing() plus complet ou par définition manuelle pour une démo.
-        if (currentAffectation != null) {
-            // Et si currentAffectation.getPairs() était rempli et non vide :
-            // history.put("2024_France_Germany", currentAffectation);
-
-            // Pour la démonstration, créons une nouvelle affectation fictive à sauvegarder
-            // si currentAffectation n'a peut-être pas de paires du calculatePairing placeholder.
-            List<Adolescent> demoHosts = new ArrayList<>(hosts);
-            List<Adolescent> demoGuests = new ArrayList<>(guests);
-            if (!demoHosts.isEmpty() && !demoGuests.isEmpty()) {
-                Affectation demoAffectationToSave = new Affectation(demoHosts, demoGuests);
-                // Si demoAffectationToSave avait sa map de paires remplie, elle serait sauvegardée.
-                // Pour l'instant, elle sauvegarde les listes d'hôtes/visiteurs.
-                history.put("DEMO_2024_FR_DE", demoAffectationToSave);
-                System.out.println("Ajout de l'affectation actuelle (démo) à l'historique.");
-            }
-        } else {
-            System.out.println("Aucune affectation actuelle à ajouter à l'historique (currentAffectation est null).");
-        }
-
-        historyService.saveAffectationHistory(history, HISTORY_FILE_PATH);
-        System.out.println("Historique sauvegardé dans: " + HISTORY_FILE_PATH);
     }
 
-    private void createSampleCsvFilesIfNotExists() {
-        // Créer le dossier data s'il n'existe pas
+    /**
+     * Crée les fichiers CSV d'exemple si ils n'existent pas.
+     */
+    private void createSampleFilesIfNotExists() {
         java.io.File dataDir = new java.io.File("data");
         if (!dataDir.exists()) {
             dataDir.mkdirs();
         }
 
-        // Fichier CSV des hôtes exemple
-        try {
-            java.io.File hostCsv = new java.io.File(HOSTS_CSV_PATH);
-            if (!hostCsv.exists()) {
-                BufferedWriter writer = new BufferedWriter(new FileWriter(hostCsv));
-                writer.write("NAME;FORENAME;COUNTRY;BIRTH_DATE;GENDER;HOST_HAS_ANIMAL;HOST_FOOD;HOBBIES;HISTORY;PAIR_GENDER");
-                writer.newLine();
-                writer.write("Dupont;Jean;France;2007-05-10;male;yes;vegetarian,nonuts;football,jeux video;;male");
-                writer.newLine();
-                writer.write("Martin;Sophie;France;2008-02-20;female;no;;lecture,musique;same;");
-                writer.newLine();
-                writer.close();
-                System.out.println("Créé fichier hôtes exemples: " + HOSTS_CSV_PATH);
-            }
-        } catch (IOException e) {
-            System.err.println("Impossible de créer le fichier hôtes exemples: " + e.getMessage());
+        createHostsFile();
+        createGuestsFile();
+    }
+
+    /**
+     * Crée le fichier des hôtes d'exemple.
+     */
+    private void createHostsFile() {
+        java.io.File hostCsv = new java.io.File(HOSTS_CSV_PATH);
+        if (hostCsv.exists()) {
+            return; // Le fichier existe déjà
         }
 
-        // Fichier CSV des visiteurs exemple
-        try {
-            java.io.File guestCsv = new java.io.File(GUESTS_CSV_PATH);
-            if (!guestCsv.exists()) {
-                BufferedWriter writer = new BufferedWriter(new FileWriter(guestCsv));
-                writer.write("NAME;FORENAME;COUNTRY;BIRTH_DATE;GENDER;GUEST_ANIMAL_ALLERGY;GUEST_FOOD;HOBBIES;HISTORY;PAIR_GENDER");
-                writer.newLine();
-                writer.write("Schmidt;Hans;Germany;2007-06-15;male;no;vegetarian;jeux video,musique;;female");
-                writer.newLine();
-                writer.write("Muller;Anna;Germany;2008-03-25;female;yes;nonuts;danse,lecture;other;male");
-                writer.newLine();
-                writer.close();
-                System.out.println("Créé fichier visiteurs exemples: " + GUESTS_CSV_PATH);
-            }
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(hostCsv))) {
+            writer.write("NAME;FORENAME;COUNTRY;BIRTH_DATE;GENDER;HOST_HAS_ANIMAL;HOST_FOOD;HOBBIES;HISTORY;PAIR_GENDER");
+            writer.newLine();
+            writer.write("Dupont;Jean;France;2007-05-10;male;yes;vegetarian,nonuts;football,jeux video;;male");
+            writer.newLine();
+            writer.write("Martin;Sophie;France;2008-02-20;female;no;;lecture,musique;same;female");
+            writer.newLine();
+            writer.write("Bernard;Lucas;France;2007-08-15;male;no;vegetarian;sport,cinema;;");
+            writer.newLine();
+            
+            System.out.println("Fichier hôtes d'exemple créé: " + HOSTS_CSV_PATH);
         } catch (IOException e) {
-            System.err.println("Impossible de créer le fichier visiteurs exemples: " + e.getMessage());
+            System.err.println("Erreur lors de la création du fichier hôtes: " + e.getMessage());
         }
     }
 
     /**
-     * Point d'entrée principal de l'application.
-     * @param args les arguments de la ligne de commande (non utilisés)
+     * Crée le fichier des visiteurs d'exemple.
      */
-    public static void main(String[] args) {
-        Main app = new Main();
-        app.loadInitialData();
-        app.launchAssignment(); // Cela tentera aussi d'exporter des paires fictives
-        app.manageHistory();
+    private void createGuestsFile() {
+        java.io.File guestCsv = new java.io.File(GUESTS_CSV_PATH);
+        if (guestCsv.exists()) {
+            return; // Le fichier existe déjà
+        }
 
-        System.out.println("\n--- Démonstration terminée ---");
-        System.out.println("Veuillez vérifier les fichiers dans le dossier 'data'.");
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(guestCsv))) {
+            writer.write("NAME;FORENAME;COUNTRY;BIRTH_DATE;GENDER;GUEST_ANIMAL_ALLERGY;GUEST_FOOD;HOBBIES;HISTORY;PAIR_GENDER");
+            writer.newLine();
+            writer.write("Schmidt;Hans;Germany;2007-06-15;male;no;vegetarian;jeux video,musique;;female");
+            writer.newLine();
+            writer.write("Muller;Anna;Germany;2008-03-25;female;yes;nonuts;danse,lecture;other;male");
+            writer.newLine();
+            writer.write("Weber;Tom;Germany;2007-12-05;male;no;;sport,cinema;;");
+            writer.newLine();
+            
+            System.out.println("Fichier visiteurs d'exemple créé: " + GUESTS_CSV_PATH);
+        } catch (IOException e) {
+            System.err.println("Erreur lors de la création du fichier visiteurs: " + e.getMessage());
+        }
     }
 }
