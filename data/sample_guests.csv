@@ -1,0 +1,45 @@
+FORENAME,NAME,COUNTRY,BIRTH_DATE,GENDER,GUEST_ANIMAL_ALLERGY,HOST_HAS_ANIMAL,GUEST_FOOD,HOST_FOOD,HOBBIES,PAIR_GENDER,HISTORY
+Guest1_Prenom,Guest1_Nom,France,2009-03-01,female,yes,no,vegetarian,,reading,male,other
+Guest2_Prenom,Guest2_Nom,Belgium,2008-07-10,male,no,no,no-pork,none,sport,female,same
+Guest3_Prenom,Guest3_Nom,Switzerland,2010-02-20,female,yes,no,gluten-free,,music,other,
+Guest4_Prenom,Guest4_Nom,France,2009-11-05,male,no,no,none,,video games,female,other
+Guest5_Prenom,Guest5_Nom,Belgium,2008-05-15,female,yes,no,halal,,drawing,male,same
+Guest6_Prenom,Guest6_Nom,Switzerland,2010-01-01,male,no,no,vegetarian,,coding,female,other
+Guest7_Prenom,Guest7_Nom,France,2009-08-25,female,yes,no,none,,photography,male,
+Guest8_Prenom,Guest8_Nom,Belgium,2008-04-01,male,no,no,no-pork,,hiking,other,same
+Guest9_Prenom,Guest9_Nom,Switzerland,2010-03-10,female,yes,no,gluten-free,,dancing,male,other
+Guest10_Prenom,Guest10_Nom,France,2009-12-20,male,no,no,none,,gaming,female,
+Guest11_Prenom,Guest11_Nom,Belgium,2008-06-05,female,yes,no,vegetarian,,reading,male,same
+Guest12_Prenom,Guest12_Nom,Switzerland,2010-01-15,male,no,no,halal,,sport,other,other
+Guest13_Prenom,Guest13_Nom,France,2009-09-10,female,yes,no,none,,music,male,
+Guest14_Prenom,Guest14_Nom,Belgium,2008-04-25,male,no,no,no-pork,,video games,female,same
+Guest15_Prenom,Guest15_Nom,Switzerland,2010-02-01,female,yes,no,gluten-free,,drawing,other,other
+Guest16_Prenom,Guest16_Nom,France,2009-11-20,male,no,no,none,,coding,female,
+Guest17_Prenom,Guest17_Nom,Belgium,2008-05-01,female,yes,no,vegetarian,,photography,male,same
+Guest18_Prenom,Guest18_Nom,Switzerland,2010-03-25,male,no,no,halal,,hiking,other,other
+Guest19_Prenom,Guest19_Nom,France,2009-12-05,female,yes,no,none,,dancing,male,
+Guest20_Prenom,Guest20_Nom,Belgium,2008-06-20,male,no,no,no-pork,,gaming,female,same
+Guest21_Prenom,Guest21_Nom,Switzerland,2010-01-10,female,yes,no,gluten-free,,reading,other,other
+Guest22_Prenom,Guest22_Nom,France,2009-09-25,male,no,no,none,,sport,female,
+Guest23_Prenom,Guest23_Nom,Belgium,2008-04-10,female,yes,no,vegetarian,,music,male,same
+Guest24_Prenom,Guest24_Nom,Switzerland,2010-03-01,male,no,no,halal,,video games,other,other
+Guest25_Prenom,Guest25_Nom,France,2009-12-15,female,yes,no,none,,drawing,male,
+Guest26_Prenom,Guest26_Nom,Belgium,2008-06-25,male,no,no,no-pork,,coding,female,same
+Guest27_Prenom,Guest27_Nom,Switzerland,2010-01-25,female,yes,no,gluten-free,,photography,other,other
+Guest28_Prenom,Guest28_Nom,France,2009-09-01,male,no,no,none,,hiking,female,
+Guest29_Prenom,Guest29_Nom,Belgium,2008-04-15,female,yes,no,vegetarian,,dancing,male,same
+Guest30_Prenom,Guest30_Nom,Switzerland,2010-02-15,male,no,no,halal,,gaming,other,other
+Guest31_Prenom,Guest31_Nom,France,2009-11-10,female,yes,no,none,,reading,male,
+Guest32_Prenom,Guest32_Nom,Belgium,2008-05-20,male,no,no,no-pork,,sport,female,same
+Guest33_Prenom,Guest33_Nom,Switzerland,2010-03-05,female,yes,no,gluten-free,,music,other,other
+Guest34_Prenom,Guest34_Nom,France,2009-12-01,male,no,no,none,,video games,female,
+Guest35_Prenom,Guest35_Nom,Belgium,2008-06-10,female,yes,no,halal,,drawing,male,same
+Guest36_Prenom,Guest36_Nom,Switzerland,2010-01-05,male,no,no,vegetarian,,coding,other,other
+Guest37_Prenom,Guest37_Nom,France,2009-08-30,female,yes,no,none,,photography,male,
+Guest38_Prenom,Guest38_Nom,Belgium,2008-04-05,male,no,no,no-pork,,hiking,female,same
+Guest39_Prenom,Guest39_Nom,Switzerland,2010-02-25,female,yes,no,gluten-free,,dancing,other,other
+Guest40_Prenom,Guest40_Nom,France,2009-11-15,male,no,no,none,,gaming,female,
+Guest41_Prenom,Guest41_Nom,Belgium,2008-05-25,female,yes,no,halal,,reading,male,same
+Guest42_Prenom,Guest42_Nom,Switzerland,2010-01-20,male,no,no,vegetarian,,sport,other,other
+Guest43_Prenom,Guest43_Nom,France,2009-09-05,female,yes,no,none,,music,male,
+Guest44_Prenom,Guest44_Nom,Belgium,2007-09-30,female,no,yes,vegetarian,both,dancing,male,same
