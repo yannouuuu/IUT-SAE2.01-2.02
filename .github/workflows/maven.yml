@@ -1,0 +1,44 @@
+name: Java CI with Maven
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        java: [ '17', '21', '24' ]
+
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Set up JDK ${{ matrix.java }}
+      uses: actions/setup-java@v4
+      with:
+        java-version: ${{ matrix.java }}
+        distribution: 'temurin'
+        
+    - name: Build with Maven
+      run: mvn clean package
+      
+    - name: Generate Javadoc
+      run: mvn javadoc:javadoc
+      
+    - name: Deploy to GitHub Pages
+      uses: peaceiris/actions-gh-pages@v3
+      if: github.ref == 'refs/heads/main' && matrix.java == '24'
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: ./target/site/apidocs
+        publish_branch: gh-pages
+
+    - name: Upload Javadoc
+      uses: actions/upload-artifact@v4
+      if: matrix.java == '24'
+      with:
+        name: javadoc
+        path: target/site/apidocs/ 

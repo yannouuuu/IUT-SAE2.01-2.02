@@ -1,8 +1,29 @@
+image: maven:3.9-eclipse-temurin-24
+
+stages:
+  - build
+  - javadoc
+  - pages
+
+build:
+  stage: build
+  script:
+    - mvn clean package
+
+javadoc:
+  stage: javadoc
+  script:
+    - mvn javadoc:javadoc
+  artifacts:
+    paths:
+      - target/site/apidocs/
+    expire_in: 1 week
+
 pages:
-  stage: deploy
+  stage: pages
   script:
     - mkdir -p public
-    - cp -r docs/javadoc/* public/
+    - cp -r target/site/apidocs/* public/
   artifacts:
     paths:
       - public
