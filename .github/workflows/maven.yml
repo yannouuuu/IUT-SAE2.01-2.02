@@ -52,16 +52,16 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       
+      - name: Setup Pages
+        uses: actions/configure-pages@v4
+        with:
+          static_site_generator: jekyll
+          
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: ./target/site/apidocs
+
       - name: Deploy to GitHub Pages
         id: deployment
-        uses: peaceiris/actions-gh-pages@v3
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./target/site/apidocs
-          publish_branch: gh-pages
-
-      - name: Upload Javadoc
-        uses: actions/upload-artifact@v4
-        with:
-          name: javadoc
-          path: target/site/apidocs/ 
+        uses: actions/deploy-pages@v4 
