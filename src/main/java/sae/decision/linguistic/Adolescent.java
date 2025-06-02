@@ -7,78 +7,91 @@ import java.util.Set;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.io.Serializable;
+import java.util.Collections;
 
 /**
- * Classe représentant un adolescent participant au programme de séjours linguistiques.
- * Chaque adolescent possède des informations personnelles ainsi que des critères
- * qui seront utilisés pour l'appariement.
+ * Représente un adolescent participant au programme de séjours linguistiques.
+ * Cette classe gère les informations personnelles et les critères d'appariement
+ * pour chaque participant, qu'il soit hôte ou visiteur.
+ * 
+ * Les critères d'appariement incluent :
+ * - Informations personnelles (nom, prénom, date de naissance)
+ * - Pays d'origine
+ * - Genre
+ * - Critères spécifiques (hobbies, régime alimentaire, animaux, etc.)
  */
 public class Adolescent implements Serializable {
-    /** Le nom de famille de l'adolescent */
-    private String lastName;
-    /** Le prénom de l'adolescent */
-    private String firstName;
-    /** Le pays d'origine de l'adolescent */
-    private String countryOfOrigin;
-    /** Les critères de l'adolescent stockés sous forme de map */
-    private Map<Criteria, String> criteria;
-    /** La date de naissance de l'adolescent */
-    private LocalDate dateOfBirth;
-    /** Version de sérialisation */
     private static final long serialVersionUID = 1L;
+    
+    // Constantes pour la validation et le calcul des scores
+    private static final String FRANCE = "France";
+    private static final String HOBBY_SEPARATOR = ",";
+    private static final int INCOMPATIBLE_SCORE = -999;
+    
+    // Informations personnelles
+    private final String lastName;
+    private final String firstName;
+    private final String countryOfOrigin;
+    private final LocalDate dateOfBirth;
+    
+    // Critères d'appariement
+    private final Map<Criteria, String> criteria;
 
     /**
-     * Constructeur de la classe Adolescent
-     * @param lastName le nom de famille de l'adolescent
-     * @param firstName le prénom de l'adolescent
-     * @param gender le genre de l'adolescent (male, female, other)
-     * @param countryOfOrigin le pays d'origine de l'adolescent
-     * @param criteria les critères de l'adolescent
-     * @param dateOfBirth la date de naissance de l'adolescent
-     * @param isHost indique si l'adolescent est un hôte (true) ou un visiteur (false)
+     * Constructeur principal de la classe Adolescent.
+     * Initialise un nouvel adolescent avec ses informations personnelles et ses critères.
+     * 
+     * @param lastName Nom de famille
+     * @param firstName Prénom
+     * @param gender Genre (male, female, other)
+     * @param countryOfOrigin Pays d'origine
+     * @param criteria Map des critères d'appariement
+     * @param dateOfBirth Date de naissance
+     * @param isHost true si l'adolescent est un hôte, false s'il est visiteur
      */
-    public Adolescent(String lastName, String firstName, String gender, String countryOfOrigin, Map<Criteria, String> criteria,
-                      LocalDate dateOfBirth, boolean isHost) {
+    public Adolescent(String lastName, String firstName, String gender, String countryOfOrigin, 
+                     Map<Criteria, String> criteria, LocalDate dateOfBirth, boolean isHost) {
         this.lastName = lastName;
         this.firstName = firstName;
         this.countryOfOrigin = countryOfOrigin;
-        this.criteria = new HashMap<>(); // Initialiser vide, puis ajouter les critères validés
         this.dateOfBirth = dateOfBirth;
+        this.criteria = new HashMap<>();
 
-        // D'abord on rajoute le genre préalablement fourni en paramètre mais qui est en fait en un critère
+        initializeGenderCriterion(gender);
+        initializeOtherCriteria(criteria, isHost);
+    }
+
+    /**
+     * Initialise le critère de genre.
+     * @param gender Genre de l'adolescent
+     */
+    private void initializeGenderCriterion(String gender) {
         if (gender != null && !gender.isEmpty()) {
             try {
                 if (Criteria.GENDER.isValid(gender)) {
                     this.criteria.put(Criteria.GENDER, gender);
                 }
             } catch (IllegalArgumentException e) {
-                System.err.println("Erreur lors de la validation du GENDER '" + gender + "' pour " + firstName + " " + lastName + ": " + e.getMessage());
-            }
-        }
-
-        // Puis on ajoute les autres critères s'ils existent
-        for (Map.Entry<Criteria, String> entry : criteria.entrySet()) {
-            Criteria critere = entry.getKey();
-            String valeur = entry.getValue();
-            try {
-                addCriterion(critere, valeur, isHost);
-            } catch (IllegalArgumentException e) {
-                System.err.println("Erreur pour " + firstName + " " + lastName + " avec le critère " + critere + " et valeur '" + valeur + "': " + e.getMessage());
+                System.err.println(String.format("Erreur de validation du genre '%s' pour %s %s: %s", 
+                    gender, firstName, lastName, e.getMessage()));
             }
         }
     }
 
     /**
-     * Constructeur simplifié de la classe Adolescent sans critères initiaux.
-     * @param lastName le nom de famille de l'adolescent
-     * @param firstName le prénom de l'adolescent
-     * @param gender le genre de l'adolescent (male, female, other)
-     * @param countryOfOrigin le pays d'origine de l'adolescent
-     * @param dateOfBirth la date de naissance de l'adolescent
-     * @param isHost indique si l'adolescent est un hôte (true) ou un visiteur (false)
+     * Initialise les autres critères d'appariement.
+     * @param criteriaMap Map des critères à initialiser
+     * @param isHost Indique si l'adolescent est un hôte
      */
-    public Adolescent(String lastName, String firstName, String gender, String countryOfOrigin, LocalDate dateOfBirth, boolean isHost) {
-        this(lastName, firstName, gender, countryOfOrigin, new HashMap<>(), dateOfBirth, isHost);
+    private void initializeOtherCriteria(Map<Criteria, String> criteriaMap, boolean isHost) {
+        for (Map.Entry<Criteria, String> entry : criteriaMap.entrySet()) {
+            try {
+                addCriterion(entry.getKey(), entry.getValue(), isHost);
+            } catch (IllegalArgumentException e) {
+                System.err.println(String.format("Erreur pour %s %s avec le critère %s et valeur '%s': %s", 
+                    firstName, lastName, entry.getKey(), entry.getValue(), e.getMessage()));
+            }
+        }
     }
 
     /**
@@ -191,54 +204,50 @@ public class Adolescent implements Serializable {
      * @return true si ils ont un passe temps en commun ou qu'aucun n'est français, false sinon.
      */
     public boolean isFrenchCompatible(Adolescent other) {
-        String myCountry = this.countryOfOrigin;
-        String otherCountry = other.countryOfOrigin;
-
-        // Si aucun n'est français pas de problèmes
-        if ((myCountry == null || !myCountry.equals("France")) &&
-                (otherCountry == null || !otherCountry.equals("France"))) {
+        if (!isFrenchParticipantInvolved(other)) {
             return true;
         }
-
-        // Si l'un des deux est français on s'intéresse aux pase temps'
-        if (myCountry != null && myCountry.equals("France") ||
-                otherCountry != null && otherCountry.equals("France")) {
-            String myHobbies = this.getCriterion(Criteria.HOBBIES);
-            String otherHobbies = other.getCriterion(Criteria.HOBBIES);
-
-            if (myHobbies != null && otherHobbies != null) {
-                Set<String> myHobbiesSet = new HashSet<>();
-                try {
-                    String[] myHobbiesList = myHobbies.split(",");
-                    for (String hobby : myHobbiesList) {
-                        myHobbiesSet.add(hobby.trim());
-                    }
-                } catch (NullPointerException e) {
-                    System.err.println("Erreur lors du traitement des hobbies de " + this.firstName + ": " + e.getMessage());
-                    return false;
-                }
-
-                Set<String> otherHobbiesSet = new HashSet<>();
-                try {
-                    String[] otherHobbiesList = otherHobbies.split(",");
-                    for (String hobby : otherHobbiesList) {
-                        otherHobbiesSet.add(hobby.trim());
-                    }
-                } catch (NullPointerException e) {
-                    System.err.println("Erreur lors du traitement des hobbies de " + other.firstName + ": " + e.getMessage());
-                    return false;
-                }
-
-                for (String myHobby : myHobbiesSet) {
-                    if (otherHobbiesSet.contains(myHobby)) {
-                        return true;
-                    }
-                }
-            }
-        }
-        return false;
+        return hasCommonHobbies(other);
     }
 
+    /**
+     * Vérifie si l'un des participants est français.
+     */
+    private boolean isFrenchParticipantInvolved(Adolescent other) {
+        return FRANCE.equals(this.countryOfOrigin) || FRANCE.equals(other.countryOfOrigin);
+    }
+
+    /**
+     * Vérifie si les deux adolescents ont des hobbies en commun.
+     */
+    private boolean hasCommonHobbies(Adolescent other) {
+        String myHobbies = this.getCriterion(Criteria.HOBBIES);
+        String otherHobbies = other.getCriterion(Criteria.HOBBIES);
+
+        if (myHobbies == null || otherHobbies == null) {
+            return false;
+        }
+
+        Set<String> myHobbiesSet = parseHobbies(myHobbies, this.firstName);
+        Set<String> otherHobbiesSet = parseHobbies(otherHobbies, other.firstName);
+
+        return !Collections.disjoint(myHobbiesSet, otherHobbiesSet);
+    }
+
+    /**
+     * Parse une chaîne de hobbies en ensemble de hobbies individuels.
+     */
+    private Set<String> parseHobbies(String hobbies, String personName) {
+        Set<String> hobbiesSet = new HashSet<>();
+        try {
+            for (String hobby : hobbies.split(HOBBY_SEPARATOR)) {
+                hobbiesSet.add(hobby.trim());
+            }
+        } catch (NullPointerException e) {
+            System.err.println("Erreur lors du traitement des hobbies de " + personName + ": " + e.getMessage());
+        }
+        return hobbiesSet;
+    }
 
     /**
      * Vérifie la compatibilité des historiques entre cet adolescent (hôte) et un autre (visiteur).

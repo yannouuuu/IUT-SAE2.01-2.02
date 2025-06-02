@@ -11,6 +11,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Arrays;
+import java.util.Set;
 
 /**
  * Service gérant l'importation et l'exportation des données au format CSV.
@@ -18,168 +20,198 @@ import java.util.Map;
  * depuis des fichiers CSV et d'exporter les affectations.
  */
 public class CSVService {
+    // Constantes pour le format CSV
     private static final String CSV_DELIMITER = ";";
+    private static final String LINE_SEPARATOR = System.lineSeparator();
+    
+    // En-têtes obligatoires pour les fichiers CSV d'entrée
+    private static final Set<String> REQUIRED_HEADERS = Set.of(
+        "FORENAME", "NAME", "COUNTRY", "BIRTH_DATE", "GENDER"
+    );
+    
+    // En-têtes pour le fichier CSV de sortie
+    private static final String[] EXPORT_HEADERS = {
+        "VISITOR_LASTNAME", "VISITOR_FIRSTNAME", "VISITOR_COUNTRY",
+        "HOST_LASTNAME", "HOST_FIRSTNAME", "HOST_COUNTRY"
+    };
 
     /**
      * Importe une liste d'adolescents depuis un fichier CSV.
-     * La première ligne du CSV doit être un en-tête définissant les colonnes.
-     * En-têtes attendus pour les informations de base : FORENAME, NAME, COUNTRY, BIRTH_DATE, GENDER.
-     * Les autres en-têtes doivent correspondre aux noms de l'énumération Criteres.
+     * La première ligne du CSV doit contenir les en-têtes obligatoires.
      *
-     * @param filePath Chemin vers le fichier CSV.
-     * @param isHost   True si les adolescents dans ce fichier sont des hôtes, false s'ils sont des visiteurs.
-     * @return Une liste d'objets Adolescent.
+     * @param filePath Chemin vers le fichier CSV
+     * @param isHost   True si les adolescents sont des hôtes, false pour des visiteurs
+     * @return Liste d'objets Adolescent
      */
     public List<Adolescent> importAdolescents(String filePath, boolean isHost) {
         List<Adolescent> adolescents = new ArrayList<>();
-        String line = "";
-        BufferedReader br = null;
-
-        try {
-            br = new BufferedReader(new FileReader(filePath));
-            String headerLine = br.readLine();
-            if (headerLine == null) {
-                System.err.println("Erreur : Le fichier CSV est vide ou l'en-tête est manquant. Chemin : " + filePath);
-                return adolescents; // Retourne une liste vide
+        
+        try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
+            Map<String, Integer> headerMap = parseHeaders(br, filePath);
+            if (headerMap.isEmpty()) {
+                return adolescents;
             }
 
-            String[] headers = headerLine.split(CSV_DELIMITER);
-            Map<String, Integer> headerMap = new HashMap<>();
-            for (int i = 0; i < headers.length; i++) {
-                headerMap.put(headers[i].trim().toUpperCase(), i);
+            String line;
+            while ((line = br.readLine()) != null) {
+                processDataLine(line, headerMap, isHost, adolescents);
             }
-
-            // Vérifier les en-têtes essentiels
-            if (!headerMap.containsKey("FORENAME") || !headerMap.containsKey("NAME") ||
-                    !headerMap.containsKey("COUNTRY") || !headerMap.containsKey("BIRTH_DATE") ||
-                    !headerMap.containsKey("GENDER")) {
-                System.err.println("Erreur : Le fichier CSV manque un ou plusieurs en-têtes essentiels (FORENAME, NAME, COUNTRY, BIRTH_DATE, GENDER). Chemin : " + filePath);
-                if (br != null) {
-                    try {
-                        br.close();
-                    } catch (IOException e) {
-                        System.err.println("Erreur lors de la fermeture de BufferedReader : " + e.getMessage());
-                    }
-                }
-                return adolescents; // Retourne une liste vide
-            }
-
-            line = br.readLine(); // Lire la première ligne de données
-            while (line != null) {
-                String[] data = line.split(CSV_DELIMITER, -1); // Inclure les chaînes vides finales
-                if (data.length == headers.length) {
-                    try {
-                        String forename = data[headerMap.get("FORENAME")].trim();
-                        String name = data[headerMap.get("NAME")].trim();
-                        String country = data[headerMap.get("COUNTRY")].trim();
-                        LocalDate birthDate = LocalDate.parse(data[headerMap.get("BIRTH_DATE")].trim());
-                        String gender = data[headerMap.get("GENDER")].trim();
-
-                        Map<Criteria, String> criteria = new HashMap<>();
-                        for (int i = 0; i < headers.length; i++) {
-                            String header = headers[i].trim().toUpperCase();
-                            // GENDER est géré par le constructeur, les autres champs fixes ne sont pas des critères
-                            if (!header.equals("FORENAME") && !header.equals("NAME") &&
-                                    !header.equals("COUNTRY") && !header.equals("BIRTH_DATE") &&
-                                    !header.equals("GENDER")) {
-                                try {
-                                    Criteria critere = Criteria.valueOf(header); // Suppose que l'en-tête correspond au nom de l'énumération
-                                    
-                                    // Ignorer les critères HOST_* pour les adolescents de type GUEST
-                                    if (!isHost && header.startsWith("HOST_")) {
-                                        continue;
-                                    }
-                                    
-                                    // Ignorer les critères GUEST_* pour les adolescents de type HOST
-                                    if (isHost && header.startsWith("GUEST_")) {
-                                        continue;
-                                    }
-                                    
-                                    String value = data[i].trim();
-                                    if (!value.isEmpty()) { // N'ajouter que si la valeur n'est pas vide
-                                        criteria.put(critere, value);
-                                    } else if (critere == Criteria.PAIR_GENDER || critere == Criteria.HISTORY || critere == Criteria.GUEST_FOOD || critere == Criteria.HOST_FOOD || critere == Criteria.HOBBIES) {
-                                        // Ceux-ci peuvent légitimement être vides/nuls selon la logique de Criteres.isValid
-                                        criteria.put(critere, null);
-                                    }
-                                } catch (IllegalArgumentException e) {
-                                    // L'en-tête ne correspond à aucun nom d'énumération Criteres, l'ignorer ou journaliser un avertissement
-                                    // System.err.println("Avertissement : L'en-tête '" + header + "' ne correspond à aucun critère connu et sera ignoré.");
-                                }
-                            }
-                        }
-
-                        // Le constructeur Adolescent ajoutera en interne GENDER à sa map de critères
-                        Adolescent ado = new Adolescent(name, forename, gender, country, criteria, birthDate, isHost);
-                        adolescents.add(ado);
-
-                    } catch (DateTimeParseException e) {
-                        System.err.println("Erreur lors de l'analyse de la date dans la ligne : " + line + " - " + e.getMessage());
-                    } catch (ArrayIndexOutOfBoundsException e) {
-                        System.err.println("Erreur : Ligne mal formée (pas assez de colonnes) : " + line + " - " + e.getMessage());
-                    } catch (IllegalArgumentException e) {
-                        System.err.println("Erreur lors de la création de l'adolescent à partir de la ligne : " + line + " - " + e.getMessage());
-                    }
-                } else {
-                    System.err.println("Avertissement : Ligne mal formée ignorée (nombre de colonnes incorrect) : " + line);
-                }
-                line = br.readLine(); // Lire la ligne suivante
-            }
-
+            
         } catch (IOException e) {
-            System.err.println("Erreur lors de la lecture du fichier CSV : " + filePath + " - " + e.getMessage());
-        } finally {
-            if (br != null) {
-                try {
-                    br.close();
-                } catch (IOException e) {
-                    System.err.println("Erreur lors de la fermeture de BufferedReader : " + e.getMessage());
-                }
-            }
+            logError("Erreur lors de la lecture du fichier CSV", filePath, e);
         }
+        
         return adolescents;
     }
 
     /**
-     * Exporte les appariements d'un objet Affectation vers un fichier CSV.
-     *
-     * @param pairings   La map des appariements (Visiteur -> Hôte).
-     * @param filePath   Chemin vers le fichier CSV de sortie.
+     * Parse et valide les en-têtes du fichier CSV.
+     * @return Map des en-têtes et leurs positions, ou map vide si invalide
      */
-    public void exportAffectations(Map<Adolescent, Adolescent> pairings, String filePath) {
-        BufferedWriter bw = null;
+    private Map<String, Integer> parseHeaders(BufferedReader br, String filePath) throws IOException {
+        String headerLine = br.readLine();
+        if (headerLine == null) {
+            logError("Le fichier CSV est vide ou l'en-tête est manquant", filePath, null);
+            return new HashMap<>();
+        }
+
+        Map<String, Integer> headerMap = new HashMap<>();
+        String[] headers = headerLine.split(CSV_DELIMITER);
+        
+        for (int i = 0; i < headers.length; i++) {
+            headerMap.put(headers[i].trim().toUpperCase(), i);
+        }
+
+        if (!headerMap.keySet().containsAll(REQUIRED_HEADERS)) {
+            logError("Le fichier CSV manque un ou plusieurs en-têtes obligatoires", filePath, null);
+            return new HashMap<>();
+        }
+
+        return headerMap;
+    }
+
+    /**
+     * Traite une ligne de données du CSV et crée un objet Adolescent.
+     */
+    private void processDataLine(String line, Map<String, Integer> headerMap, boolean isHost, List<Adolescent> adolescents) {
+        String[] data = line.split(CSV_DELIMITER, -1);
+        if (data.length != headerMap.size()) {
+            logError("Ligne mal formée ignorée (nombre de colonnes incorrect)", line, null);
+            return;
+        }
+
         try {
-            bw = new BufferedWriter(new FileWriter(filePath));
-            // Écrire l'en-tête
-            bw.write("VISITOR_LASTNAME" + CSV_DELIMITER + "VISITOR_FIRSTNAME" + CSV_DELIMITER + "VISITOR_COUNTRY" +
-                    CSV_DELIMITER + "HOST_LASTNAME" + CSV_DELIMITER + "HOST_FIRSTNAME" + CSV_DELIMITER + "HOST_COUNTRY");
-            bw.newLine();
+            Map<Criteria, String> criteria = extractCriteria(data, headerMap, isHost);
+            Adolescent ado = createAdolescent(data, headerMap, criteria, isHost);
+            adolescents.add(ado);
+        } catch (Exception e) {
+            logError("Erreur lors du traitement de la ligne", line, e);
+        }
+    }
 
-            // Écrire les données
-            if (pairings != null) { // Vérifier si pairings est null
-                // Besoin d'itérer en utilisant un itérateur explicite ou convertir entrySet en List pour la boucle indexée
-                List<Map.Entry<Adolescent, Adolescent>> entryList = new ArrayList<>(pairings.entrySet());
-                for (int i = 0; i < entryList.size(); i++) {
-                    Map.Entry<Adolescent, Adolescent> entry = entryList.get(i);
-                    Adolescent visitor = entry.getKey();
-                    Adolescent host = entry.getValue();
-
-                    bw.write(visitor.getLastName() + CSV_DELIMITER + visitor.getFirstName() + CSV_DELIMITER + visitor.getCountryOfOrigin() +
-                            CSV_DELIMITER + host.getLastName() + CSV_DELIMITER + host.getFirstName() + CSV_DELIMITER + host.getCountryOfOrigin());
-                    bw.newLine();
-                }
-            }
-
-        } catch (IOException e) {
-            System.err.println("Erreur lors de l'écriture du fichier CSV : " + filePath + " - " + e.getMessage());
-        } finally {
-            if (bw != null) {
+    /**
+     * Extrait les critères d'une ligne de données.
+     */
+    private Map<Criteria, String> extractCriteria(String[] data, Map<String, Integer> headerMap, boolean isHost) {
+        Map<Criteria, String> criteria = new HashMap<>();
+        
+        for (Map.Entry<String, Integer> header : headerMap.entrySet()) {
+            String headerName = header.getKey();
+            int columnIndex = header.getValue();
+            
+            if (!REQUIRED_HEADERS.contains(headerName)) {
                 try {
-                    bw.close();
-                } catch (IOException e) {
-                    System.err.println("Erreur lors de la fermeture de BufferedWriter : " + e.getMessage());
+                    Criteria critere = Criteria.valueOf(headerName);
+                    
+                    // Ignorer les critères incompatibles avec le type d'adolescent
+                    if ((isHost && headerName.startsWith("GUEST_")) || 
+                        (!isHost && headerName.startsWith("HOST_"))) {
+                        continue;
+                    }
+                    
+                    String value = data[columnIndex].trim();
+                    if (!value.isEmpty()) {
+                        criteria.put(critere, value);
+                    } else if (isNullableField(critere)) {
+                        criteria.put(critere, null);
+                    }
+                } catch (IllegalArgumentException e) {
+                    logError("En-tête non reconnu ignoré", headerName, null);
                 }
             }
         }
+        
+        return criteria;
+    }
+
+    /**
+     * Vérifie si un critère peut avoir une valeur null.
+     */
+    private boolean isNullableField(Criteria critere) {
+        return critere == Criteria.PAIR_GENDER || 
+               critere == Criteria.HISTORY || 
+               critere == Criteria.GUEST_FOOD || 
+               critere == Criteria.HOST_FOOD || 
+               critere == Criteria.HOBBIES;
+    }
+
+    /**
+     * Crée un objet Adolescent à partir des données CSV.
+     */
+    private Adolescent createAdolescent(String[] data, Map<String, Integer> headerMap, 
+                                      Map<Criteria, String> criteria, boolean isHost) {
+        String forename = data[headerMap.get("FORENAME")].trim();
+        String name = data[headerMap.get("NAME")].trim();
+        String country = data[headerMap.get("COUNTRY")].trim();
+        LocalDate birthDate = LocalDate.parse(data[headerMap.get("BIRTH_DATE")].trim());
+        String gender = data[headerMap.get("GENDER")].trim();
+
+        return new Adolescent(name, forename, gender, country, criteria, birthDate, isHost);
+    }
+
+    /**
+     * Exporte les appariements vers un fichier CSV.
+     *
+     * @param pairings Map des appariements (Visiteur -> Hôte)
+     * @param filePath Chemin du fichier de sortie
+     */
+    public void exportAffectations(Map<Adolescent, Adolescent> pairings, String filePath) {
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter(filePath))) {
+            // En-tête
+            bw.write(String.join(CSV_DELIMITER, EXPORT_HEADERS));
+            bw.write(LINE_SEPARATOR);
+
+            // Données
+            if (pairings != null) {
+                for (Map.Entry<Adolescent, Adolescent> entry : pairings.entrySet()) {
+                    Adolescent visitor = entry.getKey();
+                    Adolescent host = entry.getValue();
+                    
+                    String[] rowData = {
+                        visitor.getLastName(), visitor.getFirstName(), visitor.getCountryOfOrigin(),
+                        host.getLastName(), host.getFirstName(), host.getCountryOfOrigin()
+                    };
+                    
+                    bw.write(String.join(CSV_DELIMITER, rowData));
+                    bw.write(LINE_SEPARATOR);
+                }
+            }
+        } catch (IOException e) {
+            logError("Erreur lors de l'écriture du fichier CSV", filePath, e);
+        }
+    }
+
+    /**
+     * Journalise une erreur avec un message, un contexte et une exception optionnelle.
+     */
+    private void logError(String message, String context, Exception e) {
+        StringBuilder error = new StringBuilder(message);
+        if (context != null && !context.isEmpty()) {
+            error.append(" : ").append(context);
+        }
+        if (e != null) {
+            error.append(" - ").append(e.getMessage());
+        }
+        System.err.println(error);
     }
 }

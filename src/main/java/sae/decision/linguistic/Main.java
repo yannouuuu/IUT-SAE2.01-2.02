@@ -7,19 +7,29 @@ import java.time.LocalDate;
 
 /**
  * Classe principale de l'application de gestion des affectations linguistiques.
- * Cette classe orchestre le processus complet : chargement des données, calcul des affectations,
- * export des résultats et gestion de l'historique.
+ * Cette classe orchestre le processus complet d'appariement entre hôtes et visiteurs :
+ * - Chargement des données depuis les fichiers CSV
+ * - Calcul des affectations optimales
+ * - Export des résultats
+ * - Gestion de l'historique des affectations
  */
 public class Main {
-
-    private CSVService csvService = new CSVService();
-    private HistoryService historyService = new HistoryService();
+    // Services utilisés
+    private final CSVService csvService = new CSVService();
+    private final HistoryService historyService = new HistoryService();
     
-    // Chemins des fichiers
+    // Constantes de configuration
     private static final String HOSTS_CSV_PATH = "src/test/resources/sample_hosts.csv";
     private static final String GUESTS_CSV_PATH = "src/test/resources/sample_guests.csv";
     private static final String EXPORT_CSV_PATH = "data/exported_affectations.csv";
     private static final String HISTORY_FILE_PATH = "data/affectation_history.dat";
+    private static final int MAX_DISPLAYED_PAIRS = 10;
+
+    // Format d'affichage du tableau des résultats
+    private static final String TABLE_HEADER = "Aff.| Visiteur        | Pays       | Hôte           | Pays";
+    private static final String TABLE_SEPARATOR = "----+----------------+-----------+----------------+-----------";
+    private static final String PAIR_FORMAT = "%3d | %-15.15s| %-10.10s | %-15.15s| %-10.10s%n";
+    private static final String ERROR_PAIR_FORMAT = "ERR | %-15.15s| %-10.10s | %-15.15s| %-10.10s%n";
 
     /**
      * Lancement de l'application.
@@ -34,9 +44,6 @@ public class Main {
      */
     public void run() {
         try {
-            // On n'utilise plus les fichiers d'exemple, on prend directement ceux du dossier resources
-            // createSampleFilesIfNotExists();
-
             // 1. Charger les données depuis les fichiers CSV (d'exemples ou réel)
             System.out.println("1. Chargement des données...");
             List<Adolescent> hosts = csvService.importAdolescents(HOSTS_CSV_PATH, true);
@@ -129,8 +136,8 @@ public class Main {
                 System.out.println();
                 
                 // Format en tableau
-                System.out.println("Aff.| Visiteur        | Pays       | Hôte           | Pays");
-                System.out.println("----+----------------+-----------+----------------+-----------");
+                System.out.println(TABLE_HEADER);
+                System.out.println(TABLE_SEPARATOR);
                 
                 for (int i = 0; i < Math.min(MAX_DISPLAYED_PAIRS, entries.size()); i++) {
                     Map.Entry<Adolescent, Adolescent> entry = entries.get(i);
@@ -147,12 +154,12 @@ public class Main {
                     String hostFullName = host.getFirstName() + " " + host.getLastName();
                     
                     if (affinity != -999) {
-                        System.out.printf("%3d | %-15.15s| %-10.10s | %-15.15s| %-10.10s%n",
+                        System.out.printf(PAIR_FORMAT,
                             affinity,
                             visitorFullName, visitor.getCountryOfOrigin(),
                             hostFullName, host.getCountryOfOrigin());
                     } else {
-                        System.out.printf("ERR | %-15.15s| %-10.10s | %-15.15s| %-10.10s%n",
+                        System.out.printf(ERROR_PAIR_FORMAT,
                             visitorFullName, visitor.getCountryOfOrigin(),
                             hostFullName, host.getCountryOfOrigin());
                     }
