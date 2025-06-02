@@ -71,9 +71,7 @@ public class HistoryService {
             }
         } catch (IOException e) {
             // Le fichier non trouvé est un cas courant pour la première exécution, donc ne pas afficher d'erreur sauf si verbeux
-            // System.err.println("Erreur lors du chargement de l'historique des affectations (le fichier n'existe peut-être pas encore): " + e.getMessage());
-        } catch (ClassNotFoundException e) {
-            System.err.println("Erreur lors du chargement de l'historique des affectations (classe non trouvée): " + e.getMessage());
+            System.err.println("Erreur lors du chargement de l'historique des affectations (le fichier n'existe peut-être pas encore): " + e.getMessage());
         } finally {
             if (ois != null) {
                 try {

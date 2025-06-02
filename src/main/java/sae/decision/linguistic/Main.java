@@ -76,11 +76,13 @@ public class Main {
             displayPairings(pairings);
             
             System.out.println("\n3. Export des résultats...");
+
             // 4. Exporter les résultats
             csvService.exportAffectations(pairings, EXPORT_CSV_PATH);
             System.out.println("   - Résultats exportés vers: " + EXPORT_CSV_PATH);
             
             System.out.println("\n4. Gestion de l'historique...");
+
             // 5. Mettre à jour l'historique
             try {
                 saveToHistory(affectation);
@@ -197,7 +199,7 @@ public class Main {
             
         } catch (Exception e) {
             System.err.println("Erreur lors de la sauvegarde dans l'historique: " + e.getMessage());
-            throw e; // Relancer pour que l'appelant puisse gérer
+            throw e; // Relancer pour que l'utilisateur puisse gérer
         }
     }
 
