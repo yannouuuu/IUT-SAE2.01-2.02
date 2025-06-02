@@ -8,6 +8,13 @@
             "type": "java",
             "name": "Main",
             "request": "launch",
+            "mainClass": "sae.decision.linguistic.Main",
+            "projectName": "D7"
+        },
+        {
+            "type": "java",
+            "name": "Main",
+            "request": "launch",
             "mainClass": "main.Main",
             "projectName": "D7_5dc826e6"
         },

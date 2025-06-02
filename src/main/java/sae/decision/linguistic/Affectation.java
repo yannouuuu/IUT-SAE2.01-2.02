@@ -82,9 +82,10 @@ public class Affectation implements Serializable {
         for (int i = 0; i < n; i++) {
             xy[i] = -1;
             yx[i] = -1;
+            ly[i] = 0; // Initialiser ly à 0
         }
 
-        // Trouver le minimum dans chaque ligne et le soustraire
+        // Initialiser lx avec le minimum de chaque ligne
         for (int i = 0; i < n; i++) {
             int min = Integer.MAX_VALUE;
             for (int j = 0; j < n; j++) {
@@ -92,11 +93,7 @@ public class Affectation implements Serializable {
                     min = costMatrix[i][j];
                 }
             }
-            for (int j = 0; j < n; j++) {
-                if (costMatrix[i][j] != Integer.MAX_VALUE / 2) {
-                    lx[i] = min;
-                }
-            }
+            lx[i] = min;
         }
 
         // Trouver une affectation initiale
@@ -168,6 +165,12 @@ public class Affectation implements Serializable {
                                 }
                             }
                         }
+                    }
+                    
+                    // Vérifier si delta est toujours à sa valeur initiale (aucun progrès possible)
+                    if (delta == Integer.MAX_VALUE) {
+                        // Si on ne peut pas améliorer, sortir de la boucle
+                        break;
                     }
                     
                     // Mettre à jour les étiquettes

@@ -84,6 +84,17 @@ public class CSVService {
                                     !header.equals("GENDER")) {
                                 try {
                                     Criteria critere = Criteria.valueOf(header); // Suppose que l'en-tête correspond au nom de l'énumération
+                                    
+                                    // Ignorer les critères HOST_* pour les adolescents de type GUEST
+                                    if (!isHost && header.startsWith("HOST_")) {
+                                        continue;
+                                    }
+                                    
+                                    // Ignorer les critères GUEST_* pour les adolescents de type HOST
+                                    if (isHost && header.startsWith("GUEST_")) {
+                                        continue;
+                                    }
+                                    
                                     String value = data[i].trim();
                                     if (!value.isEmpty()) { // N'ajouter que si la valeur n'est pas vide
                                         criteria.put(critere, value);
