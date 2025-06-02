@@ -47,6 +47,13 @@ jobs:
           ls -la target/
           ls -la target/site/
           ls -la target/site/apidocs/
+          
+      - name: Upload Javadoc
+        uses: actions/upload-artifact@v4
+        with:
+          name: javadoc
+          path: target/site/apidocs/
+          retention-days: 1
 
   deploy:
     needs: javadoc
@@ -58,15 +65,16 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       
+      - name: Download Javadoc
+        uses: actions/download-artifact@v4
+        with:
+          name: javadoc
+          path: docs
+      
       - name: Setup Pages
         uses: actions/configure-pages@v4
         with:
           static_site_generator: jekyll
-          
-      - name: Create docs directory
-        run: |
-          mkdir -p docs
-          cp -r target/site/apidocs/* docs/
           
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
