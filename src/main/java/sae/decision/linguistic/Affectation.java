@@ -82,7 +82,7 @@ public class Affectation implements Serializable {
         for (int i = 0; i < n; i++) {
             xy[i] = -1;
             yx[i] = -1;
-            ly[i] = 0; // Initialiser ly à 0
+            ly[i] = 0;
         }
 
         // Initialiser lx avec le minimum de chaque ligne

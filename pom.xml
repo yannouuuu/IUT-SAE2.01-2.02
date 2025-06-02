@@ -35,6 +35,7 @@
                     <source>24</source>
                     <encoding>UTF-8</encoding>
                     <doclint>none</doclint>
+                    <show>private</show>
                 </configuration>
             </plugin>
         </plugins>
