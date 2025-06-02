@@ -41,6 +41,12 @@ jobs:
           
       - name: Generate Javadoc
         run: mvn javadoc:javadoc
+        
+      - name: List target directory
+        run: |
+          ls -la target/
+          ls -la target/site/
+          ls -la target/site/apidocs/
 
   deploy:
     needs: javadoc
@@ -57,10 +63,15 @@ jobs:
         with:
           static_site_generator: jekyll
           
+      - name: Create docs directory
+        run: |
+          mkdir -p docs
+          cp -r target/site/apidocs/* docs/
+          
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: ./target/site/apidocs
+          path: ./docs
 
       - name: Deploy to GitHub Pages
         id: deployment

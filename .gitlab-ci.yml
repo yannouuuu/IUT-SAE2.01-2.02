@@ -1,10 +1,25 @@
 image: maven:3.9-eclipse-temurin-24
 
 stages:
+  - deploy
   - build
   - javadoc
   - pages
-  - deploy
+
+deploy_to_yannouuuu_github:
+  stage: deploy
+  script:
+    - apt-get update && apt-get install -y git
+    - git config --global user.email "yannrenard1025@gmail.com"
+    - git config --global user.name "yannouuuu"
+    - git remote rm github || true
+    - git remote add github https://$GITHUB_TOKEN@github.com/yannouuuu/IUT-SAE2.01-2.02.git
+    - git fetch github
+    - git merge -X ours github/main --allow-unrelated-histories
+    - git push github HEAD:main
+    - git push github --tags
+  only:
+    - main
 
 build:
   stage: build
@@ -28,20 +43,5 @@ pages:
   artifacts:
     paths:
       - public
-  only:
-    - main
-
-deploy_to_yannouuuu_github:
-  stage: deploy
-  script:
-    - apt-get update && apt-get install -y git
-    - git config --global user.email "yannrenard1025@gmail.com"
-    - git config --global user.name "yannouuuu"
-    - git remote rm github || true
-    - git remote add github https://$GITHUB_TOKEN@github.com/yannouuuu/IUT-SAE2.01-2.02.git
-    - git fetch github
-    - git merge -X ours github/main --allow-unrelated-histories
-    - git push github HEAD:main
-    - git push github --tags
   only:
     - main
