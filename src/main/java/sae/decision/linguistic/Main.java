@@ -129,9 +129,6 @@ public class Main {
                 // Trier par affinité décroissante
                 entries.sort((e1, e2) -> Integer.compare(affinities.getOrDefault(e2, 0), affinities.getOrDefault(e1, 0)));
                 
-                // Limite du nombre de paires à afficher
-                final int MAX_DISPLAYED_PAIRS = 10;
-                
                 System.out.println("Top " + Math.min(MAX_DISPLAYED_PAIRS, entries.size()) + " paires avec la meilleure affinité:");
                 System.out.println();
                 
