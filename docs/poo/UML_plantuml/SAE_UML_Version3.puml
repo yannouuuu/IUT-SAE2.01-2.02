@@ -1,0 +1,64 @@
+@startuml SAE_UML_Version3
+!theme vibrant
+skinparam classAttributeIconSize 0
+
+class Adolescent {
+    ...
+    ---
+    + addCriterion(Criteria, String, boolean): void
+    + isCompatible(Adolescent): boolean
+    + isFrenchCompatible(Adolescent): boolean
+    - isFrenchParticipantInvolved(Adolescent): boolean
+    - hasCommonHobbies(Adolescent): boolean
+    - parseHobbies(String, String): Set<String>
+    + isHistoryCompatible(Adolescent): boolean
+    + animalScore(Adolescent): int
+    + dietScore(Adolescent): int
+    + getHistoryAffinityBonus(Adolescent): int
+    + calculateAffinity(Adolescent): int
+    + calculateAgeDifference(Adolescent): double
+}
+
+class Affectation {
+  - hosts: List<Adolescent>
+  - visitors: List<Adolescent>
+  ---
+  + calculatePairing(): Map<Adolescent, Adolescent>
+  - hungarianAlgorithm(int[][]): int[]
+}
+
+enum Criteria {
+  ...
+  ---
+  + getType(): char
+  + isValid(String): boolean
+}
+
+class CSVService {
+  ...
+  ---
+  + importAdolescents(String, boolean): List<Adolescent>
+  - parseHeaders(BufferedReader, String): Map<String, Integer>
+  - processDataLine(String, Map<String, Integer>, boolean, List<Adolescent>): void
+  - extractCriteria(String[], Map<String, Integer>, boolean): Map<Criteria, String>
+  - isNullableField(Criteria): boolean
+  - createAdolescent(String[], Map<String, Integer>, Map<Criteria, String>, boolean): Adolescent
+  + exportAffectations(Map<Adolescent, Adolescent>, String): void
+  - logError(String, String, Exception): void
+}
+
+class HistoryService {
+  ...
+  ---
+  + saveAffectationHistory(Map<String, Affectation>, String): void
+  + loadAffectationHistory(String): Map<String, Affectation>
+}
+
+Affectation --> "*" Adolescent : uses
+Adolescent --> "*" Criteria : uses
+CSVService ..> Adolescent : creates
+CSVService ..> Criteria : uses
+CSVService ..> Affectation : uses (for export)
+HistoryService ..> Affectation : saves/loads
+
+@enduml

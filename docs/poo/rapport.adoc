@@ -57,3 +57,23 @@ Les modifications se concentrent sur les deux principaux aspects correspondant a
         ***   Gère `null` différemment selon le critère (permis pour `PAIR_GENDER`, `HISTORY`, `GUEST_FOOD`, `HOST_FOOD`, `HOBBIES` mais lève une exception pour `GUEST_ANIMAL_ALLERGY`, `HOST_HAS_ANIMAL`, `GENDER`).
         ***   Retourne `true` si toutes les validations passent.
         ***   Lève une `IllegalArgumentException` avec un message d'erreur spécifique si la validation échoue.
+
+## Semaine 5-6
+
+### UML Version 5-6
+
+image::UML_plantuml/SAE_UML_Version3.png[UML Version 5-6]
+
+### Principales évolutions (Version 3-4 vers Version 5-6)
+
+==== Fichier `src/main/Affectation.java`
+
+==== Fichier `src/main/CSVService.java`
+
+==== Fichier `src/main/HistoryService.java`
+
+==== Fichier `src/main/Main.java`
+
+==== Fichier `src/main/Adolescent.java`
+
+==== Fichier `src/main/Criteres.java`
