@@ -1,5 +1,4 @@
 ---
-# Définition des styles pour le PDF
 mainfont: "DejaVu Serif"
 sansfont: "DejaVu Sans"
 monofont: "DejaVu Sans Mono"
