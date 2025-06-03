@@ -6,7 +6,17 @@
   <component name="ChangeListManager">
     <list default="true" id="3b4b6703-5f28-470c-8622-3ff0e8e904c9" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.vscode/launch.json" beforeDir="false" afterPath="$PROJECT_DIR$/.vscode/launch.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/sae/decision/linguistic/Adolescent.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/sae/decision/linguistic/Affectation.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/sae/decision/linguistic/CSVService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/sae/decision/linguistic/Criteria.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/sae/decision/linguistic/HistoryService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/sae/decision/linguistic/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/sae/decision/linguistic/Main.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/AdolescentTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/AdolescentTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/CSVServiceTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/CSVServiceTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/HistoryServiceTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/HistoryServiceTest.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -141,7 +151,7 @@
       <workItem from="1748857708006" duration="4418000" />
       <workItem from="1748898708264" duration="218000" />
       <workItem from="1748898938634" duration="42000" />
-      <workItem from="1748899009653" duration="1589000" />
+      <workItem from="1748899009653" duration="2576000" />
     </task>
     <servers />
   </component>

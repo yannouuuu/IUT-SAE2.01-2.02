@@ -1,4 +1,5 @@
-import sae.decision.linguistic.*;
+import sae.decision.linguistic.model.Affectation;
+import sae.decision.linguistic.service.HistoryService;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.BeforeEach;

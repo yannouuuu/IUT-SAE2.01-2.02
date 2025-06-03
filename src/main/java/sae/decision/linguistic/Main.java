@@ -1,7 +1,13 @@
 package sae.decision.linguistic;
 
 import java.util.List;
-import java.util.Map;  
+import java.util.Map;
+
+import sae.decision.linguistic.model.Adolescent;
+import sae.decision.linguistic.model.Affectation;
+import sae.decision.linguistic.service.CSVService;
+import sae.decision.linguistic.service.HistoryService;
+
 import java.util.HashMap;
 import java.time.LocalDate;
 

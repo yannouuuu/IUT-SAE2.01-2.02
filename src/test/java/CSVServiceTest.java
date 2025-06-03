@@ -1,4 +1,6 @@
-import sae.decision.linguistic.*;
+import sae.decision.linguistic.model.Adolescent;
+import sae.decision.linguistic.model.Criteria;
+import sae.decision.linguistic.service.CSVService;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.BeforeEach;

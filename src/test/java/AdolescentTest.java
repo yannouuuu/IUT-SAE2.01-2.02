@@ -1,4 +1,5 @@
-import sae.decision.linguistic.*;
+import sae.decision.linguistic.model.Adolescent;
+import sae.decision.linguistic.model.Criteria;
 
 import org.junit.jupiter.api.Test;
 import java.time.LocalDate;

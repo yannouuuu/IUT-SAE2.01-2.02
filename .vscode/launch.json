@@ -6,6 +6,20 @@
     "configurations": [
         {
             "type": "java",
+            "name": "AppFX",
+            "request": "launch",
+            "mainClass": "sae.decision.linguistic.view.AppFX",
+            "projectName": "D7"
+        },
+        {
+            "type": "java",
+            "name": "AppFX",
+            "request": "launch",
+            "mainClass": "sae.decision.linguistic.AppFX",
+            "projectName": "D7"
+        },
+        {
+            "type": "java",
             "name": "Main",
             "request": "launch",
             "mainClass": "sae.decision.linguistic.Main",
