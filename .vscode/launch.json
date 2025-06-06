@@ -43,6 +43,14 @@
             "name": "Current File",
             "request": "launch",
             "mainClass": "${file}"
+        },
+        {
+            "type": "java",
+            "name": "Launch AppFX",
+            "request": "launch",
+            "mainClass": "sae.decision.linguistic.AppFX",
+            "vmArgs": "--module-path ${workspaceFolder}/lib --add-modules javafx.controls,javafx.fxml,javafx.graphics,javafx.base,javafx.media,javafx.web,javafx.swing",
+            "projectName": "D7"
         }
     ]
 }

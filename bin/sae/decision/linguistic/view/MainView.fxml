@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.text.*?>
+<?import javafx.collections.FXCollections?>
+<?import java.lang.String?>
+
+<VBox xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml"
+      fx:controller="sae.decision.linguistic.controller.MainViewController"
+      spacing="20">
+    <padding>
+        <Insets top="20" right="20" bottom="20" left="20"/>
+    </padding>
+
+    <HBox spacing="10">
+        <Button text="Charger CSV" />
+        <Button text="Sauvegarder Résultat" />
+        <Button text="Réglages" />
+    </HBox>
+
+    <TitledPane text="Sélection des pays" expanded="true">
+        <HBox spacing="10" alignment="CENTER_LEFT">
+            <padding>
+                <Insets top="10" right="10" bottom="10" left="10"/>
+            </padding>
+            <VBox spacing="5">
+                <Label text="PAYS A :" />
+                <ComboBox fx:id="comboPaysA">
+                    <items>
+                        <FXCollections fx:factory="observableArrayList">
+                            <String fx:value="FRANCE" />
+                            <String fx:value="ALLEMAGNE" />
+                        </FXCollections>
+                    </items>
+                </ComboBox>
+            </VBox>
+
+            <Label text="→" style="-fx-font-size: 24px; -fx-font-weight: bold;" />
+
+            <VBox spacing="5">
+                <Label text="PAYS B :" />
+                <ComboBox fx:id="comboPaysB">
+                    <items>
+                        <FXCollections fx:factory="observableArrayList">
+                            <String fx:value="FRANCE" />
+                            <String fx:value="ALLEMAGNE" />
+                        </FXCollections>
+                    </items>
+                </ComboBox>
+            </VBox>
+
+            <Button text="Valider" style="-fx-background-color: black; -fx-text-fill: white;" />
+        </HBox>
+    </TitledPane>
+
+    <TitledPane text="Liste des appariements" expanded="true">
+        <VBox>
+            <padding>
+                <Insets top="10" right="10" bottom="10" left="10"/>
+            </padding>
+            <TableView fx:id="tableAppariements">
+                <columns>
+                    <TableColumn fx:id="colStatut" text="" prefWidth="30" />
+                    <TableColumn fx:id="colHote" text="Hôte" prefWidth="150" />
+                    <TableColumn fx:id="colVisiteur" text="Visiteur" prefWidth="150" />
+                    <TableColumn fx:id="colScore" text="Score affinité" prefWidth="100" />
+                </columns>
+            </TableView>
+        </VBox>
+    </TitledPane>
+
+    <HBox spacing="10">
+        <Button text="Voir les détails" style="-fx-background-color: black; -fx-text-fill: white;" />
+        <Button text="Gestion des appariements" />
+        <Button text="Gestions des élèves" />
+    </HBox>
+
+</VBox>

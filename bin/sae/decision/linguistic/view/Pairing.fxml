@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<VBox prefHeight="700.0" prefWidth="1000.0" spacing="24.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sae.decision.linguistic.controller.PairingController">
+   <padding>
+      <Insets bottom="24.0" left="24.0" right="24.0" top="24.0" />
+   </padding>
+   <children>
+      <HBox alignment="CENTER_LEFT" spacing="10.0">
+         <children>
+            <VBox>
+               <children>
+                  <Label styleClass="h1" text="Appariements">
+                     <font>
+                        <Font name="System Bold" size="24.0" />
+                     </font>
+                  </Label>
+                  <Label styleClass="text-muted" text="Gérez les appariements entre hôtes et visiteurs" />
+               </children>
+            </VBox>
+            <Region HBox.hgrow="ALWAYS" />
+            <Button mnemonicParsing="false" styleClass="button-primary" text="Lancer le calcul" />
+            <Button mnemonicParsing="false" text="Appariement manuel" />
+         </children>
+      </HBox>
+      
+      <HBox spacing="16.0">
+         <children>
+            <VBox styleClass="card" HBox.hgrow="ALWAYS">
+               <children>
+                  <BorderPane>
+                     <left>
+                        <VBox spacing="4.0" BorderPane.alignment="CENTER">
+                           <children>
+                              <Label styleClass="text-muted" text="Total appariements" />
+                              <Label fx:id="totalAppariementsLabel" styleClass="h2" text="1">
+                                 <font>
+                                    <Font name="System Bold" size="22.0" />
+                                 </font>
+                              </Label>
+                           </children>
+                        </VBox>
+                     </left>
+                     <right>
+                        <Label styleClass="icon-placeholder, icon-blue" BorderPane.alignment="CENTER" />
+                     </right>
+                  </BorderPane>
+               </children>
+            </VBox>
+            <VBox styleClass="card" HBox.hgrow="ALWAYS">
+               <children>
+                  <BorderPane>
+                     <left>
+                        <VBox spacing="4.0" BorderPane.alignment="CENTER">
+                           <children>
+                              <Label styleClass="text-muted" text="Validés" />
+                              <Label fx:id="validesLabel" styleClass="h2-green" text="1">
+                                 <font>
+                                    <Font name="System Bold" size="22.0" />
+                                 </font>
+                              </Label>
+                           </children>
+                        </VBox>
+                     </left>
+                     <right>
+                        <Label styleClass="icon-placeholder, icon-green" BorderPane.alignment="CENTER" />
+                     </right>
+                  </BorderPane>
+               </children>
+            </VBox>
+            <VBox styleClass="card" HBox.hgrow="ALWAYS">
+               <children>
+                  <BorderPane>
+                     <left>
+                        <VBox spacing="4.0" BorderPane.alignment="CENTER">
+                           <children>
+                              <Label styleClass="text-muted" text="En attente" />
+                              <Label fx:id="enAttenteLabel" styleClass="h2-yellow" text="0">
+                                 <font>
+                                    <Font name="System Bold" size="22.0" />
+                                 </font>
+                              </Label>
+                           </children>
+                        </VBox>
+                     </left>
+                     <right>
+                        <Label styleClass="icon-placeholder, icon-yellow" BorderPane.alignment="CENTER" />
+                     </right>
+                  </BorderPane>
+               </children>
+            </VBox>
+         </children>
+      </HBox>
+      
+      <HBox alignment="CENTER_LEFT" spacing="16.0">
+         <children>
+            <HBox alignment="CENTER_LEFT" spacing="8.0" HBox.hgrow="ALWAYS">
+                <children>
+                    <Label text="🔍" styleClass="icon-muted" />
+                    <TextField fx:id="searchField" promptText="Rechercher par nom ou prénom..." HBox.hgrow="ALWAYS" styleClass="text-field-transparent" />
+                </children>
+            </HBox>
+            <ComboBox fx:id="statusFilter" minWidth="200.0" promptText="Tous les statuts" />
+         </children>
+      </HBox>
+      
+      <TableView fx:id="appariementsTable" VBox.vgrow="ALWAYS">
+        <columns>
+          <TableColumn fx:id="hoteColumn" prefWidth="200.0" text="Hôte" />
+          <TableColumn fx:id="visiteurColumn" prefWidth="200.0" text="Visiteur" />
+          <TableColumn fx:id="scoreColumn" minWidth="75.0" text="Score" />
+          <TableColumn fx:id="statutColumn" minWidth="100.0" text="Statut" />
+          <TableColumn fx:id="dateCreationColumn" prefWidth="120.0" text="Date création" />
+          <TableColumn fx:id="actionsColumn" minWidth="80.0" text="Actions" />
+        </columns>
+         <placeholder>
+            <Label text="Aucun appariement trouvé avec les filtres sélectionnés." />
+         </placeholder>
+      </TableView>
+   </children>
+</VBox>

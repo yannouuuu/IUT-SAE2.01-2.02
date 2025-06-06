@@ -8,8 +8,27 @@
         "editor.insertSpaces": false
     },
     "java.project.referencedLibraries": [
-        "lib\\**\\*.jar"
+        "lib/javafx.base.jar",
+        "lib/javafx.controls.jar",
+        "lib/javafx.fxml.jar",
+        "lib/javafx.graphics.jar",
+        "lib/javafx.media.jar",
+        "lib/javafx.swing.jar",
+        "lib/javafx.web.jar",
+        "lib/javafx-swt.jar",
+        "lib/calcul-affectation.jar",
+        "lib/jgrapht-core-1.5.1.jar",
+        "lib/jheaps-0.14.jar",
+        "lib/sae_s2_2024.jar"
     ],
     "java.project.outputPath": "bin",
-    "java.configuration.updateBuildConfiguration": "interactive"
+    "java.configuration.updateBuildConfiguration": "interactive",
+    "java.configuration.runtimes": [
+        {
+            "name": "JavaSE-24",
+            "path": "C:\\Program Files\\Java\\jdk-24",
+            "default": true
+        }
+    ],
+    "java.jdt.ls.vmargs": "-XX:+UseParallelGC -XX:GCTimeRatio=4 -XX:AdaptiveSizePolicyWeight=90 -Dsun.zip.disableMemoryMapping=true -Xmx2G -Xms100m -Xlog:disable"
 }
