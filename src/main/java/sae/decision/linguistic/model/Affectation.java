@@ -1,9 +1,9 @@
 package sae.decision.linguistic.model;
 
+import java.io.Serializable;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.HashMap;
-import java.io.Serializable;
 
 /**
  * Classe représentant une affectation d'adolescents visiteurs à des adolescents hôtes.

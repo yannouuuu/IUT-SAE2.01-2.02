@@ -1,12 +1,12 @@
 package sae.decision.linguistic.controller;
 
+import java.io.IOException;
+import java.net.URL;
+
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.layout.StackPane;
-
-import java.io.IOException;
-import java.net.URL;
 
 public class MainController {
 

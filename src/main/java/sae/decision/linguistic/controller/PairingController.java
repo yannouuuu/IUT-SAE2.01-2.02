@@ -15,9 +15,6 @@ public class PairingController {
     private Button lancerCalculButton;
     
     @FXML
-    private Button appariementManuelButton;
-    
-    @FXML
     private Button exportButton;
 
     // Labels de statistiques
@@ -84,7 +81,6 @@ public class PairingController {
         setupBlackButton(lancerCalculButton);
         
         // Boutons secondaires (gris)
-        setupSecondaryButton(appariementManuelButton);
         setupSecondaryButton(exportButton);
         setupSecondaryButton(resetFiltersButton);
         

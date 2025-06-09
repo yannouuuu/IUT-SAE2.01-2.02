@@ -222,4 +222,6 @@ public class MainViewController {
             statsLabel.setText("Aucun appariement généré");
         }
     }
+
+    
 }
