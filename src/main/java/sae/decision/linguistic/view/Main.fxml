@@ -10,7 +10,7 @@
         <fx:include source="Sidebar.fxml"/>
     </left>
 
-    <!-- La zone centrale est un conteneur qui affichera les différentes vues -->
+    <!-- La zone centrale est un conteneur qui affiche les différentes vues -->
     <center>
         <StackPane fx:id="contentPane"/>
     </center>

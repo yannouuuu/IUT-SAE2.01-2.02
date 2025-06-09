@@ -1,79 +1,155 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
-<?import javafx.geometry.Insets?>
-<?import javafx.scene.text.*?>
+
 <?import javafx.collections.FXCollections?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
 <?import java.lang.String?>
 
-<VBox xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml"
-      fx:controller="sae.decision.linguistic.controller.MainViewController"
-      spacing="20">
-    <padding>
-        <Insets top="20" right="20" bottom="20" left="20"/>
-    </padding>
+<VBox xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="sae.decision.linguistic.controller.MainViewController">
+    <children>
+        <ScrollPane fitToWidth="true" fitToHeight="true" hbarPolicy="AS_NEEDED" vbarPolicy="AS_NEEDED" style="-fx-background-color: #f8f9fa; -fx-background: #f8f9fa;">
+            <content>
+                <VBox spacing="24.0" style="-fx-background-color: #f8f9fa;">
+                    <padding>
+                        <Insets bottom="24.0" left="24.0" right="24.0" top="24.0" />
+                    </padding>
 
-    <HBox spacing="10">
-        <Button text="Charger CSV" />
-        <Button text="Sauvegarder Résultat" />
-        <Button text="Réglages" />
+    <!-- Header avec titre et actions principales -->
+    <VBox spacing="16.0" style="-fx-background-color: #ffffff; -fx-background-radius: 16px; -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.08), 8, 0.0, 0, 2);">
+        <padding>
+            <Insets bottom="24.0" left="24.0" right="24.0" top="24.0" />
+        </padding>
+        <children>
+            <HBox alignment="CENTER_LEFT">
+                <children>
+                    <VBox>
+                        <children>
+                            <Label styleClass="h1" text="Tableau de Bord">
+                                <font>
+                                    <Font name="System Bold" size="28.0" />
+                                </font>
+                            </Label>
+                            <Label styleClass="text-muted" text="Gestion des échanges linguistiques et appariements" />
+                        </children>
+                    </VBox>
+                    <Region HBox.hgrow="ALWAYS" />
+                    <HBox alignment="CENTER" spacing="12.0">
+                        <children>
+                            <Button fx:id="chargerCSVButton" text="Charger CSV" />
+                            <Button fx:id="sauvegarderButton" text="Sauvegarder" />
+                            <Button fx:id="reglagesHeaderButton" text="Réglages" />
+                        </children>
+                    </HBox>
+                </children>
+            </HBox>
+        </children>
+    </VBox>
+
+    <!-- Card de sélection des pays -->
+    <VBox spacing="16.0" style="-fx-background-color: #ffffff; -fx-background-radius: 16px; -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.08), 8, 0.0, 0, 2);">
+        <padding>
+            <Insets bottom="24.0" left="24.0" right="24.0" top="24.0" />
+        </padding>
+        <children>
+            <Label styleClass="h2" text="Sélection des Pays">
+                <font>
+                    <Font name="System Bold" size="20.0" />
+                </font>
+            </Label>
+            <HBox alignment="CENTER_LEFT" spacing="24.0">
+                <children>
+                    <VBox spacing="8.0">
+                        <children>
+                            <Label text="Pays de départ" style="-fx-font-size: 14px; -fx-font-weight: 600; -fx-text-fill: #495057;" />
+                            <ComboBox fx:id="comboPaysA" prefWidth="200.0" promptText="Sélectionner le pays A">
+                                <items>
+                                    <FXCollections fx:factory="observableArrayList">
+                                        <String fx:value="FRANCE" />
+                                        <String fx:value="ALLEMAGNE" />
+                                    </FXCollections>
+                                </items>
+                            </ComboBox>
+                        </children>
+                    </VBox>
+                    
+                    <Label text="⇄" style="-fx-font-size: 32px; -fx-font-weight: 700; -fx-text-fill: #6c6c6c;" />
+                    
+                    <VBox spacing="8.0">
+                        <children>
+                            <Label text="Pays d'accueil" style="-fx-font-size: 14px; -fx-font-weight: 600; -fx-text-fill: #495057;" />
+                            <ComboBox fx:id="comboPaysB" prefWidth="200.0" promptText="Sélectionner le pays B">
+                                <items>
+                                    <FXCollections fx:factory="observableArrayList">
+                                        <String fx:value="FRANCE" />
+                                        <String fx:value="ALLEMAGNE" />
+                                    </FXCollections>
+                                </items>
+                            </ComboBox>
+                        </children>
+                    </VBox>
+                    
+                    <Region HBox.hgrow="ALWAYS" />
+                    <Button fx:id="validerButton" text="Générer les Appariements" />
+                </children>
+            </HBox>
+        </children>
+    </VBox>
+
+    <!-- Card de la liste des appariements -->
+    <VBox spacing="16.0" style="-fx-background-color: #ffffff; -fx-background-radius: 16px; -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.08), 8, 0.0, 0, 2);" VBox.vgrow="ALWAYS">
+        <padding>
+            <Insets bottom="24.0" left="24.0" right="24.0" top="24.0" />
+        </padding>
+        <children>
+            <HBox alignment="CENTER_LEFT">
+                <children>
+                    <Label styleClass="h2" text="Appariements Générés">
+                        <font>
+                            <Font name="System Bold" size="20.0" />
+                        </font>
+                    </Label>
+                    <Region HBox.hgrow="ALWAYS" />
+                    <Label fx:id="statsLabel" text="0 appariements" style="-fx-font-size: 14px; -fx-font-weight: 600; -fx-text-fill: #6c6c6c;" />
+                </children>
+            </HBox>
+            <ScrollPane fitToWidth="true" fitToHeight="true" hbarPolicy="AS_NEEDED" vbarPolicy="AS_NEEDED" VBox.vgrow="ALWAYS" style="-fx-background-color: transparent; -fx-background: transparent;">
+                <content>
+                    <TableView fx:id="tableAppariements" style="-fx-background-color: transparent; -fx-background-radius: 8px;">
+                        <columns>
+                            <TableColumn fx:id="colStatut" prefWidth="40.0" text="État" />
+                            <TableColumn fx:id="colHote" prefWidth="250.0" text="Hôte" />
+                            <TableColumn fx:id="colVisiteur" prefWidth="250.0" text="Visiteur" />
+                            <TableColumn fx:id="colScore" prefWidth="120.0" text="Affinité" />
+                        </columns>
+                    </TableView>
+                </content>
+            </ScrollPane>
+        </children>
+    </VBox>
+
+    <!-- Actions en bas -->
+    <HBox alignment="CENTER_LEFT" spacing="12.0">
+        <children>
+            <Button fx:id="voirDetailsButton" text="Voir les Détails" />
+            <Button fx:id="gestionAppariementsButton" text="Gestion des Appariements" />
+            <Button fx:id="gestionElevesButton" text="Gestion des Élèves" />
+            <Region HBox.hgrow="ALWAYS" />
+            <Label fx:id="derniereMajLabel" text="Dernière mise à jour : jamais" style="-fx-font-size: 12px; -fx-font-weight: 500; -fx-text-fill: #868e96;" />
+        </children>
     </HBox>
 
-    <TitledPane text="Sélection des pays" expanded="true">
-        <HBox spacing="10" alignment="CENTER_LEFT">
-            <padding>
-                <Insets top="10" right="10" bottom="10" left="10"/>
-            </padding>
-            <VBox spacing="5">
-                <Label text="PAYS A :" />
-                <ComboBox fx:id="comboPaysA">
-                    <items>
-                        <FXCollections fx:factory="observableArrayList">
-                            <String fx:value="FRANCE" />
-                            <String fx:value="ALLEMAGNE" />
-                        </FXCollections>
-                    </items>
-                </ComboBox>
-            </VBox>
-
-            <Label text="→" style="-fx-font-size: 24px; -fx-font-weight: bold;" />
-
-            <VBox spacing="5">
-                <Label text="PAYS B :" />
-                <ComboBox fx:id="comboPaysB">
-                    <items>
-                        <FXCollections fx:factory="observableArrayList">
-                            <String fx:value="FRANCE" />
-                            <String fx:value="ALLEMAGNE" />
-                        </FXCollections>
-                    </items>
-                </ComboBox>
-            </VBox>
-
-            <Button text="Valider" style="-fx-background-color: black; -fx-text-fill: white;" />
-        </HBox>
-    </TitledPane>
-
-    <TitledPane text="Liste des appariements" expanded="true">
-        <VBox>
-            <padding>
-                <Insets top="10" right="10" bottom="10" left="10"/>
-            </padding>
-            <TableView fx:id="tableAppariements">
-                <columns>
-                    <TableColumn fx:id="colStatut" text="" prefWidth="30" />
-                    <TableColumn fx:id="colHote" text="Hôte" prefWidth="150" />
-                    <TableColumn fx:id="colVisiteur" text="Visiteur" prefWidth="150" />
-                    <TableColumn fx:id="colScore" text="Score affinité" prefWidth="100" />
-                </columns>
-            </TableView>
-        </VBox>
-    </TitledPane>
-
-    <HBox spacing="10">
-        <Button text="Voir les détails" style="-fx-background-color: black; -fx-text-fill: white;" />
-        <Button text="Gestion des appariements" />
-        <Button text="Gestions des élèves" />
-    </HBox>
-
+                </VBox>
+            </content>
+        </ScrollPane>
+    </children>
 </VBox>

@@ -38,8 +38,15 @@ build/
 !**/src/main/**/build/
 !**/src/test/**/build/
 
-### VS Code ###
-.vscode/
-
 ### Mac OS ###
 .DS_Store
+
+# VS Code user settings
+.vscode/settings.json
+.vscode/tasks.json
+.vscode/launch.json
+
+# Compiled files
+bin/
+target/
+*.class

@@ -1,56 +1,30 @@
 {
-    // Use IntelliSense to learn about possible attributes.
-    // Hover to view descriptions of existing attributes.
-    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
     "version": "0.2.0",
     "configurations": [
         {
             "type": "java",
             "name": "AppFX",
             "request": "launch",
-            "mainClass": "sae.decision.linguistic.view.AppFX",
-            "projectName": "D7"
-        },
-        {
-            "type": "java",
-            "name": "AppFX",
-            "request": "launch",
             "mainClass": "sae.decision.linguistic.AppFX",
-            "projectName": "D7"
+            "projectName": "D7",
+            "vmArgs": [
+                "--module-path",
+                "${env:JAVAFX_HOME}/lib",
+                "--add-modules",
+                "javafx.controls,javafx.fxml,javafx.graphics,javafx.base,javafx.media,javafx.web,javafx.swing"
+            ]
         },
         {
             "type": "java",
-            "name": "Main",
+            "name": "Debug (Launch)",
             "request": "launch",
-            "mainClass": "sae.decision.linguistic.Main",
-            "projectName": "D7"
-        },
-        {
-            "type": "java",
-            "name": "Main",
-            "request": "launch",
-            "mainClass": "main.Main",
-            "projectName": "D7_5dc826e6"
-        },
-        {
-            "type": "java",
-            "name": "Launch Java Program",
-            "request": "launch",
-            "mainClass": "src/Main.java"
-        },
-        {
-            "type": "java",
-            "name": "Current File",
-            "request": "launch",
-            "mainClass": "${file}"
-        },
-        {
-            "type": "java",
-            "name": "Launch AppFX",
-            "request": "launch",
-            "mainClass": "sae.decision.linguistic.AppFX",
-            "vmArgs": "--module-path ${workspaceFolder}/lib --add-modules javafx.controls,javafx.fxml,javafx.graphics,javafx.base,javafx.media,javafx.web,javafx.swing",
-            "projectName": "D7"
+            "mainClass": "${file}",
+            "vmArgs": [
+                "--module-path",
+                "${env:JAVAFX_HOME}/lib",
+                "--add-modules",
+                "javafx.controls,javafx.fxml,javafx.graphics,javafx.base,javafx.media,javafx.web,javafx.swing"
+            ]
         }
     ]
 }

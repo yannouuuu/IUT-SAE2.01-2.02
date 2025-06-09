@@ -4,130 +4,202 @@
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextField?>
-<?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox prefHeight="700.0" prefWidth="1000.0" spacing="24.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sae.decision.linguistic.controller.PairingController">
-   <padding>
-      <Insets bottom="24.0" left="24.0" right="24.0" top="24.0" />
-   </padding>
+<VBox xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sae.decision.linguistic.controller.PairingController">
    <children>
-      <HBox alignment="CENTER_LEFT" spacing="10.0">
-         <children>
-            <VBox>
+      <ScrollPane fitToWidth="true" fitToHeight="true" hbarPolicy="AS_NEEDED" vbarPolicy="AS_NEEDED" style="-fx-background-color: #f8f9fa; -fx-background: #f8f9fa;">
+         <content>
+            <VBox spacing="24.0" style="-fx-background-color: #f8f9fa;">
+               <padding>
+                  <Insets bottom="24.0" left="24.0" right="24.0" top="24.0" />
+               </padding>
                <children>
-                  <Label styleClass="h1" text="Appariements">
-                     <font>
-                        <Font name="System Bold" size="24.0" />
-                     </font>
-                  </Label>
-                  <Label styleClass="text-muted" text="Gérez les appariements entre hôtes et visiteurs" />
-               </children>
-            </VBox>
-            <Region HBox.hgrow="ALWAYS" />
-            <Button mnemonicParsing="false" styleClass="button-primary" text="Lancer le calcul" />
-            <Button mnemonicParsing="false" text="Appariement manuel" />
-         </children>
-      </HBox>
-      
-      <HBox spacing="16.0">
-         <children>
-            <VBox styleClass="card" HBox.hgrow="ALWAYS">
-               <children>
-                  <BorderPane>
-                     <left>
-                        <VBox spacing="4.0" BorderPane.alignment="CENTER">
+                  <!-- Header avec titre et actions principales -->
+                  <VBox spacing="16.0" style="-fx-background-color: #ffffff; -fx-background-radius: 16px; -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.08), 8, 0.0, 0, 2);">
+                     <padding>
+                        <Insets bottom="24.0" left="24.0" right="24.0" top="24.0" />
+                     </padding>
+                     <children>
+                        <HBox alignment="CENTER_LEFT">
                            <children>
-                              <Label styleClass="text-muted" text="Total appariements" />
-                              <Label fx:id="totalAppariementsLabel" styleClass="h2" text="1">
-                                 <font>
-                                    <Font name="System Bold" size="22.0" />
-                                 </font>
-                              </Label>
+                              <VBox>
+                                 <children>
+                                    <Label styleClass="h1" text="Liste des Appariements">
+                                       <font>
+                                          <Font name="System Bold" size="28.0" />
+                                       </font>
+                                    </Label>
+                                    <Label styleClass="text-muted" text="Gérez et supervisez tous les appariements entre hôtes et visiteurs" />
+                                 </children>
+                              </VBox>
+                              <Region HBox.hgrow="ALWAYS" />
+                              <HBox alignment="CENTER" spacing="12.0">
+                                 <children>
+                                    <Button fx:id="lancerCalculButton" text="Lancer le Calcul" />
+                                    <Button fx:id="appariementManuelButton" text="Appariement Manuel" />
+                                    <Button fx:id="exportButton" text="Exporter" />
+                                 </children>
+                              </HBox>
+                           </children>
+                        </HBox>
+                     </children>
+                  </VBox>
+
+                  <!-- Cards de statistiques -->
+                  <HBox spacing="16.0">
+                     <children>
+                        <VBox spacing="12.0" style="-fx-background-color: #ffffff; -fx-background-radius: 16px; -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.08), 8, 0.0, 0, 2);" HBox.hgrow="ALWAYS">
+                           <padding>
+                              <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+                           </padding>
+                           <children>
+                              <HBox alignment="CENTER_LEFT">
+                                 <children>
+                                    <VBox HBox.hgrow="ALWAYS">
+                                       <children>
+                                          <Label text="Total Appariements" style="-fx-font-size: 13px; -fx-font-weight: 600; -fx-text-fill: #6c6c6c;" />
+                                          <Label fx:id="totalAppariementsLabel" text="24" style="-fx-font-size: 32px; -fx-font-weight: 700; -fx-text-fill: #000000;">
+                                             <font>
+                                                <Font name="System Bold" size="32.0" />
+                                             </font>
+                                          </Label>
+                                       </children>
+                                    </VBox>
+                                    <Label text="📊" style="-fx-font-size: 32px;" />
+                                 </children>
+                              </HBox>
                            </children>
                         </VBox>
-                     </left>
-                     <right>
-                        <Label styleClass="icon-placeholder, icon-blue" BorderPane.alignment="CENTER" />
-                     </right>
-                  </BorderPane>
-               </children>
-            </VBox>
-            <VBox styleClass="card" HBox.hgrow="ALWAYS">
-               <children>
-                  <BorderPane>
-                     <left>
-                        <VBox spacing="4.0" BorderPane.alignment="CENTER">
+                        
+                        <VBox spacing="12.0" style="-fx-background-color: #ffffff; -fx-background-radius: 16px; -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.08), 8, 0.0, 0, 2);" HBox.hgrow="ALWAYS">
+                           <padding>
+                              <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+                           </padding>
                            <children>
-                              <Label styleClass="text-muted" text="Validés" />
-                              <Label fx:id="validesLabel" styleClass="h2-green" text="1">
-                                 <font>
-                                    <Font name="System Bold" size="22.0" />
-                                 </font>
-                              </Label>
+                              <HBox alignment="CENTER_LEFT">
+                                 <children>
+                                    <VBox HBox.hgrow="ALWAYS">
+                                       <children>
+                                          <Label text="Validés" style="-fx-font-size: 13px; -fx-font-weight: 600; -fx-text-fill: #6c6c6c;" />
+                                          <Label fx:id="validesLabel" text="18" style="-fx-font-size: 32px; -fx-font-weight: 700; -fx-text-fill: #28a745;">
+                                             <font>
+                                                <Font name="System Bold" size="32.0" />
+                                             </font>
+                                          </Label>
+                                       </children>
+                                    </VBox>
+                                    <Label text="✅" style="-fx-font-size: 32px;" />
+                                 </children>
+                              </HBox>
                            </children>
                         </VBox>
-                     </left>
-                     <right>
-                        <Label styleClass="icon-placeholder, icon-green" BorderPane.alignment="CENTER" />
-                     </right>
-                  </BorderPane>
-               </children>
-            </VBox>
-            <VBox styleClass="card" HBox.hgrow="ALWAYS">
-               <children>
-                  <BorderPane>
-                     <left>
-                        <VBox spacing="4.0" BorderPane.alignment="CENTER">
+                        
+                        <VBox spacing="12.0" style="-fx-background-color: #ffffff; -fx-background-radius: 16px; -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.08), 8, 0.0, 0, 2);" HBox.hgrow="ALWAYS">
+                           <padding>
+                              <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+                           </padding>
                            <children>
-                              <Label styleClass="text-muted" text="En attente" />
-                              <Label fx:id="enAttenteLabel" styleClass="h2-yellow" text="0">
-                                 <font>
-                                    <Font name="System Bold" size="22.0" />
-                                 </font>
-                              </Label>
+                              <HBox alignment="CENTER_LEFT">
+                                 <children>
+                                    <VBox HBox.hgrow="ALWAYS">
+                                       <children>
+                                          <Label text="Scores Faibles" style="-fx-font-size: 13px; -fx-font-weight: 600; -fx-text-fill: #6c6c6c;" />
+                                          <Label fx:id="enAttenteLabel" text="6" style="-fx-font-size: 32px; -fx-font-weight: 700; -fx-text-fill: #ffc107;">
+                                             <font>
+                                                <Font name="System Bold" size="32.0" />
+                                             </font>
+                                          </Label>
+                                       </children>
+                                    </VBox>
+                                    <Label text="📉" style="-fx-font-size: 32px;" />
+                                 </children>
+                              </HBox>
                            </children>
                         </VBox>
-                     </left>
-                     <right>
-                        <Label styleClass="icon-placeholder, icon-yellow" BorderPane.alignment="CENTER" />
-                     </right>
-                  </BorderPane>
+                     </children>
+                  </HBox>
+
+                  <!-- Card des filtres et recherche -->
+                  <VBox spacing="16.0" style="-fx-background-color: #ffffff; -fx-background-radius: 16px; -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.08), 8, 0.0, 0, 2);">
+                     <padding>
+                        <Insets bottom="20.0" left="24.0" right="24.0" top="20.0" />
+                     </padding>
+                     <children>
+                        <Label text="Recherche et Filtres" style="-fx-font-size: 18px; -fx-font-weight: 700; -fx-text-fill: #000000;" />
+                        <HBox alignment="CENTER_LEFT" spacing="16.0">
+                           <children>
+                              <VBox spacing="8.0" HBox.hgrow="ALWAYS">
+                                 <children>
+                                    <Label text="Rechercher" style="-fx-font-size: 14px; -fx-font-weight: 600; -fx-text-fill: #495057;" />
+                                    <TextField fx:id="searchField" promptText="Nom, prénom, pays..." HBox.hgrow="ALWAYS" />
+                                 </children>
+                              </VBox>
+                              <VBox spacing="8.0">
+                                 <children>
+                                    <Label text="Statut" style="-fx-font-size: 14px; -fx-font-weight: 600; -fx-text-fill: #495057;" />
+                                    <ComboBox fx:id="statusFilter" prefWidth="200.0" promptText="Tous les statuts" />
+                                 </children>
+                              </VBox>
+                              <VBox spacing="8.0">
+                                 <children>
+                                    <Label text=" " />
+                                    <Button fx:id="resetFiltersButton" text="Réinitialiser" />
+                                 </children>
+                              </VBox>
+                           </children>
+                        </HBox>
+                     </children>
+                  </VBox>
+
+                  <!-- Card de la table des appariements -->
+                  <VBox spacing="16.0" style="-fx-background-color: #ffffff; -fx-background-radius: 16px; -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.08), 8, 0.0, 0, 2);" VBox.vgrow="ALWAYS">
+                     <padding>
+                        <Insets bottom="24.0" left="24.0" right="24.0" top="24.0" />
+                     </padding>
+                     <children>
+                        <HBox alignment="CENTER_LEFT">
+                           <children>
+                              <Label text="Appariements" style="-fx-font-size: 20px; -fx-font-weight: 700; -fx-text-fill: #000000;" />
+                              <Region HBox.hgrow="ALWAYS" />
+                              <Label fx:id="tableStatsLabel" text="24 résultats" style="-fx-font-size: 14px; -fx-font-weight: 600; -fx-text-fill: #6c6c6c;" />
+                           </children>
+                        </HBox>
+                        <ScrollPane fitToWidth="true" fitToHeight="true" hbarPolicy="AS_NEEDED" vbarPolicy="AS_NEEDED" VBox.vgrow="ALWAYS" style="-fx-background-color: transparent; -fx-background: transparent;">
+                           <content>
+                              <TableView fx:id="appariementsTable" style="-fx-background-color: transparent; -fx-background-radius: 8px;">
+                                 <columns>
+                                    <TableColumn fx:id="hoteColumn" prefWidth="220.0" text="Hôte" />
+                                    <TableColumn fx:id="visiteurColumn" prefWidth="220.0" text="Visiteur" />
+                                    <TableColumn fx:id="scoreColumn" prefWidth="100.0" text="Score Affinité" />
+                                    <TableColumn fx:id="statutColumn" prefWidth="120.0" text="Statut" />
+                                    <TableColumn fx:id="dateCreationColumn" prefWidth="140.0" text="Date Création" />
+                                    <TableColumn fx:id="actionsColumn" prefWidth="100.0" text="Actions" />
+                                 </columns>
+                                 <placeholder>
+                                    <VBox alignment="CENTER" spacing="16.0">
+                                       <children>
+                                          <Label text="🔍" style="-fx-font-size: 48px;" />
+                                          <Label text="Aucun appariement trouvé" style="-fx-font-size: 18px; -fx-font-weight: 600; -fx-text-fill: #6c6c6c;" />
+                                          <Label text="Essayez de modifier vos filtres ou lancez un nouveau calcul" style="-fx-font-size: 14px; -fx-text-fill: #868e96;" />
+                                       </children>
+                                    </VBox>
+                                 </placeholder>
+                              </TableView>
+                           </content>
+                        </ScrollPane>
+                     </children>
+                  </VBox>
                </children>
             </VBox>
-         </children>
-      </HBox>
-      
-      <HBox alignment="CENTER_LEFT" spacing="16.0">
-         <children>
-            <HBox alignment="CENTER_LEFT" spacing="8.0" HBox.hgrow="ALWAYS">
-                <children>
-                    <Label text="🔍" styleClass="icon-muted" />
-                    <TextField fx:id="searchField" promptText="Rechercher par nom ou prénom..." HBox.hgrow="ALWAYS" styleClass="text-field-transparent" />
-                </children>
-            </HBox>
-            <ComboBox fx:id="statusFilter" minWidth="200.0" promptText="Tous les statuts" />
-         </children>
-      </HBox>
-      
-      <TableView fx:id="appariementsTable" VBox.vgrow="ALWAYS">
-        <columns>
-          <TableColumn fx:id="hoteColumn" prefWidth="200.0" text="Hôte" />
-          <TableColumn fx:id="visiteurColumn" prefWidth="200.0" text="Visiteur" />
-          <TableColumn fx:id="scoreColumn" minWidth="75.0" text="Score" />
-          <TableColumn fx:id="statutColumn" minWidth="100.0" text="Statut" />
-          <TableColumn fx:id="dateCreationColumn" prefWidth="120.0" text="Date création" />
-          <TableColumn fx:id="actionsColumn" minWidth="80.0" text="Actions" />
-        </columns>
-         <placeholder>
-            <Label text="Aucun appariement trouvé avec les filtres sélectionnés." />
-         </placeholder>
-      </TableView>
+         </content>
+      </ScrollPane>
    </children>
 </VBox>

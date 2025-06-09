@@ -26,7 +26,9 @@ public class AppFX extends Application {
         MainController mainController = loader.getController();
         SidebarController.setMainController(mainController);
 
-        primaryStage.setScene(new Scene(root, 1280, 720));
+        Scene scene = new Scene(root, 1280, 720);
+
+        primaryStage.setScene(scene);
         primaryStage.setTitle("Application d'appariement linguistique");
         primaryStage.show();
     }
