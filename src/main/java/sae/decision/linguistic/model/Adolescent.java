@@ -16,7 +16,7 @@ import sae.decision.linguistic.service.ConfigurationService;
  * Représente un adolescent participant au programme de séjours linguistiques.
  * Cette classe gère les informations personnelles et les critères d'appariement
  * pour chaque participant, qu'il soit hôte ou visiteur.
- * 
+ *
  * Les critères d'appariement incluent :
  * - Informations personnelles (nom, prénom, date de naissance)
  * - Pays d'origine
@@ -25,25 +25,27 @@ import sae.decision.linguistic.service.ConfigurationService;
  */
 public class Adolescent implements Serializable {
     private static final long serialVersionUID = 1L;
-    
+
     // Constantes pour la validation et le calcul des scores
     private static final String FRANCE = "France";
     private static final String HOBBY_SEPARATOR = ",";
-    
+
     // Informations personnelles
     private final String lastName;
     private final String firstName;
     private final String countryOfOrigin;
     private final LocalDate dateOfBirth;
     private final boolean isHost;
-    
+
     // Critères d'appariement
     private final Map<Criteria, String> criteria;
+    // Nom du précédent partenaire
+    private String previousPartnerFullName;
 
     /**
      * Constructeur principal de la classe Adolescent.
      * Initialise un nouvel adolescent avec ses informations personnelles et ses critères.
-     * 
+     *
      * @param lastName Nom de famille
      * @param firstName Prénom
      * @param gender Genre (male, female, other)
@@ -52,7 +54,7 @@ public class Adolescent implements Serializable {
      * @param dateOfBirth Date de naissance
      * @param isHost true si l'adolescent est un hôte, false s'il est visiteur
      */
-    public Adolescent(String lastName, String firstName, String gender, String countryOfOrigin, 
+    public Adolescent(String lastName, String firstName, String gender, String countryOfOrigin,
                      Map<Criteria, String> criteria, LocalDate dateOfBirth, boolean isHost) {
         this.lastName = lastName;
         this.firstName = firstName;
@@ -63,6 +65,8 @@ public class Adolescent implements Serializable {
 
         initializeGenderCriterion(gender);
         initializeOtherCriteria(criteria, isHost);
+
+        this.previousPartnerFullName = null;
     }
 
     /**
@@ -76,7 +80,7 @@ public class Adolescent implements Serializable {
                     this.criteria.put(Criteria.GENDER, gender);
                 }
             } catch (IllegalArgumentException e) {
-                System.err.println(String.format("Erreur de validation du genre '%s' pour %s %s: %s", 
+                System.err.println(String.format("Erreur de validation du genre '%s' pour %s %s: %s",
                     gender, firstName, lastName, e.getMessage()));
             }
         }
@@ -92,7 +96,7 @@ public class Adolescent implements Serializable {
             try {
                 addCriterion(entry.getKey(), entry.getValue(), isHost);
             } catch (IllegalArgumentException e) {
-                System.err.println(String.format("Erreur pour %s %s avec le critère %s et valeur '%s': %s", 
+                System.err.println(String.format("Erreur pour %s %s avec le critère %s et valeur '%s': %s",
                     firstName, lastName, entry.getKey(), entry.getValue(), e.getMessage()));
             }
         }
@@ -179,6 +183,14 @@ public class Adolescent implements Serializable {
         return isHost;
     }
 
+    public String getPreviousPartnerFullName() {
+        return previousPartnerFullName;
+    }
+
+    public void setPreviousPartnerFullName(String previousPartnerFullName) {
+        this.previousPartnerFullName = previousPartnerFullName;
+    }
+
     /**
      * Calcule l'âge actuel de l'adolescent.
      * @return L'âge en années.
@@ -223,26 +235,46 @@ public class Adolescent implements Serializable {
 
     /**
      * Vérifie la compatibilité d'historique entre deux adolescents.
-     * L'appariement est impossible si l'un ou l'autre a spécifié vouloir
-     * être avec un correspondant différent de l'année précédente.
-     * @param visitor L'adolescent visiteur.
+     * L'appariement est impossible si :
+     * - Un adolescent a le critère HISTORY "other" et que le partenaire actuel est son précédent partenaire.
+     * - Un adolescent a le critère HISTORY "same" et que le partenaire actuel n'est PAS son précédent partenaire.
+     * @param other L'autre adolescent.
      * @return true si l'historique est compatible, false sinon.
      */
-    public boolean isHistoryCompatible(Adolescent visitor) {
+    public boolean isHistoryCompatible(Adolescent other) {
         // Si la compatibilité stricte de l'historique est désactivée, toujours compatible
         if (!ConfigurationService.isStrictCompatibility("history")) {
             return true;
         }
-        
-        String hostHistory = this.criteria.get(Criteria.HISTORY);
-        String visitorHistory = visitor.getCriteria().get(Criteria.HISTORY);
 
-        // Si l'un des deux veut "other", ils sont incompatibles.
-        if ("other".equals(hostHistory) || "other".equals(visitorHistory)) {
-            return false;
+        String myHistoryPreference = this.getCriterion(Criteria.HISTORY);
+        String otherHistoryPreference = other.getCriterion(Criteria.HISTORY);
+		
+		// Vérifier si l'adolescent actuel est mon précédent partenaire et je n'en veux pas.
+        if (myHistoryPreference != null && myHistoryPreference.startsWith("other:") && this.previousPartnerFullName != null && this.previousPartnerFullName.equals(other.toString())) {
+                return false; 
+            }   
+		// Vérifier si "je" suis son ancien partenaire et il ne veut pas de "moi"
+		if (otherHistoryPreference != null && otherHistoryPreference.startsWith("other:") && other.previousPartnerFullName != null && other.previousPartnerFullName.equals(this.toString())) {
+                return false; 
+            }
+        
+        // Vérifier si le partenaire actuel est mon précédent partenaire.
+        if (myHistoryPreference != null && myHistoryPreference.startsWith("same:")) {
+            if (this.previousPartnerFullName != null && !this.previousPartnerFullName.equals(other.toString())) {
+                return false; 
+            }
         }
-        return true;
+		// Il veut son ancien partenaire, mais ce n'est pas moi.
+        if (otherHistoryPreference != null && otherHistoryPreference.startsWith("same:")) {
+            if (other.previousPartnerFullName != null && !other.previousPartnerFullName.equals(this.toString())) {
+                return false; 
+            }
+        }
+
+        return true; 
     }
+
 
     /**
      * Vérifie la compatibilité spécifique liée à la nationalité française.
@@ -255,7 +287,7 @@ public class Adolescent implements Serializable {
         if (!ConfigurationService.getBoolean("threshold.french_hobby_required")) {
             return true;
         }
-        
+
         boolean isHostFrench = FRANCE.equalsIgnoreCase(this.getCountryOfOrigin());
         boolean isVisitorFrench = FRANCE.equalsIgnoreCase(visitor.getCountryOfOrigin());
 
@@ -294,34 +326,34 @@ public class Adolescent implements Serializable {
         // 1. Hard compatibility checks (basés sur la configuration)
         boolean isDietCompatible = true;
         boolean isAnimalCompatible = true;
-        boolean historyCompatible = true;
-        
+        boolean historyStrictlyCompatible = true; // Renommé pour plus de clarté
+
         if (ConfigurationService.isStrictCompatibility("diet")) {
             isDietCompatible = dietScore(other) == 0;
         }
-        
+
         if (ConfigurationService.isStrictCompatibility("animal")) {
             isAnimalCompatible = animalScore(other) == 0;
         }
-        
+
         if (ConfigurationService.isStrictCompatibility("history")) {
-            historyCompatible = isHistoryCompatible(other);
+            historyStrictlyCompatible = isHistoryCompatible(other); 
         }
-        
+
         compatibilityChecks.put("diet", isDietCompatible);
         compatibilityChecks.put("animals", isAnimalCompatible);
-        compatibilityChecks.put("history", historyCompatible);
+        compatibilityChecks.put("history", historyStrictlyCompatible); 
 
         // Si incompatibilité de base (et compatibilité stricte activée), on arrête le calcul
         if ((ConfigurationService.isStrictCompatibility("diet") && !isDietCompatible) ||
             (ConfigurationService.isStrictCompatibility("animal") && !isAnimalCompatible) ||
-            (ConfigurationService.isStrictCompatibility("history") && !historyCompatible)) {
+            (ConfigurationService.isStrictCompatibility("history") && !historyStrictlyCompatible)) { 
             componentScores.put("age", 0.0);
             componentScores.put("gender", 0.0);
             componentScores.put("hobbies", 0.0);
             return new AffinityBreakdown(0, componentScores, compatibilityChecks);
         }
-        
+
         // --- Calcul des scores pondérés ---
         Map<String, Double> weights = ConfigurationService.getAllWeights();
         double ageWeight = weights.getOrDefault("age", 0.0);
@@ -357,7 +389,7 @@ public class Adolescent implements Serializable {
             Set<String> commonHobbies = new HashSet<>(myHobbies);
             commonHobbies.retainAll(otherHobbies);
             commonHobbiesCount = commonHobbies.size();
-            
+
             double pointsPerCommon = ConfigurationService.getDouble("hobbies.points_per_common");
             double maxHobbiesScore = ConfigurationService.getDouble("hobbies.max_score");
             hobbiesScore = Math.min(maxHobbiesScore, commonHobbiesCount * pointsPerCommon);
@@ -376,49 +408,54 @@ public class Adolescent implements Serializable {
             // Appliquer les pénalités de régime comme ajustement du score plutôt que comme exclusion
             weightedScore += dietScore(other);
         }
-        
+
         if (!ConfigurationService.isStrictCompatibility("animal")) {
             // Appliquer les pénalités d'animaux comme ajustement du score plutôt que comme exclusion
             weightedScore += animalScore(other);
         }
 
-        // Vérification de l'historique
-        boolean hasBeenPaired = getHistoryAffinityBonus(other) < 0;
+        // Gestion du bonus/malus d'historique (non strict)
         if (!ConfigurationService.isStrictCompatibility("history")) {
-            // Appliquer la pénalité d'historique comme ajustement du score
-            weightedScore += getHistoryAffinityBonus(other);
-        } else {
-            compatibilityChecks.put("history", !hasBeenPaired);
-            if (hasBeenPaired) {
-                double historyBonus = ConfigurationService.getDouble("bonus.history_same");
-                weightedScore += historyBonus;
-            }
+            weightedScore += getHistoryAffinityBonus(other); // Utilise la logique de bonus/malus
         }
+
 
         // Appliquer les limites configurables du score
         double minScore = ConfigurationService.getDouble("score.min");
         double maxScore = ConfigurationService.getDouble("score.max");
         int finalScore = (int) Math.max(minScore, Math.min(maxScore, weightedScore));
-        
+
         return new AffinityBreakdown(finalScore, componentScores, compatibilityChecks);
     }
 
+    /**
+     * Calcule le bonus/malus d'affinité basé sur l'historique d'appariement.
+     * Ce bonus/malus est appliqué si la compatibilité stricte de l'historique est désactivée.
+     * @param other L'autre adolescent.
+     * @return Le bonus ou la pénalité à ajouter au score.
+     */
     private int getHistoryAffinityBonus(Adolescent other) {
-        String myHistory = this.getCriterion(Criteria.HISTORY);
-        String otherHistory = other.getCriterion(Criteria.HISTORY);
+        String myHistoryPreference = this.getCriterion(Criteria.HISTORY);
+        String otherHistoryPreference = other.getCriterion(Criteria.HISTORY);
 
-        // Si l'un des deux n'a pas d'historique ou si l'historique est vide, on ne peut pas comparer.
-        if (myHistory == null && otherHistory == null) {
-            return 0;
+        int bonusHistory = 0;
+
+        if (myHistoryPreference != null) {
+            if (otherHistoryPreference != null && otherHistoryPreference.startsWith("same:")) {
+                // this=same other=same
+                bonusHistory += (int) ConfigurationService.getDouble("bonus.history_same");
+            }else if (otherHistoryPreference == null){
+				// this=same other=null
+                bonusHistory += (int) ConfigurationService.getDouble("bonus.one_history_same");
+            }
+        } else if (otherHistoryPreference != null && otherHistoryPreference.startsWith("same:")) {
+            // this=other other=same
+            bonusHistory += (int) ConfigurationService.getDouble("bonus.one_history_same");
         }
-        
-        // Comme on a déjà exclu les "other" et les null il ne reste que les "same"
-        if (myHistory.equals(otherHistory)) {
-            return (int) ConfigurationService.getDouble("bonus.history_same");
-        }
-        // Le seul autre cas possible est que l'un des deux a un historique "same" et l'autre null donc on applique le bonus
-        return (int) ConfigurationService.getDouble("bonus.one_history_same");
+        //this=null other=null
+        return bonusHistory; 
     }
+
 
     public int dietScore(Adolescent other) {
         // Vérification des régimes alimentaires
@@ -454,7 +491,7 @@ public class Adolescent implements Serializable {
             }
         } catch (NullPointerException e) {
             System.err.println("Erreur lors du traitement des régimes de l'hôte " + this.firstName + ": " + e.getMessage());
-            return 0; // Ou une autre logique de gestion d'erreur
+            return 0; 
         }
 
         int incompatiblesDiets = 0;
@@ -470,7 +507,7 @@ public class Adolescent implements Serializable {
             }
         } catch (NullPointerException e) {
             System.err.println("Erreur lors du traitement des régimes du visiteur " + other.getFirstName() + ": " + e.getMessage());
-            return 0; // Ou une autre logique de gestion d'erreur
+            return 0; 
         }
 
         return incompatiblesDiets;
