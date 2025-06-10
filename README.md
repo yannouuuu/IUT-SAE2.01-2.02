@@ -35,16 +35,43 @@
 ├── docs/                # Documentation
 │   ├── graphes/         # Rapports algorithmes de graphes
 │   └── poo/             # Rapport POO et diagrammes UML
-│   └── ihm/             # Rapport IHM
 ├── lib/                 # Bibliothèques externes
 ├── bin/                 # Fichiers binaires
 ├── mockup/              # Relatif à la maquette Figma
 ├── shots/               # Captures d'écran de l'application
 ├── pom.xml              # Configuration Maven
+├── rapportIHM.pdf       # Rapport sur l'Interface Homme-Machine
+├── rapportPOO.pdf       # Rapport sur la Programmation Orientée Objet
 └── README.md            # Documentation principale
 ```
 
+
 Ce projet est structuré en trois grandes parties : **Graphes**, **POO**, et **IHM**. Vous trouverez ci-dessous les détails pour chaque partie.
+
+---
+
+## Lancement du projet
+
+Ce projet utilise [Apache Maven](https://maven.apache.org/) pour la gestion des dépendances et la construction du projet. Assurez-vous d'avoir Maven et un JDK 24 (ou supérieur) installés sur votre système.
+
+### Lancement de l'interface graphique (JavaFX)
+
+L'interface graphique est développée avec JavaFX. Pour lancer l'application, exécutez la commande Maven suivante à la racine du projet :
+
+```bash
+mvn javafx:run
+```
+
+Cette commande va compiler le projet, télécharger les dépendances nécessaires et démarrer l'interface utilisateur.
+
+### Exécutables JAR (Prochainement)
+
+Actuellement, le projet est lancé via Maven. Dans une future mise à jour, deux fichiers JAR exécutables seront fournis pour un lancement simplifié :
+
+-   `D7-app-gui.jar` : Pour démarrer l'interface graphique.
+-   `D7-app-cli.jar` : Pour utiliser l'application en ligne de commande.
+
+Ces fichiers seront disponibles à la racine du projet et pourront être exécutés avec les commandes `java -jar D7-app-gui.jar` et `java -jar D7-app-cli.jar` respectivement.
 
 ---
 
@@ -85,6 +112,8 @@ Les diagrammes UML sont générés avec PlantUML et organisés par semaines :
 
 - **Semaines 1-2** : `docs/poo/UML_plantuml/SAE_UML_Version1.puml` → `SAE_UML_Version1.png`
 - **Semaines 3-4** : `docs/poo/UML_plantuml/SAE_UML_Version2.puml` → `SAE_UML_Version2.png`
+- **Semaines 5-6** : `docs/poo/UML_plantuml/SAE_UML_Version3.puml` → `SAE_UML_Version3.png`
+- **Semaines 7-8** : `docs/poo/UML_plantuml/SAE_UML_Version4.puml` → `SAE_UML_Version4.png`
 
 ### Conversion du rapport AsciiDoc
 Pour convertir le fichier `.adoc` en format PDF, utilisez AsciiDoctor :
@@ -126,7 +155,7 @@ L'interface permet de :
 ---
 
 ## Captures d'écran
-Des exemples visuels du fonctionnement de l'application sont disponibles dans le répertoire [shots](./shots).
+Des exemples visuels du fonctionnement de l'application sont disponibles dans le répertoire [shots](./mockup).
 
 ## Développé avec 💖 par
 - Yann RENARD
