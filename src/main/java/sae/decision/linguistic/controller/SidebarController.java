@@ -3,18 +3,11 @@ package sae.decision.linguistic.controller;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
-import javafx.scene.control.Label;
 
 public class SidebarController {
 
     private static MainController mainController;
     private static SidebarController instance;
-    
-    @FXML
-    private Label mainTitle;
-    
-    @FXML
-    private Label subtitle;
     
     @FXML
     private Button accueilButton;
@@ -78,7 +71,7 @@ public class SidebarController {
         button.setStyle(baseStyle);
         
         // Effets hover - seulement si ce n'est pas le bouton actif
-        button.setOnMouseEntered(e -> {
+        button.setOnMouseEntered(_ -> {
             if (button != activeButton) {
                 button.setStyle(baseStyle + 
                     "-fx-background-color: #f8f9fa; " +
@@ -88,18 +81,18 @@ public class SidebarController {
             }
         });
         
-        button.setOnMouseExited(e -> {
+        button.setOnMouseExited(_ -> {
             if (button != activeButton) {
                 button.setStyle(baseStyle);
             }
         });
         
         // Pas d'effet pressed car on gère l'état actif directement
-        button.setOnMousePressed(e -> {
+        button.setOnMousePressed(_ -> {
             // Ne rien faire - l'état sera géré par le click
         });
         
-        button.setOnMouseReleased(e -> {
+        button.setOnMouseReleased(_ -> {
             // Ne rien faire - l'état sera géré par le click
         });
     }
@@ -114,24 +107,14 @@ public class SidebarController {
         resetAllButtons();
         
         // Activer le bouton correspondant
-        Button buttonToActivate = null;
-        switch (viewName) {
-            case "MainView.fxml":
-                buttonToActivate = accueilButton;
-                break;
-            case "Pairing.fxml":
-                buttonToActivate = listeAppariementsButton;
-                break;
-            case "PairingManual.fxml":
-                buttonToActivate = appariementManuelButton;
-                break;
-            case "StudentManager.fxml":
-                buttonToActivate = gestionElevesButton;
-                break;
-            case "Settings.fxml":
-                buttonToActivate = reglagesButton;
-                break;
-        }
+        Button buttonToActivate = switch (viewName) {
+            case "MainView.fxml" -> accueilButton;
+            case "Pairing.fxml" -> listeAppariementsButton;
+            case "PairingManual.fxml" -> appariementManuelButton;
+            case "StudentManager.fxml" -> gestionElevesButton;
+            case "Settings.fxml" -> reglagesButton;
+            default -> null;
+        };
         
         if (buttonToActivate != null) {
             activeButton = buttonToActivate;
@@ -164,7 +147,7 @@ public class SidebarController {
         button.setStyle(activeStyle);
         
         // Override les événements hover pour le bouton actif
-        button.setOnMouseEntered(e -> {
+        button.setOnMouseEntered(_ -> {
             // Hover plus subtil pour le bouton actif
             button.setStyle(activeStyle + 
                 "-fx-background-color: #1a1a1a; " +
@@ -172,16 +155,14 @@ public class SidebarController {
                 "-fx-scale-y: 1.005;");
         });
         
-        button.setOnMouseExited(e -> {
-            button.setStyle(activeStyle);
-        });
+        button.setOnMouseExited(_ -> button.setStyle(activeStyle));
         
         // Pas d'effet pressed pour le bouton actif
-        button.setOnMousePressed(e -> {
+        button.setOnMousePressed(_ -> {
             // Ne rien faire
         });
         
-        button.setOnMouseReleased(e -> {
+        button.setOnMouseReleased(_ -> {
             // Ne rien faire
         });
     }
