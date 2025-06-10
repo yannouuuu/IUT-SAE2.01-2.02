@@ -365,7 +365,7 @@ public class Adolescent implements Serializable {
         double ageDifference = calculateAgeDifference(other);
         double ageBaseScore = ConfigurationService.getDouble("age.base_score");
         double ageMultiplier = ConfigurationService.getDouble("age.multiplier");
-        double ageScore = Math.min(0, ageBaseScore - (ageDifference * ageMultiplier));
+        double ageScore = Math.max(0, ageBaseScore - (ageDifference * ageMultiplier));
         componentScores.put("age", ageScore);
 
         // Score de genre
@@ -373,9 +373,9 @@ public class Adolescent implements Serializable {
         String otherGender = other.getCriterion(Criteria.GENDER);
         String myPrefGender = this.getCriterion(Criteria.PAIR_GENDER);
         String otherPrefGender = other.getCriterion(Criteria.PAIR_GENDER);
-        double mySatisfaction = (myPrefGender == null || myPrefGender.isEmpty() || myPrefGender.equalsIgnoreCase(otherGender)) ? 100 : 0;
-        double otherSatisfaction = (otherPrefGender == null || otherPrefGender.isEmpty() || otherPrefGender.equalsIgnoreCase(myGender)) ? 100 : 0;
-        double genderScore = (mySatisfaction + otherSatisfaction) / 2.0;
+        double mySatisfaction = (myPrefGender == null || myPrefGender.isEmpty() || myPrefGender.equalsIgnoreCase(otherGender)) ? 10 : 0;
+        double otherSatisfaction = (otherPrefGender == null || otherPrefGender.isEmpty() || otherPrefGender.equalsIgnoreCase(myGender)) ? 10 : 0;
+        double genderScore = (mySatisfaction + otherSatisfaction);
         componentScores.put("gender", genderScore);
 
         // Score des hobbies (utilise les paramètres configurables)
@@ -398,25 +398,25 @@ public class Adolescent implements Serializable {
         componentScores.put("commonHobbiesCount", (double) commonHobbiesCount);
 
         // Calcul du score final pondéré
-        double weightedScore = 0;
+        double weightedScore = 50; //50 de base pour le score d'affinité
         if (totalWeight > 0) {
-            weightedScore = (ageScore * ageWeight + genderScore * genderWeight + hobbiesScore * hobbiesWeight) / totalWeight;
+            weightedScore += (ageScore * ageWeight + genderScore * genderWeight + hobbiesScore * hobbiesWeight) / totalWeight;
         }
 
         // Ajustements basés sur les pénalités configurables
         if (!ConfigurationService.isStrictCompatibility("diet")) {
-            // Appliquer les pénalités de régime comme ajustement du score plutôt que comme exclusion
+            // Appliques les pénalités liées aux régime
             weightedScore += dietScore(other);
         }
 
         if (!ConfigurationService.isStrictCompatibility("animal")) {
-            // Appliquer les pénalités d'animaux comme ajustement du score plutôt que comme exclusion
+            // Applique les pénalités liées aux animaux
             weightedScore += animalScore(other);
         }
 
         // Gestion du bonus/malus d'historique (non strict)
         if (!ConfigurationService.isStrictCompatibility("history")) {
-            weightedScore += getHistoryAffinityBonus(other); // Utilise la logique de bonus/malus
+            weightedScore += getHistoryAffinityBonus(other); 
         }
 
 

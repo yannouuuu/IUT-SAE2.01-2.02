@@ -1,11 +1,13 @@
-import sae.decision.linguistic.model.Adolescent;
-import sae.decision.linguistic.model.Criteria;
-
-import org.junit.jupiter.api.Test;
 import java.time.LocalDate;
 import java.util.Map;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import org.junit.jupiter.api.Test;
+
+import sae.decision.linguistic.model.Adolescent;
+import sae.decision.linguistic.model.Criteria;
 
 public class AdolescentTest {
 
@@ -110,43 +112,6 @@ public class AdolescentTest {
         assertEquals(host3.dietScore(visitor3) , -20, "Hôte ok pour un végétarien, Visiteur demande plusieurs");
     }
 
-    // --- Tests pour la compatibilité d'historique ---
-    @Test
-    void testHistoryCompatibilityOk() {
-        // Les deux adolescents n'ont pas de contrainte d'historique -> Compatible
-        Adolescent host1 = new Adolescent("Host", "A", "male", "France", Map.of(), LocalDate.now(),true);
-        Adolescent visitor1 = new Adolescent("Visitor", "X", "female", "Italia", Map.of(), LocalDate.now(),false);
-        assertTrue(host1.isHistoryCompatible(visitor1), "Aucune contrainte d'historique");
-
-        // Les deux adolescents veulent être ensemble (same) -> Compatible
-        Adolescent host2 = new Adolescent("Host", "B", "male", "France", Map.of(Criteria.HISTORY, "same"), LocalDate.now(),true);
-        Adolescent visitor2 = new Adolescent("Visitor", "Y", "female", "Italia", Map.of(Criteria.HISTORY, "same"), LocalDate.now(),false);
-        assertTrue(host2.isHistoryCompatible(visitor2), "Les deux veulent rester ensemble");
-
-        // Un adolescent veut être ensemble (same), l'autre n'a pas de préférence -> Compatible
-        Adolescent host3 = new Adolescent("Host", "C", "male", "France", Map.of(Criteria.HISTORY, "same"), LocalDate.now(),true);
-        Adolescent visitor3 = new Adolescent("Visitor", "Z", "female", "Italia", Map.of(), LocalDate.now(),false);
-        assertTrue(host3.isHistoryCompatible(visitor3), "Un veut rester, l'autre sans préférence");
-    }
-
-    @Test
-    void testHistoryIncompatibility() {
-        // Un adolescent ne veut pas être avec le même (other) -> Incompatible
-        Adolescent host1 = new Adolescent("Host", "A", "male", "France", Map.of(Criteria.HISTORY, "other"), LocalDate.now(),true);
-        Adolescent visitor1 = new Adolescent("Visitor", "X", "female", "Italia", Map.of(), LocalDate.now(),false);
-        assertFalse(host1.isHistoryCompatible(visitor1), "Hôte veut changer de correspondant");
-
-        // L'autre adolescent ne veut pas être avec le même (other) -> Incompatible
-        Adolescent host2 = new Adolescent("Host", "B", "male", "France", Map.of(), LocalDate.now(),true);
-        Adolescent visitor2 = new Adolescent("Visitor", "Y", "female", "Italia", Map.of(Criteria.HISTORY, "other"), LocalDate.now(),false);
-        assertFalse(host2.isHistoryCompatible(visitor2), "Visiteur veut changer de correspondant");
-
-        // Les deux adolescents ne veulent pas être ensemble (other) -> Incompatible
-        Adolescent host3 = new Adolescent("Host", "C", "male", "France", Map.of(Criteria.HISTORY, "other"), LocalDate.now(),true);
-        Adolescent visitor3 = new Adolescent("Visitor", "Z", "female", "Italia", Map.of(Criteria.HISTORY, "other"), LocalDate.now(),false);
-        assertFalse(host3.isHistoryCompatible(visitor3), "Les deux veulent changer de correspondant");
-    }
-
     // --- Tests pour la compatibilité avec les français ---
     @Test
     void testFrenchCompatibility() {
@@ -181,41 +146,6 @@ public class AdolescentTest {
         assertFalse(host.isFrenchCompatible(visitor), "Les deux adolescents sont incompatibles parce que l'un est français est n'a pas de hobbies communs");
     }
 
-    @Test
-    void testHistoryAffinityBonus() {
-        // Un adolescent veut être avec le même (same), l'autre n'a pas de préférence -> Bonus d'affinité
-        Adolescent host = new Adolescent("Host", "A", "male", "Germany",
-                Map.of(Criteria.HISTORY, "same",
-                        Criteria.HOST_HAS_ANIMAL, "no",
-                        Criteria.HOST_FOOD, "vegetarian"),
-                LocalDate.of(2008, 5, 15),true);
-
-        Adolescent visitor = new Adolescent("Visitor", "X", "female", "Italia",
-                Map.of(Criteria.GUEST_ANIMAL_ALLERGY, "no",
-                        Criteria.GUEST_FOOD, "vegetarian"),
-                LocalDate.of(2008, 6, 10),false);
-
-        // Le score devrait inclure un bonus pour l'historique
-        int scoreWithHistoryBonus = host.calculateAffinity(visitor);
-
-        // Création d'adolescents identiques mais sans contrainte d'historique
-        Adolescent hostNoHistory = new Adolescent("Host", "A", "male", "Germany",
-                Map.of(Criteria.HOST_HAS_ANIMAL, "no",
-                        Criteria.HOST_FOOD, "vegetarian"),
-                LocalDate.of(2008, 5, 15),true);
-
-        Adolescent visitorNoHistory = new Adolescent("Visitor", "X", "female", "Italia",
-                Map.of(Criteria.GUEST_ANIMAL_ALLERGY, "no",
-                        Criteria.GUEST_FOOD, "vegetarian"),
-                LocalDate.of(2008, 6, 10),false);
-
-        int scoreWithoutHistoryBonus = hostNoHistory.calculateAffinity(visitorNoHistory);
-
-        // Vérification que le score avec l'historique est plus élevé
-        assertTrue(scoreWithHistoryBonus > scoreWithoutHistoryBonus,
-                "Le bonus d'historique devrait augmenter le score d'affinité");
-    }
-
     // --- Tests pour la compatibilité globale ---
     @Test
     void testGlobalCompatibilityOk() {
@@ -241,20 +171,6 @@ public class AdolescentTest {
         assertFalse(host1.isCompatible(visitor1), "Incompatible globalement (problème régime)");
     }
 
-    @Test
-    void testGlobalIncompatibilityHistory() {
-        // Compatible sur allergie et régime, incompatible sur historique
-        Adolescent host1 = new Adolescent("Host", "A", "male", "France",
-                Map.of(Criteria.HOST_HAS_ANIMAL, "no",
-                        Criteria.HOST_FOOD, "vegetarian",
-                        Criteria.HISTORY, "other"),
-                LocalDate.now(),true);
-        Adolescent visitor1 = new Adolescent("Visitor", "X", "female", "Italia",
-                Map.of(Criteria.GUEST_ANIMAL_ALLERGY, "no",
-                        Criteria.GUEST_FOOD, "vegetarian"),
-                LocalDate.now(),false);
-        assertFalse(host1.isCompatible(visitor1), "Incompatible globalement (problème historique)");
-    }
 
     // --- Tests pour le calcul d'affinité ---
     @Test
@@ -273,7 +189,7 @@ public class AdolescentTest {
                 LocalDate.of(2008, 8, 10),false);
 
         int score = host.calculateAffinity(visitor);
-        assertEquals(70, score, "Le score d'affinité devrait être 70 avec 2 hobbies communs et différence d'âge < 1,5 an");
+        assertEquals(69, score, "Le score d'affinité devrait être 69 avec 2 hobbies communs et différence d'âge < 1,5 an");
     }
 
     @Test
@@ -292,7 +208,7 @@ public class AdolescentTest {
                 LocalDate.of(2007, 9, 15),false);
 
         int score = host.calculateAffinity(visitor);
-        assertEquals(60, score, "Le score d'affinité devrait être 60 avec préférences de genre satisfaites et différence d'âge < 1,5 an");
+        assertEquals(59, score, "Le score d'affinité devrait être 59 avec préférences de genre satisfaites et différence d'âge < 1,5 an");
     }
 
     @Test

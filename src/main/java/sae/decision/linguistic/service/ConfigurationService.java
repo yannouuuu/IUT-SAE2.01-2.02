@@ -41,7 +41,7 @@ public class ConfigurationService {
         DEFAULT_VALUES.put("age.multiplier", 6.67);
         
         // Paramètres de calcul du score des hobbies
-        DEFAULT_VALUES.put("hobbies.points_per_common", 25.0);
+        DEFAULT_VALUES.put("hobbies.points_per_common", 15.0);
         DEFAULT_VALUES.put("hobbies.max_score", 100.0);
         
         // Pénalités et bonus
