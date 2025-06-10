@@ -1,10 +1,19 @@
 package sae.decision.linguistic.controller;
 
+import java.util.Map;
+
 import javafx.fxml.FXML;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
+import sae.decision.linguistic.model.Adolescent;
+import sae.decision.linguistic.model.Affectation;
+import sae.decision.linguistic.model.AffinityBreakdown;
+import sae.decision.linguistic.model.Criteria;
+import sae.decision.linguistic.model.DataManager;
 
 public class PairingManualController {
 
@@ -17,10 +26,10 @@ public class PairingManualController {
 
     // ComboBoxes de sélection
     @FXML
-    private ComboBox<?> hoteComboBox;
+    private ComboBox<Adolescent> hoteComboBox;
 
     @FXML
-    private ComboBox<?> visiteurComboBox;
+    private ComboBox<Adolescent> visiteurComboBox;
 
     // Labels d'information
     @FXML
@@ -29,7 +38,7 @@ public class PairingManualController {
     @FXML
     private Label visiteurInfoLabel;
 
-    // Card d'aperçu
+    // Éléments de la carte de prévisualisation
     @FXML
     private VBox previewCard;
     
@@ -40,7 +49,22 @@ public class PairingManualController {
     private Label compatibilityLabel;
     
     @FXML
-    private Label commonInterestsLabel;
+    private Label ageScoreLabel;
+    
+    @FXML
+    private Label genderScoreLabel;
+    
+    @FXML
+    private Label hobbiesScoreLabel;
+    
+    @FXML
+    private Label dietCheckLabel;
+    
+    @FXML
+    private Label animalCheckLabel;
+    
+    @FXML
+    private Label historyCheckLabel;
 
     // Boutons d'action
     @FXML
@@ -189,8 +213,8 @@ public class PairingManualController {
     
     private void setupComboBoxes() {
         // Configuration initiale des ComboBoxes
-        // hoteComboBox.getItems().addAll(/* liste des hôtes */);
-        // visiteurComboBox.getItems().addAll(/* liste des visiteurs */);
+        hoteComboBox.getItems().setAll(DataManager.getHosts());
+        visiteurComboBox.getItems().setAll(DataManager.getVisitors());
         
         // Style des placeholders
         hoteComboBox.setPromptText("Rechercher un hôte...");
@@ -220,73 +244,97 @@ public class PairingManualController {
         }
     }
     
-    private void updateHoteInfo(Object selectedHote) {
+    private void updateHoteInfo(Adolescent selectedHote) {
         if (selectedHote != null && hoteInfoLabel != null) {
-            // Exemple d'information - à adapter selon vos données
-            hoteInfoLabel.setText("🏠 France • 16 ans • Hobbies: Football, Musique");
+            hoteInfoLabel.setText(String.format("🏠 %s • %d ans • Hobbies: %s",
+                selectedHote.getCountryOfOrigin(),
+                selectedHote.getAge(),
+                selectedHote.getCriterion(Criteria.HOBBIES) != null ? selectedHote.getCriterion(Criteria.HOBBIES) : "N/A"
+            ));
         } else if (hoteInfoLabel != null) {
             hoteInfoLabel.setText("");
         }
     }
     
-    private void updateVisiteurInfo(Object selectedVisiteur) {
+    private void updateVisiteurInfo(Adolescent selectedVisiteur) {
         if (selectedVisiteur != null && visiteurInfoLabel != null) {
-            // Exemple d'information - à adapter selon vos données
-            visiteurInfoLabel.setText("🌍 Allemagne • 15 ans • Hobbies: Football, Lecture");
+            visiteurInfoLabel.setText(String.format("🌍 %s • %d ans • Hobbies: %s",
+                selectedVisiteur.getCountryOfOrigin(),
+                selectedVisiteur.getAge(),
+                selectedVisiteur.getCriterion(Criteria.HOBBIES) != null ? selectedVisiteur.getCriterion(Criteria.HOBBIES) : "N/A"
+            ));
         } else if (visiteurInfoLabel != null) {
             visiteurInfoLabel.setText("");
         }
     }
     
     private void updatePreview() {
-        boolean bothSelected = hoteComboBox.getValue() != null && visiteurComboBox.getValue() != null;
+        Adolescent host = hoteComboBox.getValue();
+        Adolescent visitor = visiteurComboBox.getValue();
+        boolean bothSelected = host != null && visitor != null;
         
         if (previewCard != null) {
             previewCard.setVisible(bothSelected);
             previewCard.setManaged(bothSelected);
         }
         
-        if (bothSelected && createButton != null) {
-            // Calcul du score d'affinité (exemple)
-            updateAffinityScore(85); // Score exemple
-            
-            // Activation du bouton créer
-            createButton.setDisable(false);
-        } else if (createButton != null) {
-            createButton.setDisable(true);
+        if (createButton != null) {
+            createButton.setDisable(!bothSelected);
+        }
+
+        if (bothSelected) {
+            AffinityBreakdown details = visitor.calculateAffinityDetails(host);
+            updateAffinityScoreUI(details);
         }
     }
     
-    private void updateAffinityScore(int score) {
-        if (scorePreviewLabel != null) {
-            scorePreviewLabel.setText(score + "%");
-            
-            // Couleur selon le score
-            String color = score >= 80 ? "#28a745" : score >= 60 ? "#ffc107" : "#dc3545";
-            scorePreviewLabel.setStyle(scorePreviewLabel.getStyle().replaceAll("-fx-text-fill: [^;]*", "-fx-text-fill: " + color));
-        }
+    private void updateAffinityScoreUI(AffinityBreakdown details) {
+        int score = details.getFinalScore();
+        Map<String, Double> componentScores = details.getComponentScores();
+        Map<String, Boolean> compatibilityChecks = details.getCompatibilityChecks();
+
+        // Mise à jour du score final et de la compatibilité globale
+        scorePreviewLabel.setText(score + "%");
+        String scoreColor = getScoreColor(score);
+        scorePreviewLabel.setStyle("-fx-font-size: 20px; -fx-font-weight: 700; -fx-text-fill: " + scoreColor + ";");
+
+        String compatibilityText = getCompatibilityText(score);
+        compatibilityLabel.setText(compatibilityText);
+        compatibilityLabel.setStyle("-fx-font-size: 14px; -fx-font-weight: 600; -fx-text-fill: " + scoreColor + ";");
         
-        if (compatibilityLabel != null) {
-            String compatibility;
-            String color;
-            if (score >= 80) {
-                compatibility = "Excellente";
-                color = "#28a745";
-            } else if (score >= 60) {
-                compatibility = "Bonne";
-                color = "#ffc107";
-            } else {
-                compatibility = "Moyenne";
-                color = "#dc3545";
-            }
-            
-            compatibilityLabel.setText(compatibility);
-            compatibilityLabel.setStyle(compatibilityLabel.getStyle().replaceAll("-fx-text-fill: [^;]*", "-fx-text-fill: " + color));
-        }
-        
-        if (commonInterestsLabel != null) {
-            // Exemple de centres d'intérêt communs
-            commonInterestsLabel.setText("Football, Sports");
+        // Mise à jour des détails du score
+        ageScoreLabel.setText(String.format("%.0f / 100", componentScores.get("age")));
+        genderScoreLabel.setText(String.format("%.0f / 100", componentScores.get("gender")));
+        double hobbiesScore = componentScores.getOrDefault("hobbies", 0.0);
+        int commonHobbiesCount = componentScores.getOrDefault("commonHobbiesCount", 0.0).intValue();
+        hobbiesScoreLabel.setText(String.format("%.0f / 100 (%d commun(s))", hobbiesScore, commonHobbiesCount));
+
+        // Mise à jour des vérifications de compatibilité
+        updateCheckLabel(dietCheckLabel, compatibilityChecks.get("diet"), "Compatible", "Non Compatible");
+        updateCheckLabel(animalCheckLabel, compatibilityChecks.get("animals"), "Compatible", "Risque d'allergie");
+        updateCheckLabel(historyCheckLabel, compatibilityChecks.get("history"), "Jamais appariés", "Déjà appariés !");
+    }
+
+    private String getScoreColor(int score) {
+        if (score >= 75) return "#28a745"; // Vert
+        if (score >= 50) return "#ffc107"; // Jaune
+        return "#dc3545"; // Rouge
+    }
+
+    private String getCompatibilityText(int score) {
+        if (score == 0) return "Incompatible";
+        if (score >= 75) return "Excellente";
+        if (score >= 50) return "Bonne";
+        return "Moyenne";
+    }
+    
+    private void updateCheckLabel(Label label, boolean isOk, String okText, String failText) {
+        if (isOk) {
+            label.setText("✅ " + okText);
+            label.setStyle("-fx-text-fill: #28a745; -fx-font-weight: 600;");
+        } else {
+            label.setText("❌ " + failText);
+            label.setStyle("-fx-text-fill: #dc3545; -fx-font-weight: 600;");
         }
     }
     
@@ -308,18 +356,37 @@ public class PairingManualController {
     }
     
     private void createPairing() {
-        // Logique de création de l'appariement
-        Object selectedHote = hoteComboBox.getValue();
-        Object selectedVisiteur = visiteurComboBox.getValue();
+        Adolescent host = hoteComboBox.getValue();
+        Adolescent visitor = visiteurComboBox.getValue();
         
-        if (selectedHote != null && selectedVisiteur != null) {
-            System.out.println("Création de l'appariement entre " + selectedHote + " et " + selectedVisiteur);
+        if (host != null && visitor != null) {
+            System.out.println("Création de l'appariement entre " + visitor + " et " + host);
             
-            // Ici vous pourriez ajouter:
-            // - Validation des données
-            // - Sauvegarde en base de données
-            // - Navigation vers la liste des appariements
-            // - Affichage d'un message de confirmation
+            Affectation lastAffectation = DataManager.getLastAffectation();
+            if (lastAffectation == null) {
+                // S'il n'y a pas d'affectation en cours, on en crée une nouvelle vide
+                // avec tous les élèves actuels pour être cohérent.
+                lastAffectation = new Affectation(DataManager.getHosts(), DataManager.getVisitors());
+            }
+
+            // Ajoute ou remplace la paire manuelle dans l'affectation
+            lastAffectation.getPairs().put(visitor, host);
+            
+            // Met à jour le DataManager avec l'affectation modifiée
+            DataManager.setLastAffectation(lastAffectation);
+
+            // Affiche une confirmation
+            Alert alert = new Alert(AlertType.INFORMATION);
+            alert.setTitle("Appariement Créé");
+            alert.setHeaderText(null);
+            alert.setContentText("L'appariement manuel entre " + visitor.getFirstName() + " et " + host.getFirstName() + " a été sauvegardé.");
+            alert.showAndWait();
+            
+            // Navigue vers la liste des appariements pour voir le résultat
+            SidebarController sidebar = SidebarController.getInstance();
+            if (sidebar != null) {
+                sidebar.goToListeAppariements(null);
+            }
         }
     }
 } 

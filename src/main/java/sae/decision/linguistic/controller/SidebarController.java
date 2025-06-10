@@ -8,6 +8,7 @@ import javafx.scene.control.Label;
 public class SidebarController {
 
     private static MainController mainController;
+    private static SidebarController instance;
     
     @FXML
     private Label mainTitle;
@@ -34,8 +35,13 @@ public class SidebarController {
         mainController = controller;
     }
     
+    public static SidebarController getInstance() {
+        return instance;
+    }
+    
     @FXML
     public void initialize() {
+        instance = this;
         System.out.println("SidebarController initialisé.");
         
         // Application du style moderne à tous les boutons
@@ -181,7 +187,7 @@ public class SidebarController {
     }
 
     @FXML
-    private void goToMainInterface(ActionEvent event) {
+    public void goToMainInterface(ActionEvent event) {
         if (mainController != null) {
             mainController.loadView("MainView.fxml");
             setActiveButton("MainView.fxml");
@@ -189,7 +195,7 @@ public class SidebarController {
     }
 
     @FXML
-    private void goToListeAppariements(ActionEvent event) {
+    public void goToListeAppariements(ActionEvent event) {
         if (mainController != null) {
             mainController.loadView("Pairing.fxml");
             setActiveButton("Pairing.fxml");
@@ -197,7 +203,7 @@ public class SidebarController {
     }
 
     @FXML
-    private void goToAppariementManuel(ActionEvent event) {
+    public void goToAppariementManuel(ActionEvent event) {
         if (mainController != null) {
             mainController.loadView("PairingManual.fxml");
             setActiveButton("PairingManual.fxml");
@@ -205,7 +211,7 @@ public class SidebarController {
     }
 
     @FXML
-    private void goToGestionEleves(ActionEvent event) {
+    public void goToGestionEleves(ActionEvent event) {
         if (mainController != null) {
             mainController.loadView("StudentManager.fxml");
             setActiveButton("StudentManager.fxml");
@@ -213,7 +219,7 @@ public class SidebarController {
     }
 
     @FXML
-    private void goToReglages(ActionEvent event) {
+    public void goToReglages(ActionEvent event) {
         if (mainController != null) {
             mainController.loadView("Settings.fxml");
             setActiveButton("Settings.fxml");

@@ -33,6 +33,7 @@ public class MainController {
             }
             Node view = FXMLLoader.load(url);
             contentPane.getChildren().setAll(view);
+
         } catch (IOException e) {
             e.printStackTrace();
         }

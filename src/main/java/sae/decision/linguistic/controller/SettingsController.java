@@ -1,9 +1,18 @@
 package sae.decision.linguistic.controller;
 
-import javafx.fxml.FXML;
-import javafx.scene.control.*;
-import javafx.stage.DirectoryChooser;
 import java.io.File;
+
+import javafx.fxml.FXML;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.Label;
+import javafx.scene.control.Slider;
+import javafx.scene.control.TextField;
+import javafx.scene.control.ToggleButton;
+import javafx.stage.DirectoryChooser;
+import sae.decision.linguistic.model.ConfigurationManager;
 
 public class SettingsController {
 
@@ -447,6 +456,15 @@ public class SettingsController {
     private void initializeDefaultValues() {
         // Chemin d'export par défaut
         exportPathField.setText(System.getProperty("user.home") + "/Desktop");
+        
+        // Charger les poids depuis le ConfigurationManager
+        ageSlider.setValue(ConfigurationManager.getWeight("age"));
+        sexeSlider.setValue(ConfigurationManager.getWeight("gender"));
+        interetSlider.setValue(ConfigurationManager.getWeight("hobbies"));
+        langueSlider.setValue(ConfigurationManager.getWeight("language"));
+        activitesSlider.setValue(ConfigurationManager.getWeight("activities"));
+        
+        updateTotal();
     }
     
     private void updateTotal() {
@@ -547,7 +565,13 @@ public class SettingsController {
             return;
         }
         
-        // TODO: Logique de sauvegarde des paramètres
+        // Sauvegarde des paramètres dans le ConfigurationManager
+        ConfigurationManager.setWeight("age", ageSlider.getValue());
+        ConfigurationManager.setWeight("gender", sexeSlider.getValue());
+        ConfigurationManager.setWeight("hobbies", interetSlider.getValue());
+        ConfigurationManager.setWeight("language", langueSlider.getValue());
+        ConfigurationManager.setWeight("activities", activitesSlider.getValue());
+        
         showInfoAlert("Sauvegarde", "Paramètres sauvegardés avec succès!");
     }
     

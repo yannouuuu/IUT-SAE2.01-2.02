@@ -1,12 +1,29 @@
 package sae.decision.linguistic.controller;
 
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+import javafx.beans.property.SimpleStringProperty;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
+import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.stage.FileChooser;
+import sae.decision.linguistic.model.Adolescent;
+import sae.decision.linguistic.model.Affectation;
+import sae.decision.linguistic.model.DataManager;
+import sae.decision.linguistic.model.PairingDisplay;
+import sae.decision.linguistic.service.AppariementService;
 
 public class PairingController {
 
@@ -32,39 +49,46 @@ public class PairingController {
     private TextField searchField;
 
     @FXML
-    private ComboBox<?> statusFilter;
+    private ComboBox<String> statusFilter;
     
     @FXML
     private Button resetFiltersButton;
 
     // Table et colonnes
     @FXML
-    private TableView<?> appariementsTable;
+    private TableView<PairingDisplay> appariementsTable;
 
     @FXML
-    private TableColumn<?, ?> hoteColumn;
+    private TableColumn<PairingDisplay, String> hoteColumn;
 
     @FXML
-    private TableColumn<?, ?> visiteurColumn;
+    private TableColumn<PairingDisplay, String> visiteurColumn;
 
     @FXML
-    private TableColumn<?, ?> scoreColumn;
+    private TableColumn<PairingDisplay, Number> scoreColumn;
 
     @FXML
-    private TableColumn<?, ?> statutColumn;
+    private TableColumn<PairingDisplay, String> statutColumn;
 
     @FXML
-    private TableColumn<?, ?> dateCreationColumn;
+    private TableColumn<PairingDisplay, String> dateCreationColumn;
 
     @FXML
-    private TableColumn<?, ?> actionsColumn;
+    private TableColumn<PairingDisplay, Void> actionsColumn;
     
     @FXML
     private Label tableStatsLabel;
 
+    private AppariementService appariementService;
+    private List<PairingDisplay> allPairings = new ArrayList<>();
+    private ObservableList<PairingDisplay> filteredPairings;
+
     @FXML
     public void initialize() {
         System.out.println("PairingController a été initialisé et est prêt.");
+        this.appariementService = new AppariementService();
+        this.filteredPairings = FXCollections.observableArrayList();
+        appariementsTable.setItems(filteredPairings);
         
         // Application du style moderne à tous les boutons et composants
         setupModernStyles();
@@ -74,6 +98,21 @@ public class PairingController {
         
         // Configuration de la table
         setupTable();
+        
+        // Remplir la table avec les données actuelles
+        populateTable();
+        
+        // Ajouter un listener pour mettre à jour la table si les données changent
+        DataManager.lastAffectationProperty().addListener((obs, oldAffectation, newAffectation) -> {
+            System.out.println("L'affectation a changé, mise à jour de la table des appariements.");
+            populateTable();
+        });
+
+        // Cacher le bouton de calcul, qui est maintenant sur la page d'accueil
+        lancerCalculButton.setVisible(false);
+        
+        // Action pour le bouton d'export
+        exportButton.setOnAction(e -> handleExport());
     }
     
     private void setupModernStyles() {
@@ -200,7 +239,7 @@ public class PairingController {
         });
     }
     
-    private void setupModernComboBox(ComboBox<?> comboBox) {
+    private void setupModernComboBox(ComboBox<String> comboBox) {
         String baseStyle = 
             "-fx-background-color: #ffffff; " +
             "-fx-border-color: #e9ecef; " +
@@ -240,15 +279,50 @@ public class PairingController {
     }
     
     private void setupFiltersAndSearch() {
-        // Configuration des options du filtre de statut
-        // statusFilter.getItems().addAll("Tous", "Validé", "En attente", "Rejeté");
-        
-        // Événements de recherche et filtrage
-        // searchField.textProperty().addListener((obs, oldText, newText) -> filterTable());
-        // statusFilter.valueProperty().addListener((obs, oldValue, newValue) -> filterTable());
+        statusFilter.getItems().addAll("Tous les statuts", "Validé", "En attente", "Score faible");
+        statusFilter.setValue("Tous les statuts");
+
+        searchField.textProperty().addListener((obs, oldVal, newVal) -> applyFilters());
+        statusFilter.valueProperty().addListener((obs, oldVal, newVal) -> applyFilters());
+
+        resetFiltersButton.setOnAction(e -> {
+            searchField.clear();
+            statusFilter.setValue("Tous les statuts");
+            applyFilters();
+        });
     }
     
     private void setupTable() {
+        hoteColumn.setCellValueFactory(new PropertyValueFactory<>("hostName"));
+        visiteurColumn.setCellValueFactory(new PropertyValueFactory<>("visitorName"));
+        scoreColumn.setCellValueFactory(new PropertyValueFactory<>("affinityScore"));
+        
+        // Affichage du statut avec couleur
+        statutColumn.setCellValueFactory(cellData -> {
+            int score = cellData.getValue().getAffinityScore();
+            String status = getStatusTextFromScore(score);
+            return new SimpleStringProperty(status);
+        });
+
+        statutColumn.setCellFactory(column -> new TableCell<PairingDisplay, String>() {
+            @Override
+            protected void updateItem(String item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty || item == null) {
+                    setText(null);
+                    setStyle("");
+                } else {
+                    setText(item);
+                    // Récupérer le score pour définir la couleur
+                    PairingDisplay pairing = getTableView().getItems().get(getIndex());
+                    if (pairing != null) {
+                        int score = pairing.getAffinityScore();
+                        setStyle("-fx-font-weight: bold; -fx-text-fill: " + getScoreColor(score) + ";");
+                    }
+                }
+            }
+        });
+
         // Style moderne pour la table
         String tableStyle = 
             "-fx-background-color: transparent; " +
@@ -259,6 +333,59 @@ public class PairingController {
         
         // Mise à jour des stats
         updateTableStats();
+
+        scoreColumn.setCellFactory(column -> new TableCell<PairingDisplay, Number>() {
+            @Override
+            protected void updateItem(Number item, boolean empty) {
+                if (empty || item == null) {
+                    setText(null);
+                    setStyle("");
+                } else {
+                    int score = item.intValue();
+                    setText(score + "%");
+                    setStyle("-fx-font-weight: bold; -fx-text-fill: " + getScoreColor(score) + ";");
+                }
+            }
+        });
+    }
+    
+    private void populateTable() {
+        allPairings.clear();
+        Affectation currentAffectation = DataManager.getLastAffectation();
+
+        if (currentAffectation != null && currentAffectation.getPairs() != null) {
+            for (Map.Entry<Adolescent, Adolescent> entry : currentAffectation.getPairs().entrySet()) {
+                Adolescent visitor = entry.getKey();
+                Adolescent host = entry.getValue();
+                int score = visitor.calculateAffinity(host);
+                allPairings.add(new PairingDisplay(host, visitor, score));
+            }
+        }
+        
+        applyFilters();
+        updateStats();
+    }
+    
+    private void handleExport() {
+        Affectation lastAffectation = DataManager.getLastAffectation();
+        if (lastAffectation == null || lastAffectation.getPairs().isEmpty()) {
+            // Afficher une alerte ?
+            System.out.println("Rien à exporter.");
+            return;
+        }
+
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Exporter les affectations en CSV");
+        fileChooser.setInitialFileName("affectations.csv");
+        fileChooser.getExtensionFilters().add(
+                new FileChooser.ExtensionFilter("Fichier CSV", "*.csv")
+        );
+        File file = fileChooser.showSaveDialog(exportButton.getScene().getWindow());
+
+        if (file != null) {
+            appariementService.exporterAffectation(lastAffectation, file.getAbsolutePath());
+            System.out.println("Exportation réussie vers " + file.getAbsolutePath());
+        }
     }
     
     private void updateTableStats() {
@@ -267,5 +394,53 @@ public class PairingController {
             int totalItems = appariementsTable.getItems().size();
             tableStatsLabel.setText(totalItems + " résultat" + (totalItems > 1 ? "s" : ""));
         }
+    }
+
+    private void applyFilters() {
+        List<PairingDisplay> filteredList = new ArrayList<>(allPairings);
+
+        // 1. Filtre par texte de recherche
+        String searchText = searchField.getText();
+        if (searchText != null && !searchText.isEmpty()) {
+            String lowerCaseFilter = searchText.toLowerCase();
+            filteredList = filteredList.stream()
+                .filter(p -> p.getHostName().toLowerCase().contains(lowerCaseFilter) ||
+                             p.getVisitorName().toLowerCase().contains(lowerCaseFilter))
+                .collect(Collectors.toList());
+        }
+
+        // 2. Filtre par statut
+        String statusFilterValue = statusFilter.getValue();
+        if (statusFilterValue != null && !statusFilterValue.equals("Tous les statuts")) {
+            filteredList = filteredList.stream()
+                .filter(p -> getStatusTextFromScore(p.getAffinityScore()).equals(statusFilterValue))
+                .collect(Collectors.toList());
+        }
+
+        filteredPairings.setAll(filteredList);
+        tableStatsLabel.setText(filteredList.size() + " résultats");
+    }
+
+    private void updateStats() {
+        int total = allPairings.size();
+        long valides = allPairings.stream().filter(p -> p.getAffinityScore() >= 75).count();
+        long scoresFaibles = allPairings.stream().filter(p -> p.getAffinityScore() < 50).count();
+
+        totalAppariementsLabel.setText(String.valueOf(total));
+        validesLabel.setText(String.valueOf(valides));
+        // L'ID enAttenteLabel correspond à la carte "Scores Faibles" dans le FXML
+        enAttenteLabel.setText(String.valueOf(scoresFaibles));
+    }
+
+    private String getScoreColor(int score) {
+        if (score >= 75) return "#28a745"; // Vert
+        if (score >= 50) return "#ffc107"; // Jaune
+        return "#dc3545"; // Rouge
+    }
+    
+    private String getStatusTextFromScore(int score) {
+        if (score >= 75) return "Validé";
+        if (score >= 50) return "En attente";
+        return "Score faible";
     }
 } 

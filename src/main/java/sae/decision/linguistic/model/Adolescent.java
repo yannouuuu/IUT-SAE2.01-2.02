@@ -1,13 +1,14 @@
 package sae.decision.linguistic.model;
 
-import java.util.Map;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Set;
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
-import java.io.Serializable;
-import java.util.Collections;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
 
 
 /**
@@ -33,6 +34,7 @@ public class Adolescent implements Serializable {
     private final String firstName;
     private final String countryOfOrigin;
     private final LocalDate dateOfBirth;
+    private final boolean isHost;
     
     // Critères d'appariement
     private final Map<Criteria, String> criteria;
@@ -55,6 +57,7 @@ public class Adolescent implements Serializable {
         this.firstName = firstName;
         this.countryOfOrigin = countryOfOrigin;
         this.dateOfBirth = dateOfBirth;
+        this.isHost = isHost;
         this.criteria = new HashMap<>();
 
         initializeGenderCriterion(gender);
@@ -169,9 +172,35 @@ public class Adolescent implements Serializable {
         return new HashMap<>(criteria);
     }
 
+    public boolean isHost() {
+        return isHost;
+    }
+
+    /**
+     * Calcule l'âge actuel de l'adolescent.
+     * @return L'âge en années.
+     */
+    public long getAge() {
+        return ChronoUnit.YEARS.between(this.dateOfBirth, LocalDate.now());
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Adolescent that = (Adolescent) o;
+        return Objects.equals(this.firstName, that.firstName) &&
+                Objects.equals(this.lastName, that.lastName);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(firstName, lastName);
+    }
+
     @Override
     public String toString() {
-        return firstName + " " + lastName + " (" + countryOfOrigin + ")";
+        return firstName + " " + lastName;
     }
 
     /**
@@ -179,123 +208,118 @@ public class Adolescent implements Serializable {
      * @param criterion le critère à récupérer
      * @return la valeur du critère ou null si non défini
      */
-
     public String getCriterion(Criteria criterion) {
         return criteria.get(criterion);
     }
 
-    /**
-     * Vérifie la compatibilité avec un autre adolescent en tant qu'hôte
-     * pour cet adolescent (this est l'hôte, other est le visiteur)
-     * @param other l'adolescent visiteur
-     * @return true si les deux adolescents sont compatibles, false sinon
-     */
     public boolean isCompatible(Adolescent other) {
-        // Vérification de la comptabilité des critères
-        return isFrenchCompatible(other) &&
-                isHistoryCompatible(other) &&
-                animalScore(other) == 0 &&
-                dietScore(other) == 0; // Si toutes les vérifications ont passé, les adolescents sont compatibles
+        // La compatibilité est maintenant déterminée par la nouvelle méthode de calcul.
+        // Un score > 0 implique que les contraintes de base sont respectées.
+        return calculateAffinityDetails(other).getFinalScore() > 0;
+    }
+
+    public int calculateAffinity(Adolescent other) {
+        return calculateAffinityDetails(other).getFinalScore();
     }
 
     /**
-     * Vérifie la compatibilité entre cet adolescent (hôte) et un autre (visiteur) si l'un des deux est Français.
-     * @param other l'adolescent visiteur.
-     * @return true si ils ont un passe temps en commun ou qu'aucun n'est français, false sinon.
+     * Calcule une analyse détaillée de l'affinité avec un autre adolescent.
+     * C'est la méthode centrale pour tous les calculs de compatibilité et de score.
+     * @param other L'autre adolescent.
+     * @return Un objet AffinityBreakdown contenant tous les détails du calcul.
      */
-    public boolean isFrenchCompatible(Adolescent other) {
-        if (!isFrenchParticipantInvolved(other)) {
-            return true;
+    public AffinityBreakdown calculateAffinityDetails(Adolescent other) {
+        Map<String, Double> componentScores = new HashMap<>();
+        Map<String, Boolean> compatibilityChecks = new HashMap<>();
+
+        // 1. Hard compatibility checks
+        boolean isDietCompatible = dietScore(other) == 0;
+        boolean isAnimalCompatible = animalScore(other) == 0;
+        compatibilityChecks.put("diet", isDietCompatible);
+        compatibilityChecks.put("animals", isAnimalCompatible);
+
+        // Si incompatibilité de base, on arrête le calcul et on retourne un score de 0.
+        if (!isDietCompatible || !isAnimalCompatible) {
+            componentScores.put("age", 0.0);
+            componentScores.put("gender", 0.0);
+            componentScores.put("hobbies", 0.0);
+            compatibilityChecks.put("history", true); // Pas besoin de vérifier l'historique
+            return new AffinityBreakdown(0, componentScores, compatibilityChecks);
         }
-        return hasCommonHobbies(other);
-    }
+        
+        // --- Calcul des scores pondérés ---
+        Map<String, Double> weights = ConfigurationManager.getAllWeights();
+        double ageWeight = weights.getOrDefault("age", 0.0);
+        double genderWeight = weights.getOrDefault("gender", 0.0);
+        double hobbiesWeight = weights.getOrDefault("hobbies", 0.0);
+        double totalWeight = ageWeight + genderWeight + hobbiesWeight;
 
-    /**
-     * Vérifie si l'un des participants est français.
-     */
-    private boolean isFrenchParticipantInvolved(Adolescent other) {
-        return FRANCE.equals(this.countryOfOrigin) || FRANCE.equals(other.countryOfOrigin);
-    }
+        // Score d'âge
+        double ageDifference = calculateAgeDifference(other);
+        double ageScore = Math.max(0, 100 - ageDifference * 25);
+        componentScores.put("age", ageScore);
 
-    /**
-     * Vérifie si les deux adolescents ont des hobbies en commun.
-     */
-    private boolean hasCommonHobbies(Adolescent other) {
-        String myHobbies = this.getCriterion(Criteria.HOBBIES);
-        String otherHobbies = other.getCriterion(Criteria.HOBBIES);
+        // Score de genre
+        String myGender = this.getCriterion(Criteria.GENDER);
+        String otherGender = other.getCriterion(Criteria.GENDER);
+        String myPrefGender = this.getCriterion(Criteria.PAIR_GENDER);
+        String otherPrefGender = other.getCriterion(Criteria.PAIR_GENDER);
+        double mySatisfaction = (myPrefGender == null || myPrefGender.isEmpty() || myPrefGender.equalsIgnoreCase(otherGender)) ? 100 : 0;
+        double otherSatisfaction = (otherPrefGender == null || otherPrefGender.isEmpty() || otherPrefGender.equalsIgnoreCase(myGender)) ? 100 : 0;
+        double genderScore = (mySatisfaction + otherSatisfaction) / 2.0;
+        componentScores.put("gender", genderScore);
 
-        if (myHobbies == null || otherHobbies == null) {
-            return false;
+        // Score des hobbies
+        String myHobbiesStr = this.getCriterion(Criteria.HOBBIES);
+        String otherHobbiesStr = other.getCriterion(Criteria.HOBBIES);
+        double hobbiesScore = 0;
+        int commonHobbiesCount = 0;
+        if (myHobbiesStr != null && !myHobbiesStr.isEmpty() && otherHobbiesStr != null && !otherHobbiesStr.isEmpty()) {
+            Set<String> myHobbies = new HashSet<>(Arrays.asList(myHobbiesStr.toLowerCase().split(",")));
+            Set<String> otherHobbies = new HashSet<>(Arrays.asList(otherHobbiesStr.toLowerCase().split(",")));
+            Set<String> commonHobbies = new HashSet<>(myHobbies);
+            commonHobbies.retainAll(otherHobbies);
+            commonHobbiesCount = commonHobbies.size();
+            hobbiesScore = Math.min(100, commonHobbiesCount * 25);
+        }
+        componentScores.put("hobbies", hobbiesScore);
+        componentScores.put("commonHobbiesCount", (double) commonHobbiesCount);
+
+        // Calcul du score final pondéré
+        double weightedScore = 0;
+        if (totalWeight > 0) {
+            weightedScore = (ageScore * ageWeight + genderScore * genderWeight + hobbiesScore * hobbiesWeight) / totalWeight;
         }
 
-        Set<String> myHobbiesSet = parseHobbies(myHobbies, this.firstName);
-        Set<String> otherHobbiesSet = parseHobbies(otherHobbies, other.firstName);
-
-        return !Collections.disjoint(myHobbiesSet, otherHobbiesSet);
-    }
-
-    /**
-     * Parse une chaîne de hobbies en ensemble de hobbies individuels.
-     */
-    private Set<String> parseHobbies(String hobbies, String personName) {
-        Set<String> hobbiesSet = new HashSet<>();
-        try {
-            for (String hobby : hobbies.split(HOBBY_SEPARATOR)) {
-                hobbiesSet.add(hobby.trim());
-            }
-        } catch (NullPointerException e) {
-            System.err.println("Erreur lors du traitement des hobbies de " + personName + ": " + e.getMessage());
+        // Vérification de l'historique
+        boolean hasBeenPaired = getHistoryAffinityBonus(other) < 0;
+        compatibilityChecks.put("history", !hasBeenPaired);
+        if (hasBeenPaired) {
+            weightedScore -= 10; // Pénalité pour un appariement précédent
         }
-        return hobbiesSet;
+
+        int finalScore = Math.max(0, Math.min(100, (int) weightedScore));
+        
+        return new AffinityBreakdown(finalScore, componentScores, compatibilityChecks);
     }
 
-    /**
-     * Vérifie la compatibilité des historiques entre cet adolescent (hôte) et un autre (visiteur).
-     * @param other l'adolescent visiteur.
-     * @return true si les historiques sont compatibles, false sinon.
-     */
-    public boolean isHistoryCompatible(Adolescent other) {
+    private int getHistoryAffinityBonus(Adolescent other) {
         String myHistory = this.getCriterion(Criteria.HISTORY);
         String otherHistory = other.getCriterion(Criteria.HISTORY);
 
-        // Si l'un des deux a la contrainte "other", ils sont incompatibles
-        if ((myHistory != null && myHistory.equals("other")) ||
-                (otherHistory != null && otherHistory.equals("other"))) {
-            return false;
+        // Si l'un des deux n'a pas d'historique ou si l'historique est vide, on ne peut pas comparer.
+        if (myHistory == null || otherHistory == null) {
+            return 0;
         }
-
-        // Si les deux ont la contrainte "same", ils doivent être compatibles
-        if (myHistory != null && myHistory.equals("same") &&
-                otherHistory != null && otherHistory.equals("same")) {
-            return true;
-        }
-        return true;
-    }
-
-    /**
-     * Vérifie la compatibilité concernant les animaux entre cet adolescent (hôte) et un autre (visiteur).
-     * L'adolescent est compatible si le visiteur n'est pas allergique aux animaux OU si l'hôte n'a pas d'animaux.
-     * @param other l'adolescent visiteur.
-     * @return 0 si compatible concernant les animaux, -25 sinon.
-     */
-    public int animalScore(Adolescent other) {
-        // Vérification des allergies aux animaux
-        String hostHasAnimal = this.getCriterion(Criteria.HOST_HAS_ANIMAL);
-        String guestAllergy = other.getCriterion(Criteria.GUEST_ANIMAL_ALLERGY);
-
-        if ((guestAllergy != null && guestAllergy.equals("yes")) && (hostHasAnimal != null && hostHasAnimal.equals("yes"))) {
-            return -25;
+        
+        // On pénalise seulement si les deux ont la même valeur d'historique non nulle.
+        if (myHistory.equals(otherHistory)) {
+            return -10;
         }
         return 0;
     }
 
-    /**
-     * Vérifie la compatibilité des régimes alimentaires entre cet adolescent (hôte) et un autre (visiteur).
-     * Compatible si le visiteur n'a pas de régime spécifique, ou si l'hôte peut satisfaire tous les régimes du visiteur.
-     * @param other l'adolescent visiteur.
-     * @return 0 si les régimes sont compatibles, -5*(Nbr de régimes non-respectés) sinon.
-     */
-    public int dietScore(Adolescent other) {
+    private int dietScore(Adolescent other) {
         // Vérification des régimes alimentaires
         String hostDiet = this.getCriterion(Criteria.HOST_FOOD);
         String guestDiet = other.getCriterion(Criteria.GUEST_FOOD);
@@ -350,87 +374,20 @@ public class Adolescent implements Serializable {
     }
 
     /**
-     * Calcule le bonus d'affinité lié à l'historique entre cet adolescent et un autre.
-     * @param other l'autre adolescent.
-     * @return le bonus d'affinité (entier).
+     * Vérifie la compatibilité concernant les animaux entre cet adolescent (hôte) et un autre (visiteur).
+     * L'adolescent est compatible si le visiteur n'est pas allergique aux animaux OU si l'hôte n'a pas d'animaux.
+     * @param other l'adolescent visiteur.
+     * @return 0 si compatible concernant les animaux, -25 sinon.
      */
-    public int getHistoryAffinityBonus(Adolescent other) {
-        String myHistory = this.getCriterion(Criteria.HISTORY);
-        String otherHistory = other.getCriterion(Criteria.HISTORY);
+    public int animalScore(Adolescent other) {
+        // Vérification des allergies aux animaux
+        String hostHasAnimal = this.getCriterion(Criteria.HOST_HAS_ANIMAL);
+        String guestAllergy = other.getCriterion(Criteria.GUEST_ANIMAL_ALLERGY);
 
-        // Si l'un a exprimé "same" et l'autre n'a rien exprimé, bonus d'affinité
-        if ((myHistory != null && myHistory.equals("same") && (otherHistory == null || otherHistory.isEmpty())) ||
-                (otherHistory != null && otherHistory.equals("same") && (myHistory == null || myHistory.isEmpty()))) {
-            return 10;
+        if ((guestAllergy != null && guestAllergy.equals("yes")) && (hostHasAnimal != null && hostHasAnimal.equals("yes"))) {
+            return -25;
         }
         return 0;
-    }
-
-    /**
-     * Calcule l'affinité entre cet adolescent et un autre
-     * @param other l'autre adolescent
-     * @return un score d'affinité sous forme d'entier
-     */
-    public int calculateAffinity(Adolescent other) {
-        int score = 50;
-
-        if (!isCompatible(other)) {
-            return 0;
-        }
-
-        //Malus éventuel pour les régimes non respectés (au mieux 0)
-        score+=dietScore(other);
-
-        //Malus éventuel pour les alergies aux animaux (au mieux 0)
-        score+=animalScore(other);
-
-        // Bonus pour les passe-temps communs
-
-        //Pas besoins de try catch puisque les cas potentiels sont déjà vérifiés plus tôt
-        String myHobbies = this.getCriterion(Criteria.HOBBIES);
-        String otherHobbies = other.getCriterion(Criteria.HOBBIES);
-
-        if (myHobbies != null && otherHobbies != null) {
-            String[] myHobbiesList = myHobbies.split(",");
-            Set<String> myHobbiesSet = new HashSet<>();
-            for (String hobby : myHobbiesList) {
-                myHobbiesSet.add(hobby.trim());
-            }
-
-            String[] otherHobbiesList = otherHobbies.split(",");
-            Set<String> otherHobbiesSet = new HashSet<>();
-            for (String hobby : otherHobbiesList) {
-                otherHobbiesSet.add(hobby.trim());
-            }
-
-            for (String myHobby : myHobbiesSet) {
-                if (otherHobbiesSet.contains(myHobby)) {
-                    score += 5; // +5 points pour chaque passe-temps commun
-                }
-            }
-        }
-
-        String myGender = this.getCriterion(Criteria.GENDER);
-        String otherGender = other.getCriterion(Criteria.GENDER);
-        String myPrefGender = this.getCriterion(Criteria.PAIR_GENDER);
-        String otherPrefGender = other.getCriterion(Criteria.PAIR_GENDER);
-
-        if (myPrefGender == null || myPrefGender.isEmpty() || myPrefGender.equals(otherGender)) {
-            score += 3;
-        }
-
-        if (otherPrefGender == null || otherPrefGender.isEmpty() || otherPrefGender.equals(myGender)) {
-            score += 3;
-        }
-
-        if (calculateAgeDifference(other) < 1.5) { // moins de 1 an et demi d'écart
-            score += 4;
-        }
-
-        // Ajout du bonus d'affinité pour l'historique
-        score += getHistoryAffinityBonus(other);
-
-        return score;
     }
 
     /**
@@ -439,7 +396,6 @@ public class Adolescent implements Serializable {
      * @return la différence d'âge en années (valeur absolue)
      */
     public double calculateAgeDifference(Adolescent other) {
-        long days = Math.abs(ChronoUnit.DAYS.between(this.dateOfBirth, other.dateOfBirth));
-        return days / 365.25;
+        return Math.abs(ChronoUnit.MONTHS.between(this.dateOfBirth, other.dateOfBirth)) / 12.0;
     }
 }

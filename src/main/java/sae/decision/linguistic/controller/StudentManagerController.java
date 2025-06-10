@@ -1,6 +1,16 @@
 package sae.decision.linguistic.controller;
 
+import java.io.File;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+import javafx.animation.TranslateTransition;
 import javafx.fxml.FXML;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
@@ -11,6 +21,12 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.layout.VBox;
+import javafx.stage.FileChooser;
+import javafx.util.Duration;
+import sae.decision.linguistic.model.Adolescent;
+import sae.decision.linguistic.model.Criteria;
+import sae.decision.linguistic.model.DataManager;
+import sae.decision.linguistic.service.CSVService;
 
 public class StudentManagerController {
 
@@ -53,7 +69,7 @@ public class StudentManagerController {
     private DatePicker dateNaissancePicker;
 
     @FXML
-    private ComboBox<?> genreComboBox;
+    private ComboBox<String> genreComboBox;
 
     @FXML
     private TextField paysField;
@@ -86,7 +102,9 @@ public class StudentManagerController {
     private Label listTitleLabel;
 
     @FXML
-    private ListView<?> elevesListView;
+    private ListView<String> elevesListView;
+
+    private final CSVService csvService = new CSVService();
 
     @FXML
     public void initialize() {
@@ -102,6 +120,13 @@ public class StudentManagerController {
         updateImportButton();
         
         // Logique pour afficher/cacher le formulaire, gérer le switch, etc.
+        updateView();
+
+        // Configuration des actions du formulaire
+        setupFormActions();
+
+        // Remplir la ComboBox de genre
+        genreComboBox.getItems().addAll("male", "female", "other");
     }
     
     private void setupModernSwitch() {
@@ -144,20 +169,20 @@ public class StudentManagerController {
     
     private void animateSwitchToLeft() {
         // Animation vers la gauche (Hôtes)
-        javafx.animation.TranslateTransition transition = new javafx.animation.TranslateTransition();
+        TranslateTransition transition = new TranslateTransition();
         transition.setNode(switchIndicator);
         transition.setToX(-48);
-        transition.setDuration(javafx.util.Duration.millis(300));
+        transition.setDuration(Duration.millis(300));
         transition.setInterpolator(javafx.animation.Interpolator.EASE_BOTH);
         transition.play();
     }
     
     private void animateSwitchToRight() {
         // Animation vers la droite (Visiteurs)
-        javafx.animation.TranslateTransition transition = new javafx.animation.TranslateTransition();
+        TranslateTransition transition = new TranslateTransition();
         transition.setNode(switchIndicator);
         transition.setToX(48);
-        transition.setDuration(javafx.util.Duration.millis(300));
+        transition.setDuration(Duration.millis(300));
         transition.setInterpolator(javafx.animation.Interpolator.EASE_BOTH);
         transition.play();
     }
@@ -362,28 +387,153 @@ public class StudentManagerController {
     private void handleImport() {
         if (isHotesSelected) {
             System.out.println("Lancement de l'importation CSV pour les Hôtes...");
-            // Logique d'importation pour les hôtes
+            File file = chooseCsvFile();
+            if (file != null) {
+                List<Adolescent> hosts = csvService.importAdolescents(file.getAbsolutePath(), true);
+                DataManager.addAdolescents(hosts);
+                updateListView();
+            }
         } else {
             System.out.println("Lancement de l'importation CSV pour les Visiteurs...");
-            // Logique d'importation pour les visiteurs
+            File file = chooseCsvFile();
+            if (file != null) {
+                List<Adolescent> visitors = csvService.importAdolescents(file.getAbsolutePath(), false);
+                DataManager.addAdolescents(visitors);
+                updateListView();
+            }
         }
+    }
+    
+    private File chooseCsvFile() {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Sélectionner un fichier CSV");
+        fileChooser.getExtensionFilters().add(
+                new FileChooser.ExtensionFilter("Fichiers CSV", "*.csv")
+        );
+        return fileChooser.showOpenDialog(importButton.getScene().getWindow());
     }
     
     private void updateView() {
         // Mettre à jour la vue principale (titre de la liste, contenu, etc.)
         updateListTitle();
         updateImportButton();
+        updateListView();
+    }
+    
+    private void updateListView() {
+        List<Adolescent> listToShow;
+        if (isHotesSelected) {
+            listToShow = DataManager.getHosts();
+        } else {
+            listToShow = DataManager.getVisitors();
+        }
+
+        elevesListView.getItems().setAll(
+                listToShow.stream()
+                        .map(ado -> ado.getFirstName() + " " + ado.getLastName())
+                        .collect(Collectors.toList())
+        );
+
+        updateListTitle();
     }
     
     private void updateListTitle() {
         if (isHotesSelected) {
-            listTitleLabel.setText("Hôtes");
-            System.out.println("Vue Hôtes sélectionnée");
-            // Logique pour afficher les hôtes
+            int count = DataManager.getHosts().size();
+            listTitleLabel.setText("Hôtes (" + count + ")");
         } else {
-            listTitleLabel.setText("Visiteurs");
-            System.out.println("Vue Visiteurs sélectionnée");
-            // Logique pour afficher les visiteurs
+            int count = DataManager.getVisitors().size();
+            listTitleLabel.setText("Visiteurs (" + count + ")");
         }
+    }
+
+    private void setupFormActions() {
+        showFormButton.setOnAction(e -> showCreateForm());
+        cancelButton.setOnAction(e -> hideForm());
+        saveButton.setOnAction(e -> handleSave());
+    }
+
+    private void showCreateForm() {
+        formTitleLabel.setText("Créer un nouvel élève");
+        saveButton.setText("Créer l'élève");
+        formPane.setVisible(true);
+        formPane.setManaged(true);
+        clearForm();
+    }
+
+    private void hideForm() {
+        formPane.setVisible(false);
+        formPane.setManaged(false);
+        clearForm();
+    }
+
+    private void clearForm() {
+        prenomField.clear();
+        nomField.clear();
+        dateNaissancePicker.setValue(null);
+        genreComboBox.setValue(null);
+        paysField.clear();
+        hobbiesField.clear();
+        sansNoixCheckBox.setSelected(false);
+        vegetarienCheckBox.setSelected(false);
+        hoteTypeToggle.setSelected(true);
+    }
+    
+    private void handleSave() {
+        // Validation
+        if (prenomField.getText().isEmpty() || nomField.getText().isEmpty() || dateNaissancePicker.getValue() == null || genreComboBox.getValue() == null) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Erreur de validation");
+            alert.setHeaderText(null);
+            alert.setContentText("Les champs Prénom, Nom, Date de naissance et Genre sont obligatoires.");
+            alert.showAndWait();
+            return;
+        }
+
+        // Gather data
+        String prenom = prenomField.getText();
+        String nom = nomField.getText();
+        LocalDate dateNaissance = dateNaissancePicker.getValue();
+        String genre = genreComboBox.getValue();
+        String pays = paysField.getText();
+        boolean isHost = hoteTypeToggle.isSelected();
+
+        Map<Criteria, String> criteria = new HashMap<>();
+        
+        // Hobbies
+        if (!hobbiesField.getText().trim().isEmpty()) {
+            criteria.put(Criteria.HOBBIES, hobbiesField.getText().trim());
+        }
+
+        // Food
+        List<String> foodList = new ArrayList<>();
+        if (vegetarienCheckBox.isSelected()) {
+            foodList.add("vegetarian");
+        }
+        if (sansNoixCheckBox.isSelected()) {
+            foodList.add("no-nuts");
+        }
+        if (!foodList.isEmpty()) {
+            String foodString = String.join(",", foodList);
+            criteria.put(isHost ? Criteria.HOST_FOOD : Criteria.GUEST_FOOD, foodString);
+        }
+
+        // Create Adolescent
+        Adolescent newAdo = new Adolescent(nom, prenom, genre, pays, criteria, dateNaissance, isHost);
+
+        // Add to DataManager
+        DataManager.addAdolescents(List.of(newAdo));
+        
+        System.out.println("Nouvel élève créé : " + newAdo);
+        
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Succès");
+        alert.setHeaderText(null);
+        alert.setContentText("L'élève " + prenom + " " + nom + " a été ajouté avec succès.");
+        alert.showAndWait();
+
+        // Update UI
+        hideForm();
+        updateListView();
     }
 } 

@@ -1,9 +1,12 @@
 package sae.decision.linguistic.model;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Classe représentant une affectation d'adolescents visiteurs à des adolescents hôtes.
@@ -13,7 +16,7 @@ import java.util.Map;
 public class Affectation implements Serializable {
     private List<Adolescent> hosts;
     private List<Adolescent> visitors;
-    // private Map<Adolescent, Adolescent> pairs; // Map des paires (pas utilisée pour l'instant)
+    private Map<Adolescent, Adolescent> pairs; // Map des paires (Visiteur -> Hôte)
     private static final long serialVersionUID = 1L;
     /**
      * Construit une nouvelle instance d'Affectation.
@@ -23,6 +26,37 @@ public class Affectation implements Serializable {
     public Affectation(List<Adolescent> hosts, List<Adolescent> visitors) {
         this.hosts = hosts;
         this.visitors = visitors;
+        this.pairs = new HashMap<>();
+    }
+
+    /**
+     * Fusionne une autre affectation dans celle-ci.
+     * Les paires, les listes d'hôtes et de visiteurs sont ajoutées en évitant les doublons.
+     * @param other L'affectation à fusionner.
+     */
+    public void merge(Affectation other) {
+        if (other == null) {
+            return;
+        }
+
+        // Fusionner les paires
+        if (other.getPairs() != null) {
+            this.getPairs().putAll(other.getPairs());
+        }
+
+        // Fusionner les hôtes (en évitant les doublons)
+        if (other.getHosts() != null) {
+            Set<Adolescent> hostSet = new HashSet<>(this.hosts);
+            hostSet.addAll(other.getHosts());
+            this.hosts = new ArrayList<>(hostSet);
+        }
+
+        // Fusionner les visiteurs (en évitant les doublons)
+        if (other.getVisitors() != null) {
+            Set<Adolescent> visitorSet = new HashSet<>(this.visitors);
+            visitorSet.addAll(other.getVisitors());
+            this.visitors = new ArrayList<>(visitorSet);
+        }
     }
 
     /**
@@ -30,6 +64,15 @@ public class Affectation implements Serializable {
      * @return Une Map représentant les paires (Visiteur -> Hôte).
      */
     public Map<Adolescent, Adolescent> calculatePairing() {
+        return calculatePairing(null);
+    }
+
+    /**
+     * Calcule l'appariement optimal entre hôtes et visiteurs en utilisant l'algorithme hongrois, en tenant compte de l'historique.
+     * @param history L'historique des affectations passées pour éviter les ré-appariements.
+     * @return Une Map représentant les paires (Visiteur -> Hôte).
+     */
+    public Map<Adolescent, Adolescent> calculatePairing(Map<String, Affectation> history) {
         int n = Math.max(hosts.size(), visitors.size());
         int[][] costMatrix = new int[n][n];
         
@@ -56,7 +99,7 @@ public class Affectation implements Serializable {
         int[] assignment = hungarianAlgorithm(costMatrix);
 
         // Créer la map des paires
-        Map<Adolescent, Adolescent> pairs = new HashMap<>();
+        this.pairs.clear();
         for (int i = 0; i < visitors.size(); i++) {
             if (assignment[i] < hosts.size()) {
                 pairs.put(visitors.get(i), hosts.get(assignment[i]));
@@ -185,6 +228,14 @@ public class Affectation implements Serializable {
         }
 
         return xy;
+    }
+
+    /**
+     * Récupère les paires d'adolescents affectés.
+     * @return La map des paires (Visiteur -> Hôte).
+     */
+    public Map<Adolescent, Adolescent> getPairs() {
+        return pairs;
     }
 
     // Getters

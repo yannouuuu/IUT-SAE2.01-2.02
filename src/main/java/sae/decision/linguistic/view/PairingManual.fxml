@@ -5,6 +5,7 @@
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.Separator?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.HBox?>
@@ -121,28 +122,52 @@
                                         <VBox fx:id="previewCard" spacing="16.0" style="-fx-background-color: #f8f9fa; -fx-background-radius: 12px; -fx-padding: 20px;" visible="false" managed="false">
                                             <children>
                                                 <Label text="Aperçu de l'Appariement" style="-fx-font-size: 16px; -fx-font-weight: 700; -fx-text-fill: #495057;" />
-                                                <HBox spacing="24.0" alignment="CENTER_LEFT">
+                                                <GridPane hgap="16.0" vgap="8.0">
+                                                    <columnConstraints>
+                                                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="180.0" />
+                                                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
+                                                    </columnConstraints>
                                                     <children>
-                                                        <VBox spacing="8.0" HBox.hgrow="ALWAYS">
-                                                            <children>
-                                                                <Label text="Score d'Affinité Calculé" style="-fx-font-size: 13px; -fx-font-weight: 600; -fx-text-fill: #6c6c6c;" />
-                                                                <Label fx:id="scorePreviewLabel" text="75%" style="-fx-font-size: 24px; -fx-font-weight: 700; -fx-text-fill: #28a745;" />
-                                                            </children>
-                                                        </VBox>
-                                                        <VBox spacing="8.0" HBox.hgrow="ALWAYS">
-                                                            <children>
-                                                                <Label text="Compatibilité" style="-fx-font-size: 13px; -fx-font-weight: 600; -fx-text-fill: #6c6c6c;" />
-                                                                <Label fx:id="compatibilityLabel" text="Bonne" style="-fx-font-size: 16px; -fx-font-weight: 600; -fx-text-fill: #28a745;" />
-                                                            </children>
-                                                        </VBox>
-                                                        <VBox spacing="8.0" HBox.hgrow="ALWAYS">
-                                                            <children>
-                                                                <Label text="Centres d'intérêt communs" style="-fx-font-size: 13px; -fx-font-weight: 600; -fx-text-fill: #6c6c6c;" />
-                                                                <Label fx:id="commonInterestsLabel" text="3 en commun" style="-fx-font-size: 16px; -fx-font-weight: 600; -fx-text-fill: #495057;" />
-                                                            </children>
-                                                        </VBox>
+                                                        <!-- Score Final -->
+                                                        <Label text="Score d'Affinité Final" style="-fx-font-size: 14px; -fx-font-weight: 700;" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+                                                        <Label fx:id="scorePreviewLabel" text="75%" style="-fx-font-size: 20px; -fx-font-weight: 700;" GridPane.columnIndex="1" GridPane.rowIndex="0" />
+                                                        
+                                                        <!-- Compatibilité -->
+                                                        <Label text="Compatibilité Globale" style="-fx-font-size: 14px; -fx-font-weight: 600;" GridPane.columnIndex="0" GridPane.rowIndex="1" />
+                                                        <Label fx:id="compatibilityLabel" text="Bonne" style="-fx-font-size: 14px; -fx-font-weight: 600;" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                                        
+                                                        <!-- Separator -->
+                                                        <Separator GridPane.columnSpan="2" GridPane.rowIndex="2" />
+                                        
+                                                        <!-- Détails du score -->
+                                                        <Label text="Détails du Score Pondéré" style="-fx-font-size: 13px; -fx-font-weight: 600; -fx-text-fill: #6c6c6c;" GridPane.columnIndex="0" GridPane.rowIndex="3" />
+                                                        
+                                                        <Label text="• Différence d'âge" GridPane.columnIndex="0" GridPane.rowIndex="4" />
+                                                        <Label fx:id="ageScoreLabel" text="90 / 100" style="-fx-font-weight: 600;" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                                        
+                                                        <Label text="• Préférences de genre" GridPane.columnIndex="0" GridPane.rowIndex="5" />
+                                                        <Label fx:id="genderScoreLabel" text="100 / 100" style="-fx-font-weight: 600;" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+                                        
+                                                        <Label text="• Hobbies communs" GridPane.columnIndex="0" GridPane.rowIndex="6" />
+                                                        <Label fx:id="hobbiesScoreLabel" text="25 / 100 (1 commun)" style="-fx-font-weight: 600;" GridPane.columnIndex="1" GridPane.rowIndex="6" />
+                                        
+                                                        <!-- Separator -->
+                                                        <Separator GridPane.columnSpan="2" GridPane.rowIndex="7" />
+                                        
+                                                        <!-- Vérifications de base -->
+                                                        <Label text="Compatibilité de Base" style="-fx-font-size: 13px; -fx-font-weight: 600; -fx-text-fill: #6c6c6c;" GridPane.columnIndex="0" GridPane.rowIndex="8" />
+                                                        
+                                                        <Label text="• Régime alimentaire" GridPane.columnIndex="0" GridPane.rowIndex="9" />
+                                                        <Label fx:id="dietCheckLabel" text="✅ Compatible" style="-fx-font-weight: 600;" GridPane.columnIndex="1" GridPane.rowIndex="9" />
+                                                        
+                                                        <Label text="• Allergie animaux" GridPane.columnIndex="0" GridPane.rowIndex="10" />
+                                                        <Label fx:id="animalCheckLabel" text="✅ Compatible" style="-fx-font-weight: 600;" GridPane.columnIndex="1" GridPane.rowIndex="10" />
+                                                        
+                                                        <Label text="• Historique des paires" GridPane.columnIndex="0" GridPane.rowIndex="11" />
+                                                        <Label fx:id="historyCheckLabel" text="✅ Jamais appariés" style="-fx-font-weight: 600;" GridPane.columnIndex="1" GridPane.rowIndex="11" />
+                                        
                                                     </children>
-                                                </HBox>
+                                                </GridPane>
                                             </children>
                                         </VBox>
                                     </children>
