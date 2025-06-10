@@ -8,7 +8,7 @@ import java.util.Map;
 import sae.decision.linguistic.model.Adolescent;
 import sae.decision.linguistic.model.Affectation;
 import sae.decision.linguistic.service.CSVService;
-import sae.decision.linguistic.service.ConfigurationService;
+import sae.decision.linguistic.service.ConfigurationService; // Importation ajoutée
 import sae.decision.linguistic.service.HistoryService;
 
 /**
@@ -29,7 +29,7 @@ public class Main {
     private static final String GUESTS_CSV_PATH = "src/test/resources/sample_guests.csv";
     private static final String EXPORT_CSV_PATH = "src/test/resources/exported_affectations.csv";
     private static final String HISTORY_FILE_PATH = "src/test/resources/affectation_history.dat";
-    private static final String CONFIG_FILE_PATH = "affinity_config.properties"; 
+    private static final String CONFIG_FILE_PATH = "affinity_config.properties"; // Nouvelle constante pour le fichier de conf
     private static final int MAX_DISPLAYED_PAIRS = 10;
 
     // Format d'affichage du tableau des résultats
@@ -51,15 +51,15 @@ public class Main {
      */
     public void run() {
         try {
-
-                        // 0. Charger la configuration
+            // 0. Charger la configuration
             System.out.println("0. Chargement de la configuration...");
             try {
                 ConfigurationService.loadConfiguration(CONFIG_FILE_PATH);
                 System.out.println("   - Configuration chargée depuis : " + CONFIG_FILE_PATH + "\n");
             } catch (java.io.IOException e) {
                 System.err.println("   - Fichier de configuration '" + CONFIG_FILE_PATH + "' non trouvé ou illisible. Utilisation des valeurs par défaut.");
-                ConfigurationService.resetToDefaults();
+                // Pas besoin de resetToDefaults car le static block de ConfigurationService initialise déjà avec les valeurs par défaut
+                System.out.println("   - Un fichier d'exemple peut être généré via ConfigurationService.createExampleConfigFile(\"exemple_config.properties\")\n");
             }
 
             // 1. Charger les données depuis les fichiers CSV (d'exemples ou réel)
