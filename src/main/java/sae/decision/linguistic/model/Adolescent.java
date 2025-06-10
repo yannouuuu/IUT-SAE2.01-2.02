@@ -218,6 +218,52 @@ public class Adolescent implements Serializable {
         return calculateAffinityDetails(other).getFinalScore() > 0;
     }
 
+    /**
+     * Vérifie la compatibilité d'historique entre deux adolescents.
+     * L'appariement est impossible si l'un ou l'autre a spécifié vouloir
+     * être avec un correspondant différent de l'année précédente.
+     * @param visitor L'adolescent visiteur.
+     * @return true si l'historique est compatible, false sinon.
+     */
+    public boolean isHistoryCompatible(Adolescent visitor) {
+        String hostHistory = this.criteria.get(Criteria.HISTORY);
+        String visitorHistory = visitor.criteria.get(Criteria.HISTORY);
+
+        // Si l'un des deux veut "other", ils sont incompatibles.
+        if ("other".equals(hostHistory) || "other".equals(visitorHistory)) {
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * Vérifie la compatibilité spécifique liée à la nationalité française.
+     * Si l'un des adolescents est français, ils doivent avoir au moins un hobby en commun.
+     * @param visitor L'autre adolescent.
+     * @return true si compatible, false sinon.
+     */
+    public boolean isFrenchCompatible(Adolescent visitor) {
+        boolean isHostFrench = FRANCE.equalsIgnoreCase(this.getCountryOfOrigin());
+        boolean isVisitorFrench = FRANCE.equalsIgnoreCase(visitor.getCountryOfOrigin());
+
+        if (isHostFrench || isVisitorFrench) {
+            String hostHobbiesRaw = this.criteria.getOrDefault(Criteria.HOBBIES, "");
+            String visitorHobbiesRaw = visitor.criteria.getOrDefault(Criteria.HOBBIES, "");
+
+            if (hostHobbiesRaw.isEmpty() || visitorHobbiesRaw.isEmpty()) {
+                return false; // Pas de hobbies, donc pas de hobbies communs.
+            }
+
+            Set<String> hostHobbies = new HashSet<>(Arrays.asList(hostHobbiesRaw.split(HOBBY_SEPARATOR)));
+            Set<String> visitorHobbies = new HashSet<>(Arrays.asList(visitorHobbiesRaw.split(HOBBY_SEPARATOR)));
+
+            hostHobbies.retainAll(visitorHobbies);
+            return !hostHobbies.isEmpty();
+        }
+
+        return true; // Aucun n'est français, la contrainte ne s'applique pas.
+    }
+
     public int calculateAffinity(Adolescent other) {
         return calculateAffinityDetails(other).getFinalScore();
     }
@@ -235,15 +281,16 @@ public class Adolescent implements Serializable {
         // 1. Hard compatibility checks
         boolean isDietCompatible = dietScore(other) == 0;
         boolean isAnimalCompatible = animalScore(other) == 0;
+        boolean historyCompatible = isHistoryCompatible(other);
         compatibilityChecks.put("diet", isDietCompatible);
         compatibilityChecks.put("animals", isAnimalCompatible);
+        compatibilityChecks.put("history", historyCompatible);
 
         // Si incompatibilité de base, on arrête le calcul et on retourne un score de 0.
-        if (!isDietCompatible || !isAnimalCompatible) {
+        if (!isDietCompatible || !isAnimalCompatible || !historyCompatible) {
             componentScores.put("age", 0.0);
             componentScores.put("gender", 0.0);
             componentScores.put("hobbies", 0.0);
-            compatibilityChecks.put("history", true); // Pas besoin de vérifier l'historique
             return new AffinityBreakdown(0, componentScores, compatibilityChecks);
         }
         
@@ -319,7 +366,7 @@ public class Adolescent implements Serializable {
         return 0;
     }
 
-    private int dietScore(Adolescent other) {
+    public int dietScore(Adolescent other) {
         // Vérification des régimes alimentaires
         String hostDiet = this.getCriterion(Criteria.HOST_FOOD);
         String guestDiet = other.getCriterion(Criteria.GUEST_FOOD);
