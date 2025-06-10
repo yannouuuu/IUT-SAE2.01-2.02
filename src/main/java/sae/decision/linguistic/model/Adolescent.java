@@ -327,6 +327,11 @@ public class Adolescent implements Serializable {
         boolean isDietCompatible = true;
         boolean isAnimalCompatible = true;
         boolean historyStrictlyCompatible = true; // Renommé pour plus de clarté
+        boolean isFrenchCompatible = true;
+        
+        if (ConfigurationService.isStrictCompatibility("french_hobby_required")) {
+            isFrenchCompatible = isFrenchCompatible(other);
+        }
 
         if (ConfigurationService.isStrictCompatibility("diet")) {
             isDietCompatible = dietScore(other) == 0;
@@ -343,9 +348,11 @@ public class Adolescent implements Serializable {
         compatibilityChecks.put("diet", isDietCompatible);
         compatibilityChecks.put("animals", isAnimalCompatible);
         compatibilityChecks.put("history", historyStrictlyCompatible); 
+        compatibilityChecks.put("french_hobby_required", isFrenchCompatible);
 
         // Si incompatibilité de base (et compatibilité stricte activée), on arrête le calcul
         if ((ConfigurationService.isStrictCompatibility("diet") && !isDietCompatible) ||
+            (ConfigurationService.isStrictCompatibility("french_hobby_required") && !isFrenchCompatible) ||
             (ConfigurationService.isStrictCompatibility("animal") && !isAnimalCompatible) ||
             (ConfigurationService.isStrictCompatibility("history") && !historyStrictlyCompatible)) { 
             componentScores.put("age", 0.0);
@@ -468,7 +475,7 @@ public class Adolescent implements Serializable {
         }
 
         // Si l'hôte n'accepte aucun régime particulier et que le visiteur en a un
-        if (hostDiet == null || hostDiet.isEmpty() && guestDiet != null && !guestDiet.isEmpty()) {
+        if ((hostDiet == null || hostDiet.isEmpty()) && !guestDiet.isEmpty()) {
             // On compte le nombre de régimes demandés par le visiteur comme incompatibles
             int incompatiblesDiets = 0;
             String[] guestDiets = guestDiet.split(",");
