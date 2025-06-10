@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import sae.decision.linguistic.model.Adolescent;
 import sae.decision.linguistic.model.Affectation;
@@ -76,6 +77,12 @@ public class Main {
             System.out.println("   - " + hosts.size() + " hôtes chargés");
             System.out.println("   - " + guests.size() + " visiteurs chargés\n");
 
+            // 1.5. Charger l'historique des affectations
+            Map<String, Affectation> previousAffectations = historyService.loadAffectationHistory(HISTORY_FILE_PATH);
+            System.out.println(String.format("Historique des affectations chargé (%d entrées).", previousAffectations.size()));
+            SetAdolescentsPreviousPartners(hosts, guests, previousAffectations);
+
+
             // 2. Créer l'affectation et calculer les paires optimales
             System.out.println("2. Calcul des affectations optimales...");
             Affectation affectation = new Affectation(hosts, guests);
@@ -90,10 +97,10 @@ public class Main {
                 pairings = new HashMap<>();
             }
 
-            // 3. Afficher les résultats (Temporaire vu que JavaFX plus tard)
+            // 3. Afficher les résultats en CSV
             displayPairings(pairings);
             
-            System.out.println("\n3. Export des résultats...");
+            System.out.println("3. Export des résultats en csv...");
 
             // 4. Exporter les résultats
             csvService.exportAffectations(pairings, EXPORT_CSV_PATH);
@@ -118,6 +125,8 @@ public class Main {
             e.printStackTrace();
         }
     }
+
+    
 
     /**
      * Affiche les paires formées de manière lisible (Jusqu'à JavaFX).
@@ -195,6 +204,36 @@ public class Main {
         System.out.println();
     }
 
+    /**
+     * Enrichit les objets Adolescent avec le nom complet de leur précédent partenaire
+     * en se basant sur l'historique des affectations.
+     * @param hosts Liste des hôtes.
+     * @param guests Liste des visiteurs.
+     * @param previousAffectations Historique des affectations.
+     */
+    private void SetAdolescentsPreviousPartners(List<Adolescent> hosts, List<Adolescent> guests,
+                                                      Map<String, Affectation> previousAffectations) {
+        // Créer des maps pour un accès rapide aux adolescents par leur nom complet
+        Map<String, Adolescent> allAdolescents = new HashMap<>();
+        hosts.forEach(h -> allAdolescents.put(h.toString(), h));
+        guests.forEach(g -> allAdolescents.put(g.toString(), g));
+
+        // Itérer sur toutes les affectations de l'historique
+        for (Affectation aff : previousAffectations.values()) {
+            for (Map.Entry<Adolescent, Adolescent> pair : aff.getPairs().entrySet()) {
+                Adolescent hostInHistory = pair.getKey();
+                Adolescent guestInHistory = pair.getValue();
+
+                // Trouver l'adolescent correspondant dans les listes actuelles et mettre à jour son previousPartnerFullName
+                Optional.ofNullable(allAdolescents.get(hostInHistory.toString()))
+                        .ifPresent(currentHost -> currentHost.setPreviousPartnerFullName(guestInHistory.toString()));
+
+                Optional.ofNullable(allAdolescents.get(guestInHistory.toString()))
+                        .ifPresent(currentGuest -> currentGuest.setPreviousPartnerFullName(hostInHistory.toString()));
+            }
+        }
+    }
+    
     /**
      * Sauvegarde l'affectation dans l'historique.
      */
