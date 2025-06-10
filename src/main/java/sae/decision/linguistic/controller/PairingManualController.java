@@ -116,24 +116,24 @@ public class PairingManualController {
         button.setStyle(baseStyle);
         
         // Effets hover
-        button.setOnMouseEntered(e -> {
+        button.setOnMouseEntered(_ -> {
             button.setStyle(baseStyle + 
                 "-fx-background-color: #333333; " +
                 "-fx-scale-x: 1.02; " +
                 "-fx-scale-y: 1.02;");
         });
         
-        button.setOnMouseExited(e -> button.setStyle(baseStyle));
+        button.setOnMouseExited(_ -> button.setStyle(baseStyle));
         
         // Effet pressed
-        button.setOnMousePressed(e -> {
+        button.setOnMousePressed(_ -> {
             button.setStyle(baseStyle + 
                 "-fx-scale-x: 0.98; " +
                 "-fx-scale-y: 0.98; " +
                 "-fx-background-color: #1a1a1a;");
         });
         
-        button.setOnMouseReleased(e -> button.setStyle(baseStyle));
+        button.setOnMouseReleased(_ -> button.setStyle(baseStyle));
     }
     
     private void setupSecondaryButton(Button button) {
@@ -151,7 +151,7 @@ public class PairingManualController {
         button.setStyle(baseStyle);
         
         // Effets hover
-        button.setOnMouseEntered(e -> {
+        button.setOnMouseEntered(_ -> {
             button.setStyle(baseStyle + 
                 "-fx-background-color: #dee2e6; " +
                 "-fx-text-fill: #495057; " +
@@ -159,17 +159,17 @@ public class PairingManualController {
                 "-fx-scale-y: 1.02;");
         });
         
-        button.setOnMouseExited(e -> button.setStyle(baseStyle));
+        button.setOnMouseExited(_ -> button.setStyle(baseStyle));
         
         // Effet pressed
-        button.setOnMousePressed(e -> {
+        button.setOnMousePressed(_ -> {
             button.setStyle(baseStyle + 
                 "-fx-scale-x: 0.98; " +
                 "-fx-scale-y: 0.98; " +
                 "-fx-background-color: #ced4da;");
         });
         
-        button.setOnMouseReleased(e -> button.setStyle(baseStyle));
+        button.setOnMouseReleased(_ -> button.setStyle(baseStyle));
     }
     
     private void setupModernComboBox(ComboBox<?> comboBox) {
@@ -188,19 +188,19 @@ public class PairingManualController {
         comboBox.setStyle(baseStyle);
         
         // Effets hover et focus
-        comboBox.setOnMouseEntered(e -> {
+        comboBox.setOnMouseEntered(_ -> {
             comboBox.setStyle(baseStyle + 
                 "-fx-border-color: #dee2e6; " +
                 "-fx-background-color: #f8f9fa;");
         });
         
-        comboBox.setOnMouseExited(e -> {
+        comboBox.setOnMouseExited(_ -> {
             if (!comboBox.isFocused()) {
                 comboBox.setStyle(baseStyle);
             }
         });
         
-        comboBox.focusedProperty().addListener((obs, wasFocused, isNowFocused) -> {
+        comboBox.focusedProperty().addListener((_, _, isNowFocused) -> {
             if (isNowFocused) {
                 comboBox.setStyle(baseStyle + 
                     "-fx-border-color: #000000; " +
@@ -223,24 +223,24 @@ public class PairingManualController {
     
     private void setupEventHandlers() {
         // Événements de sélection des ComboBoxes
-        hoteComboBox.valueProperty().addListener((obs, oldValue, newValue) -> {
+        hoteComboBox.valueProperty().addListener((_, _, newValue) -> {
             updateHoteInfo(newValue);
             updatePreview();
         });
         
-        visiteurComboBox.valueProperty().addListener((obs, oldValue, newValue) -> {
+        visiteurComboBox.valueProperty().addListener((_, _, newValue) -> {
             updateVisiteurInfo(newValue);
             updatePreview();
         });
         
         // Événement du bouton reset
         if (resetButton != null) {
-            resetButton.setOnAction(e -> resetForm());
+            resetButton.setOnAction(_ -> resetForm());
         }
         
         // Événement du bouton créer
         if (createButton != null) {
-            createButton.setOnAction(e -> createPairing());
+            createButton.setOnAction(_ -> createPairing());
         }
     }
     
@@ -282,9 +282,16 @@ public class PairingManualController {
             createButton.setDisable(!bothSelected);
         }
 
-        if (bothSelected) {
-            AffinityBreakdown details = visitor.calculateAffinityDetails(host);
+        if (!bothSelected) {
+            return;
+        }
+
+        AffinityBreakdown details = visitor.calculateAffinityDetails(host);
+        if (details != null) {
             updateAffinityScoreUI(details);
+        } else if (previewCard != null) {
+            previewCard.setVisible(false);
+            previewCard.setManaged(false);
         }
     }
     
@@ -303,16 +310,16 @@ public class PairingManualController {
         compatibilityLabel.setStyle("-fx-font-size: 14px; -fx-font-weight: 600; -fx-text-fill: " + scoreColor + ";");
         
         // Mise à jour des détails du score
-        ageScoreLabel.setText(String.format("%.0f / 100", componentScores.get("age")));
-        genderScoreLabel.setText(String.format("%.0f / 100", componentScores.get("gender")));
+        ageScoreLabel.setText(String.format("%.0f / 100", componentScores.getOrDefault("age", 0.0)));
+        genderScoreLabel.setText(String.format("%.0f / 100", componentScores.getOrDefault("gender", 0.0)));
         double hobbiesScore = componentScores.getOrDefault("hobbies", 0.0);
         int commonHobbiesCount = componentScores.getOrDefault("commonHobbiesCount", 0.0).intValue();
         hobbiesScoreLabel.setText(String.format("%.0f / 100 (%d commun(s))", hobbiesScore, commonHobbiesCount));
 
         // Mise à jour des vérifications de compatibilité
-        updateCheckLabel(dietCheckLabel, compatibilityChecks.get("diet"), "Compatible", "Non Compatible");
-        updateCheckLabel(animalCheckLabel, compatibilityChecks.get("animals"), "Compatible", "Risque d'allergie");
-        updateCheckLabel(historyCheckLabel, compatibilityChecks.get("history"), "Jamais appariés", "Déjà appariés !");
+        updateCheckLabel(dietCheckLabel, compatibilityChecks.getOrDefault("diet", false), "Compatible", "Non Compatible");
+        updateCheckLabel(animalCheckLabel, compatibilityChecks.getOrDefault("animals", false), "Compatible", "Risque d'allergie");
+        updateCheckLabel(historyCheckLabel, compatibilityChecks.getOrDefault("history", true), "Jamais appariés", "Déjà appariés !");
     }
 
     private String getScoreColor(int score) {

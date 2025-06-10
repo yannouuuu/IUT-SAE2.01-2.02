@@ -71,16 +71,10 @@ public class PairingController {
     private TableColumn<PairingDisplay, String> statutColumn;
 
     @FXML
-    private TableColumn<PairingDisplay, String> dateCreationColumn;
-
-    @FXML
-    private TableColumn<PairingDisplay, Void> actionsColumn;
-    
-    @FXML
     private Label tableStatsLabel;
 
     private AppariementService appariementService;
-    private List<PairingDisplay> allPairings = new ArrayList<>();
+    private final List<PairingDisplay> allPairings = new ArrayList<>();
     private ObservableList<PairingDisplay> filteredPairings;
 
     @FXML
@@ -103,7 +97,7 @@ public class PairingController {
         populateTable();
         
         // Ajouter un listener pour mettre à jour la table si les données changent
-        DataManager.lastAffectationProperty().addListener((obs, oldAffectation, newAffectation) -> {
+        DataManager.lastAffectationProperty().addListener((_, _, _) -> {
             System.out.println("L'affectation a changé, mise à jour de la table des appariements.");
             populateTable();
         });
@@ -112,7 +106,7 @@ public class PairingController {
         lancerCalculButton.setVisible(false);
         
         // Action pour le bouton d'export
-        exportButton.setOnAction(e -> handleExport());
+        exportButton.setOnAction(_ -> handleExport());
     }
     
     private void setupModernStyles() {
@@ -143,24 +137,24 @@ public class PairingController {
         button.setStyle(baseStyle);
         
         // Effets hover
-        button.setOnMouseEntered(e -> {
+        button.setOnMouseEntered(_ -> {
             button.setStyle(baseStyle + 
                 "-fx-background-color: #333333; " +
                 "-fx-scale-x: 1.02; " +
                 "-fx-scale-y: 1.02;");
         });
         
-        button.setOnMouseExited(e -> button.setStyle(baseStyle));
+        button.setOnMouseExited(_ -> button.setStyle(baseStyle));
         
         // Effet pressed
-        button.setOnMousePressed(e -> {
+        button.setOnMousePressed(_ -> {
             button.setStyle(baseStyle + 
                 "-fx-scale-x: 0.98; " +
                 "-fx-scale-y: 0.98; " +
                 "-fx-background-color: #1a1a1a;");
         });
         
-        button.setOnMouseReleased(e -> button.setStyle(baseStyle));
+        button.setOnMouseReleased(_ -> button.setStyle(baseStyle));
     }
     
     private void setupSecondaryButton(Button button) {
@@ -178,7 +172,7 @@ public class PairingController {
         button.setStyle(baseStyle);
         
         // Effets hover
-        button.setOnMouseEntered(e -> {
+        button.setOnMouseEntered(_ -> {
             button.setStyle(baseStyle + 
                 "-fx-background-color: #dee2e6; " +
                 "-fx-text-fill: #495057; " +
@@ -186,17 +180,17 @@ public class PairingController {
                 "-fx-scale-y: 1.02;");
         });
         
-        button.setOnMouseExited(e -> button.setStyle(baseStyle));
+        button.setOnMouseExited(_ -> button.setStyle(baseStyle));
         
         // Effet pressed
-        button.setOnMousePressed(e -> {
+        button.setOnMousePressed(_ -> {
             button.setStyle(baseStyle + 
                 "-fx-scale-x: 0.98; " +
                 "-fx-scale-y: 0.98; " +
                 "-fx-background-color: #ced4da;");
         });
         
-        button.setOnMouseReleased(e -> button.setStyle(baseStyle));
+        button.setOnMouseReleased(_ -> button.setStyle(baseStyle));
     }
     
     private void setupModernTextField(TextField textField) {
@@ -214,7 +208,7 @@ public class PairingController {
         textField.setStyle(baseStyle);
         
         // Effets hover et focus
-        textField.setOnMouseEntered(e -> {
+        textField.setOnMouseEntered(_ -> {
             if (!textField.isFocused()) {
                 textField.setStyle(baseStyle + 
                     "-fx-border-color: #dee2e6; " +
@@ -222,13 +216,13 @@ public class PairingController {
             }
         });
         
-        textField.setOnMouseExited(e -> {
+        textField.setOnMouseExited(_ -> {
             if (!textField.isFocused()) {
                 textField.setStyle(baseStyle);
             }
         });
         
-        textField.focusedProperty().addListener((obs, wasFocused, isNowFocused) -> {
+        textField.focusedProperty().addListener((_, _, isNowFocused) -> {
             if (isNowFocused) {
                 textField.setStyle(baseStyle + 
                     "-fx-border-color: #000000; " +
@@ -255,19 +249,21 @@ public class PairingController {
         comboBox.setStyle(baseStyle);
         
         // Effets hover et focus
-        comboBox.setOnMouseEntered(e -> {
-            comboBox.setStyle(baseStyle + 
-                "-fx-border-color: #dee2e6; " +
-                "-fx-background-color: #f8f9fa;");
+        comboBox.setOnMouseEntered(_ -> {
+            if (!comboBox.isFocused()) {
+                comboBox.setStyle(baseStyle + 
+                    "-fx-border-color: #dee2e6; " +
+                    "-fx-background-color: #f8f9fa;");
+            }
         });
         
-        comboBox.setOnMouseExited(e -> {
+        comboBox.setOnMouseExited(_ -> {
             if (!comboBox.isFocused()) {
                 comboBox.setStyle(baseStyle);
             }
         });
         
-        comboBox.focusedProperty().addListener((obs, wasFocused, isNowFocused) -> {
+        comboBox.focusedProperty().addListener((_, _, isNowFocused) -> {
             if (isNowFocused) {
                 comboBox.setStyle(baseStyle + 
                     "-fx-border-color: #000000; " +
@@ -282,10 +278,10 @@ public class PairingController {
         statusFilter.getItems().addAll("Tous les statuts", "Validé", "En attente", "Score faible");
         statusFilter.setValue("Tous les statuts");
 
-        searchField.textProperty().addListener((obs, oldVal, newVal) -> applyFilters());
-        statusFilter.valueProperty().addListener((obs, oldVal, newVal) -> applyFilters());
+        searchField.textProperty().addListener((_, _, _) -> applyFilters());
+        statusFilter.valueProperty().addListener((_, _, _) -> applyFilters());
 
-        resetFiltersButton.setOnAction(e -> {
+        resetFiltersButton.setOnAction(_ -> {
             searchField.clear();
             statusFilter.setValue("Tous les statuts");
             applyFilters();
@@ -304,7 +300,7 @@ public class PairingController {
             return new SimpleStringProperty(status);
         });
 
-        statutColumn.setCellFactory(column -> new TableCell<PairingDisplay, String>() {
+        statutColumn.setCellFactory(_ -> new TableCell<PairingDisplay, String>() {
             @Override
             protected void updateItem(String item, boolean empty) {
                 super.updateItem(item, empty);
@@ -334,7 +330,7 @@ public class PairingController {
         // Mise à jour des stats
         updateTableStats();
 
-        scoreColumn.setCellFactory(column -> new TableCell<PairingDisplay, Number>() {
+        scoreColumn.setCellFactory(_ -> new TableCell<PairingDisplay, Number>() {
             @Override
             protected void updateItem(Number item, boolean empty) {
                 if (empty || item == null) {

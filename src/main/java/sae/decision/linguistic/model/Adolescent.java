@@ -468,7 +468,7 @@ public class Adolescent implements Serializable {
         }
 
         // Si l'hôte n'accepte aucun régime particulier et que le visiteur en a un
-        if ((hostDiet == null || hostDiet.isEmpty()) && (guestDiet != null && !guestDiet.isEmpty())) {
+        if (hostDiet == null || hostDiet.isEmpty()) {
             // On compte le nombre de régimes demandés par le visiteur comme incompatibles
             int incompatiblesDiets = 0;
             String[] guestDiets = guestDiet.split(",");
@@ -482,32 +482,18 @@ public class Adolescent implements Serializable {
         }
 
         Set<String> hostDietsSet = new HashSet<>();
-        try {
-            if (hostDiet != null) {
-                String[] hostDiets = hostDiet.split(",");
-                for (String diet : hostDiets) {
-                    hostDietsSet.add(diet.trim());
-                }
-            }
-        } catch (NullPointerException e) {
-            System.err.println("Erreur lors du traitement des régimes de l'hôte " + this.firstName + ": " + e.getMessage());
-            return 0; 
+        String[] hostDiets = hostDiet.split(",");
+        for (String diet : hostDiets) {
+            hostDietsSet.add(diet.trim());
         }
 
         int incompatiblesDiets = 0;
         double dietPenalty = ConfigurationService.getDouble("penalty.diet_incompatible");
-        try {
-            if (guestDiet != null) {
-                String[] guestDiets = guestDiet.split(",");
-                for (String diet : guestDiets) {
-                    if (!hostDietsSet.contains(diet.trim())) {
-                        incompatiblesDiets += (int) dietPenalty;
-                    }
-                }
+        String[] guestDiets = guestDiet.split(",");
+        for (String diet : guestDiets) {
+            if (!hostDietsSet.contains(diet.trim())) {
+                incompatiblesDiets += (int) dietPenalty;
             }
-        } catch (NullPointerException e) {
-            System.err.println("Erreur lors du traitement des régimes du visiteur " + other.getFirstName() + ": " + e.getMessage());
-            return 0; 
         }
 
         return incompatiblesDiets;

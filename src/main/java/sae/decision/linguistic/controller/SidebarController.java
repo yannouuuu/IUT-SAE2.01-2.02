@@ -86,15 +86,6 @@ public class SidebarController {
                 button.setStyle(baseStyle);
             }
         });
-        
-        // Pas d'effet pressed car on gère l'état actif directement
-        button.setOnMousePressed(_ -> {
-            // Ne rien faire - l'état sera géré par le click
-        });
-        
-        button.setOnMouseReleased(_ -> {
-            // Ne rien faire - l'état sera géré par le click
-        });
     }
 
     private Button activeButton = null;
@@ -156,15 +147,6 @@ public class SidebarController {
         });
         
         button.setOnMouseExited(_ -> button.setStyle(activeStyle));
-        
-        // Pas d'effet pressed pour le bouton actif
-        button.setOnMousePressed(_ -> {
-            // Ne rien faire
-        });
-        
-        button.setOnMouseReleased(_ -> {
-            // Ne rien faire
-        });
     }
 
     @FXML

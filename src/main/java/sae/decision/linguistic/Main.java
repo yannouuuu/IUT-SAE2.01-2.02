@@ -120,9 +120,7 @@ public class Main {
             System.out.println("=== Processus terminé ===");
 
         } catch (Exception e) {
-            System.err.println("Erreur critique dans l'application: " + e.getMessage());
-            System.err.println("L'application s'arrête.");
-            e.printStackTrace();
+            throw new RuntimeException("Erreur critique dans l'application.", e);
         }
     }
 

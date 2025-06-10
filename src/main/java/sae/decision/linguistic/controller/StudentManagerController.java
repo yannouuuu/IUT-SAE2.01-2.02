@@ -39,11 +39,6 @@ public class StudentManagerController {
     @FXML
     private javafx.scene.layout.StackPane switchContainer;
 
-    @FXML
-    private Label hotesLabel;
-
-    @FXML
-    private Label visiteursLabel;
 
     @FXML
     private javafx.scene.layout.StackPane switchIndicator;
@@ -135,9 +130,9 @@ public class StudentManagerController {
         updateActiveLabel();
         
         // Gestionnaires de clic sur le conteneur entier
-        switchContainer.setOnMouseClicked(e -> {
+        switchContainer.setOnMouseClicked(event -> {
             // Calculer si le clic est sur la moitié gauche ou droite
-            double clickX = e.getX();
+            double clickX = event.getX();
             double containerWidth = switchContainer.getWidth();
             boolean clickedLeft = clickX < (containerWidth / 2);
             
@@ -211,7 +206,7 @@ public class StudentManagerController {
         setupToggleButtons();
 
         // Action pour le bouton d'import
-        importButton.setOnAction(e -> handleImport());
+        importButton.setOnAction(_ -> handleImport());
     }
     
     private void setupBlackButton(Button button) {
@@ -229,24 +224,24 @@ public class StudentManagerController {
         button.setStyle(baseStyle);
         
         // Effets hover
-        button.setOnMouseEntered(e -> {
+        button.setOnMouseEntered(_ -> {
             button.setStyle(baseStyle + 
                 "-fx-background-color: #333333; " +
                 "-fx-scale-x: 1.02; " +
                 "-fx-scale-y: 1.02;");
         });
         
-        button.setOnMouseExited(e -> button.setStyle(baseStyle));
+        button.setOnMouseExited(_ -> button.setStyle(baseStyle));
         
         // Effet pressed
-        button.setOnMousePressed(e -> {
+        button.setOnMousePressed(_ -> {
             button.setStyle(baseStyle + 
                 "-fx-scale-x: 0.98; " +
                 "-fx-scale-y: 0.98; " +
                 "-fx-background-color: #1a1a1a;");
         });
         
-        button.setOnMouseReleased(e -> button.setStyle(baseStyle));
+        button.setOnMouseReleased(_ -> button.setStyle(baseStyle));
     }
     
     private void setupSwitchStyleButton(Button button) {
@@ -265,24 +260,24 @@ public class StudentManagerController {
         button.setStyle(baseStyle);
         
         // Effets hover
-        button.setOnMouseEntered(e -> {
+        button.setOnMouseEntered(_ -> {
             button.setStyle(baseStyle + 
-                "-fx-background-color: #f8f9fa; " +
+                "-fx-background-color: #3b5bdb; " +
                 "-fx-scale-x: 1.02; " +
                 "-fx-scale-y: 1.02;");
         });
         
-        button.setOnMouseExited(e -> button.setStyle(baseStyle));
+        button.setOnMouseExited(_ -> button.setStyle(baseStyle));
         
         // Effet pressed
-        button.setOnMousePressed(e -> {
+        button.setOnMousePressed(_ -> {
             button.setStyle(baseStyle + 
                 "-fx-scale-x: 0.98; " +
                 "-fx-scale-y: 0.98; " +
-                "-fx-background-color: #e9ecef;");
+                "-fx-background-color: #2c44a8;");
         });
         
-        button.setOnMouseReleased(e -> button.setStyle(baseStyle));
+        button.setOnMouseReleased(_ -> button.setStyle(baseStyle));
     }
     
     private void setupSecondaryButton(Button button) {
@@ -300,7 +295,7 @@ public class StudentManagerController {
         button.setStyle(baseStyle);
         
         // Effets hover
-        button.setOnMouseEntered(e -> {
+        button.setOnMouseEntered(_ -> {
             button.setStyle(baseStyle + 
                 "-fx-background-color: #dee2e6; " +
                 "-fx-text-fill: #495057; " +
@@ -308,17 +303,17 @@ public class StudentManagerController {
                 "-fx-scale-y: 1.02;");
         });
         
-        button.setOnMouseExited(e -> button.setStyle(baseStyle));
+        button.setOnMouseExited(_ -> button.setStyle(baseStyle));
         
         // Effet pressed
-        button.setOnMousePressed(e -> {
+        button.setOnMousePressed(_ -> {
             button.setStyle(baseStyle + 
                 "-fx-scale-x: 0.98; " +
                 "-fx-scale-y: 0.98; " +
                 "-fx-background-color: #ced4da;");
         });
         
-        button.setOnMouseReleased(e -> button.setStyle(baseStyle));
+        button.setOnMouseReleased(_ -> button.setStyle(baseStyle));
     }
     
     private void setupToggleButtons() {
@@ -327,7 +322,7 @@ public class StudentManagerController {
         setupToggleButton(visiteurTypeToggle, false);
         
         // Gestionnaire pour synchroniser les styles lors du changement
-        typeToggleGroup.selectedToggleProperty().addListener((obs, oldToggle, newToggle) -> {
+        typeToggleGroup.selectedToggleProperty().addListener((_, _, _) -> {
             setupToggleButton(hoteTypeToggle, hoteTypeToggle.isSelected());
             setupToggleButton(visiteurTypeToggle, visiteurTypeToggle.isSelected());
         });
@@ -360,7 +355,7 @@ public class StudentManagerController {
         button.setStyle(isSelected ? activeStyle : inactiveStyle);
         
         // Effets hover
-        button.setOnMouseEntered(e -> {
+        button.setOnMouseEntered(_ -> {
             if (button.isSelected()) {
                 button.setStyle(activeStyle + "-fx-background-color: #f8f9fa; -fx-scale-x: 1.02; -fx-scale-y: 1.02;");
             } else {
@@ -371,7 +366,7 @@ public class StudentManagerController {
             }
         });
         
-        button.setOnMouseExited(e -> {
+        button.setOnMouseExited(_ -> {
             button.setStyle(button.isSelected() ? activeStyle : inactiveStyle);
         });
     }
@@ -448,9 +443,9 @@ public class StudentManagerController {
     }
 
     private void setupFormActions() {
-        showFormButton.setOnAction(e -> showCreateForm());
-        cancelButton.setOnAction(e -> hideForm());
-        saveButton.setOnAction(e -> handleSave());
+        showFormButton.setOnAction(_ -> showCreateForm());
+        cancelButton.setOnAction(_ -> hideForm());
+        saveButton.setOnAction(_ -> handleSave());
     }
 
     private void showCreateForm() {

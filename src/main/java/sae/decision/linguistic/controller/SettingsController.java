@@ -17,23 +17,18 @@ import sae.decision.linguistic.model.ConfigurationManager;
 public class SettingsController {
 
     // === Sliders et Labels de Pondération ===
-    @FXML private Label ageLabel;
     @FXML private Slider ageSlider;
     @FXML private Label ageValueLabel;
     
-    @FXML private Label sexeLabel;
     @FXML private Slider sexeSlider;
     @FXML private Label sexeValueLabel;
     
-    @FXML private Label interetLabel;
     @FXML private Slider interetSlider;
     @FXML private Label interetValueLabel;
     
-    @FXML private Label langueLabel;
     @FXML private Slider langueSlider;
     @FXML private Label langueValueLabel;
     
-    @FXML private Label activitesLabel;
     @FXML private Slider activitesSlider;
     @FXML private Label activitesValueLabel;
     
@@ -111,27 +106,27 @@ public class SettingsController {
     
     private void setupSliders() {
         // Configuration des sliders avec listeners pour mise à jour temps réel
-        ageSlider.valueProperty().addListener((obs, oldVal, newVal) -> {
+        ageSlider.valueProperty().addListener((_, _, newVal) -> {
             ageValueLabel.setText(String.format("%.0f%%", newVal.doubleValue()));
             updateTotal();
         });
         
-        sexeSlider.valueProperty().addListener((obs, oldVal, newVal) -> {
+        sexeSlider.valueProperty().addListener((_, _, newVal) -> {
             sexeValueLabel.setText(String.format("%.0f%%", newVal.doubleValue()));
             updateTotal();
         });
         
-        interetSlider.valueProperty().addListener((obs, oldVal, newVal) -> {
+        interetSlider.valueProperty().addListener((_, _, newVal) -> {
             interetValueLabel.setText(String.format("%.0f%%", newVal.doubleValue()));
             updateTotal();
         });
         
-        langueSlider.valueProperty().addListener((obs, oldVal, newVal) -> {
+        langueSlider.valueProperty().addListener((_, _, newVal) -> {
             langueValueLabel.setText(String.format("%.0f%%", newVal.doubleValue()));
             updateTotal();
         });
         
-        activitesSlider.valueProperty().addListener((obs, oldVal, newVal) -> {
+        activitesSlider.valueProperty().addListener((_, _, newVal) -> {
             activitesValueLabel.setText(String.format("%.0f%%", newVal.doubleValue()));
             updateTotal();
         });
@@ -146,16 +141,16 @@ public class SettingsController {
     
     private void setupButtons() {
         // Header buttons
-        importConfigButton.setOnAction(e -> handleImportConfig());
-        exportConfigButton.setOnAction(e -> handleExportConfig());
-        resetWeightsButton.setOnAction(e -> handleResetWeights());
+        importConfigButton.setOnAction(_ -> handleImportConfig());
+        exportConfigButton.setOnAction(_ -> handleExportConfig());
+        resetWeightsButton.setOnAction(_ -> handleResetWeights());
         
         // Browse button
-        browseButton.setOnAction(e -> handleBrowseDirectory());
+        browseButton.setOnAction(_ -> handleBrowseDirectory());
         
         // Action buttons
-        resetAllButton.setOnAction(e -> handleResetAll());
-        saveButton.setOnAction(e -> handleSave());
+        resetAllButton.setOnAction(_ -> handleResetAll());
+        saveButton.setOnAction(_ -> handleSave());
         
         // Application des styles modernes
         setupPrimaryButton(exportConfigButton);
@@ -173,17 +168,17 @@ public class SettingsController {
         setupModernToggleButton(darkModeSwitch);
         
         // Configuration des switches avec texte dynamique
-        autoSaveSwitch.selectedProperty().addListener((obs, wasSelected, isSelected) -> {
+        autoSaveSwitch.selectedProperty().addListener((_, _, isSelected) -> {
             autoSaveSwitch.setText(isSelected ? "ON" : "OFF");
             updateToggleButtonStyle(autoSaveSwitch);
         });
         
-        notificationsSwitch.selectedProperty().addListener((obs, wasSelected, isSelected) -> {
+        notificationsSwitch.selectedProperty().addListener((_, _, isSelected) -> {
             notificationsSwitch.setText(isSelected ? "ON" : "OFF");
             updateToggleButtonStyle(notificationsSwitch);
         });
         
-        darkModeSwitch.selectedProperty().addListener((obs, wasSelected, isSelected) -> {
+        darkModeSwitch.selectedProperty().addListener((_, _, isSelected) -> {
             darkModeSwitch.setText(isSelected ? "ON" : "OFF");
             updateToggleButtonStyle(darkModeSwitch);
         });
@@ -228,24 +223,24 @@ public class SettingsController {
         button.setStyle(baseStyle);
         
         // Effets hover
-        button.setOnMouseEntered(e -> {
+        button.setOnMouseEntered(_ -> {
             button.setStyle(baseStyle + 
                 "-fx-background-color: #333333; " +
                 "-fx-scale-x: 1.02; " +
                 "-fx-scale-y: 1.02;");
         });
         
-        button.setOnMouseExited(e -> button.setStyle(baseStyle));
+        button.setOnMouseExited(_ -> button.setStyle(baseStyle));
         
         // Effet pressed
-        button.setOnMousePressed(e -> {
+        button.setOnMousePressed(_ -> {
             button.setStyle(baseStyle + 
                 "-fx-scale-x: 0.98; " +
                 "-fx-scale-y: 0.98; " +
                 "-fx-background-color: #1a1a1a;");
         });
         
-        button.setOnMouseReleased(e -> button.setStyle(baseStyle));
+        button.setOnMouseReleased(_ -> button.setStyle(baseStyle));
     }
     
     private void setupSecondaryButton(Button button) {
@@ -263,7 +258,7 @@ public class SettingsController {
         button.setStyle(baseStyle);
         
         // Effets hover
-        button.setOnMouseEntered(e -> {
+        button.setOnMouseEntered(_ -> {
             button.setStyle(baseStyle + 
                 "-fx-background-color: #dee2e6; " +
                 "-fx-text-fill: #495057; " +
@@ -271,24 +266,24 @@ public class SettingsController {
                 "-fx-scale-y: 1.02;");
         });
         
-        button.setOnMouseExited(e -> button.setStyle(baseStyle));
+        button.setOnMouseExited(_ -> button.setStyle(baseStyle));
         
         // Effet pressed
-        button.setOnMousePressed(e -> {
+        button.setOnMousePressed(_ -> {
             button.setStyle(baseStyle + 
                 "-fx-scale-x: 0.98; " +
                 "-fx-scale-y: 0.98; " +
                 "-fx-background-color: #ced4da;");
         });
         
-        button.setOnMouseReleased(e -> button.setStyle(baseStyle));
+        button.setOnMouseReleased(_ -> button.setStyle(baseStyle));
     }
     
     private void setupModernToggleButton(ToggleButton button) {
         updateToggleButtonStyle(button);
         
         // Gestionnaire pour mettre à jour le style lors du changement
-        button.selectedProperty().addListener((obs, wasSelected, isSelected) -> {
+        button.selectedProperty().addListener((_, _, _) -> {
             updateToggleButtonStyle(button);
         });
     }
@@ -320,7 +315,7 @@ public class SettingsController {
         button.setStyle(button.isSelected() ? activeStyle : inactiveStyle);
         
         // Effets hover
-        button.setOnMouseEntered(e -> {
+        button.setOnMouseEntered(_ -> {
             if (button.isSelected()) {
                 button.setStyle(activeStyle + "-fx-background-color: #f8f9fa; -fx-scale-x: 1.02; -fx-scale-y: 1.02;");
             } else {
@@ -331,7 +326,7 @@ public class SettingsController {
             }
         });
         
-        button.setOnMouseExited(e -> {
+        button.setOnMouseExited(_ -> {
             button.setStyle(button.isSelected() ? activeStyle : inactiveStyle);
         });
     }
@@ -352,7 +347,7 @@ public class SettingsController {
         comboBox.setStyle(baseStyle);
         
         // Effets focus
-        comboBox.focusedProperty().addListener((obs, wasFocused, isFocused) -> {
+        comboBox.focusedProperty().addListener((_, _, isFocused) -> {
             if (isFocused) {
                 comboBox.setStyle(baseStyle + 
                     "-fx-border-color: #000000; " +
@@ -363,7 +358,7 @@ public class SettingsController {
         });
         
         // Effets hover
-        comboBox.setOnMouseEntered(e -> {
+        comboBox.setOnMouseEntered(_ -> {
             if (!comboBox.isFocused()) {
                 comboBox.setStyle(baseStyle + 
                     "-fx-border-color: #adb5bd; " +
@@ -371,7 +366,7 @@ public class SettingsController {
             }
         });
         
-        comboBox.setOnMouseExited(e -> {
+        comboBox.setOnMouseExited(_ -> {
             if (!comboBox.isFocused()) {
                 comboBox.setStyle(baseStyle);
             }
@@ -393,7 +388,7 @@ public class SettingsController {
         textField.setStyle(baseStyle);
         
         // Effets focus
-        textField.focusedProperty().addListener((obs, wasFocused, isFocused) -> {
+        textField.focusedProperty().addListener((_, _, isFocused) -> {
             if (isFocused) {
                 textField.setStyle(baseStyle + 
                     "-fx-border-color: #000000; " +
@@ -404,7 +399,7 @@ public class SettingsController {
         });
         
         // Effets hover
-        textField.setOnMouseEntered(e -> {
+        textField.setOnMouseEntered(_ -> {
             if (!textField.isFocused()) {
                 textField.setStyle(baseStyle + 
                     "-fx-border-color: #adb5bd; " +
@@ -412,7 +407,7 @@ public class SettingsController {
             }
         });
         
-        textField.setOnMouseExited(e -> {
+        textField.setOnMouseExited(_ -> {
             if (!textField.isFocused()) {
                 textField.setStyle(baseStyle);
             }
@@ -428,7 +423,7 @@ public class SettingsController {
         slider.setStyle(sliderStyle);
         
         // Attendre que le composant soit rendu pour appliquer les styles aux sous-éléments
-        slider.sceneProperty().addListener((obs, oldScene, newScene) -> {
+        slider.sceneProperty().addListener((_, _, newScene) -> {
             if (newScene != null) {
                 slider.applyCss();
                 slider.layout();
@@ -559,9 +554,11 @@ public class SettingsController {
                       activitesSlider.getValue();
         
         if (Math.abs(total - 100) > 0.1) {
-            showErrorAlert("Erreur de Validation", 
-                          "Le total des pondérations doit être égal à 100%.\n" +
-                          "Total actuel: " + String.format("%.1f%%", total));
+            showErrorAlert("Erreur de Validation",
+                    """
+                    Le total des pondérations doit être égal à 100%%.
+                    Total actuel: %.1f%%
+                    """.formatted(total));
             return;
         }
         

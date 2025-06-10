@@ -13,7 +13,7 @@ import javafx.beans.property.SimpleObjectProperty;
  */
 public class DataManager {
 
-    private static List<Adolescent> allAdolescents = new ArrayList<>();
+    private static final List<Adolescent> allAdolescents = new ArrayList<>();
     private static final ObjectProperty<Affectation> lastAffectation = new SimpleObjectProperty<>(null);
 
     /**

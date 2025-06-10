@@ -20,7 +20,7 @@ public class ConfigurationService {
     private static final Map<String, Object> DEFAULT_VALUES = new HashMap<>();
     
     // Configuration actuelle
-    private static Map<String, Object> currentConfig = new HashMap<>();
+    private static final Map<String, Object> currentConfig = new HashMap<>();
     
     static {
         initializeDefaultValues();
@@ -87,9 +87,9 @@ public class ConfigurationService {
                 String value = props.getProperty(key);
                 try {
                     if (value.equalsIgnoreCase("true") || value.equalsIgnoreCase("false")) {
-                        currentConfig.put(key, Boolean.parseBoolean(value));
+                        currentConfig.put(key, value.equalsIgnoreCase("true"));
                     } else {
-                        currentConfig.put(key, Double.parseDouble(value));
+                        currentConfig.put(key, Double.valueOf(value));
                     }
                 } catch (NumberFormatException e) {
                     // Si ce n'est pas un nombre ni un booléen, garder comme string
@@ -132,15 +132,24 @@ public class ConfigurationService {
      */
     public static double getDouble(String key) {
         Object value = currentConfig.get(key);
-        if (value instanceof Double) {
-            return (Double) value;
-        } else if (value instanceof Number) {
-            return ((Number) value).doubleValue();
+        if (value != null) {
+            switch (value) {
+                case Double d -> {
+                    return d;
+                }
+                case Number n -> {
+                    return n.doubleValue();
+                }
+                default -> {
+                    // Type non correspondant, on passe à la logique de la valeur par défaut
+                }
+            }
         }
+
         // Retourner la valeur par défaut si elle existe
         Object defaultValue = DEFAULT_VALUES.get(key);
-        if (defaultValue instanceof Number) {
-            return ((Number) defaultValue).doubleValue();
+        if (defaultValue instanceof Number n) {
+            return n.doubleValue();
         }
         return 0.0;
     }
@@ -152,13 +161,21 @@ public class ConfigurationService {
      */
     public static boolean getBoolean(String key) {
         Object value = currentConfig.get(key);
-        if (value instanceof Boolean) {
-            return (Boolean) value;
+        if (value != null) {
+            switch (value) {
+                case Boolean b -> {
+                    return b;
+                }
+                default -> {
+                    // Type non correspondant, on passe à la logique de la valeur par défaut
+                }
+            }
         }
+
         // Retourner la valeur par défaut si elle existe
         Object defaultValue = DEFAULT_VALUES.get(key);
-        if (defaultValue instanceof Boolean) {
-            return (Boolean) defaultValue;
+        if (defaultValue instanceof Boolean b) {
+            return b;
         }
         return false;
     }

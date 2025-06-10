@@ -98,12 +98,12 @@ public class MainViewController {
     }
     
     private void setupButtonActions() {
-        validerButton.setOnAction(e -> handlePairing());
-        sauvegarderButton.setOnAction(e -> handleSaveHistory());
+        validerButton.setOnAction(_ -> handlePairing());
+        sauvegarderButton.setOnAction(_ -> handleSaveHistory());
         // Le bouton chargerCSV n'est plus utile ici, l'import se fait dans StudentManager
         chargerCSVButton.setVisible(false);
         
-        reglagesHeaderButton.setOnAction(e -> {
+        reglagesHeaderButton.setOnAction(_ -> {
             if (mainController != null) {
                 mainController.loadView("Settings.fxml");
                  if (SidebarController.getInstance() != null) {
@@ -235,24 +235,24 @@ public class MainViewController {
         button.setStyle(baseStyle);
         
         // Effets hover
-        button.setOnMouseEntered(e -> {
+        button.setOnMouseEntered(_ -> {
             button.setStyle(baseStyle + 
                 "-fx-background-color: #333333; " +
                 "-fx-scale-x: 1.02; " +
                 "-fx-scale-y: 1.02;");
         });
         
-        button.setOnMouseExited(e -> button.setStyle(baseStyle));
+        button.setOnMouseExited(_ -> button.setStyle(baseStyle));
         
         // Effet pressed
-        button.setOnMousePressed(e -> {
+        button.setOnMousePressed(_ -> {
             button.setStyle(baseStyle + 
                 "-fx-scale-x: 0.98; " +
                 "-fx-scale-y: 0.98; " +
                 "-fx-background-color: #1a1a1a;");
         });
         
-        button.setOnMouseReleased(e -> button.setStyle(baseStyle));
+        button.setOnMouseReleased(_ -> button.setStyle(baseStyle));
     }
     
     private void setupSecondaryButton(Button button) {
@@ -270,7 +270,7 @@ public class MainViewController {
         button.setStyle(baseStyle);
         
         // Effets hover
-        button.setOnMouseEntered(e -> {
+        button.setOnMouseEntered(_ -> {
             button.setStyle(baseStyle + 
                 "-fx-background-color: #dee2e6; " +
                 "-fx-text-fill: #495057; " +
@@ -278,17 +278,17 @@ public class MainViewController {
                 "-fx-scale-y: 1.02;");
         });
         
-        button.setOnMouseExited(e -> button.setStyle(baseStyle));
+        button.setOnMouseExited(_ -> button.setStyle(baseStyle));
         
         // Effet pressed
-        button.setOnMousePressed(e -> {
+        button.setOnMousePressed(_ -> {
             button.setStyle(baseStyle + 
                 "-fx-scale-x: 0.98; " +
                 "-fx-scale-y: 0.98; " +
                 "-fx-background-color: #ced4da;");
         });
         
-        button.setOnMouseReleased(e -> button.setStyle(baseStyle));
+        button.setOnMouseReleased(_ -> button.setStyle(baseStyle));
     }
     
     private void setupModernComboBox(ComboBox<String> comboBox) {
@@ -307,19 +307,19 @@ public class MainViewController {
         comboBox.setStyle(baseStyle);
         
         // Effets hover et focus
-        comboBox.setOnMouseEntered(e -> {
+        comboBox.setOnMouseEntered(_ -> {
             comboBox.setStyle(baseStyle + 
                 "-fx-border-color: #dee2e6; " +
                 "-fx-background-color: #f8f9fa;");
         });
         
-        comboBox.setOnMouseExited(e -> {
+        comboBox.setOnMouseExited(_ -> {
             if (!comboBox.isFocused()) {
                 comboBox.setStyle(baseStyle);
             }
         });
         
-        comboBox.focusedProperty().addListener((obs, wasFocused, isNowFocused) -> {
+        comboBox.focusedProperty().addListener((_, _, isNowFocused) -> {
             if (isNowFocused) {
                 comboBox.setStyle(baseStyle + 
                     "-fx-border-color: #000000; " +
@@ -374,12 +374,5 @@ public class MainViewController {
         alert.setHeaderText(null);
         alert.setContentText(message);
         alert.showAndWait();
-    }
-
-    private boolean validateSelection() {
-        if (comboPaysA.getValue() == null || comboPaysB.getValue() == null) {
-            // ... existing code ...
-        }
-        return false;
     }
 }

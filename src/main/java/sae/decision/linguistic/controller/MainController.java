@@ -35,7 +35,7 @@ public class MainController {
             contentPane.getChildren().setAll(view);
 
         } catch (IOException e) {
-            e.printStackTrace();
+            throw new IllegalStateException("Failed to load view: " + fxmlFile, e);
         }
     }
 } 
