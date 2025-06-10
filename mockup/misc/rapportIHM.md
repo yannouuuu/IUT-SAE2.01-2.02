@@ -19,7 +19,7 @@ toc-depth: 2
 
 ## Informations du projet
 - **Repository GitLab** : https://gitlab.univ-lille.fr/sae2.01-2.02/2025/D7
-- **Commit de rendu** : *[À compléter avec le hash du commit final]*
+- **Commit de rendu** : *@499e3d3*
 
 ## Capture d'écran de l'application finale
 ![Dashboard - Accueil](./ScreenshotDashboard.png)
