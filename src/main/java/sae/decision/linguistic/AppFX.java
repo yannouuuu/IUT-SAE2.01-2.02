@@ -1,15 +1,16 @@
 package sae.decision.linguistic;
 
+import java.io.IOException;
+import java.net.URL;
+
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import sae.decision.linguistic.controller.MainController;
+import sae.decision.linguistic.controller.MainViewController;
 import sae.decision.linguistic.controller.SidebarController;
-
-import java.io.IOException;
-import java.net.URL;
 
 public class AppFX extends Application {
 
@@ -25,6 +26,7 @@ public class AppFX extends Application {
 
         MainController mainController = loader.getController();
         SidebarController.setMainController(mainController);
+        MainViewController.setMainController(mainController);
 
         Scene scene = new Scene(root, 1280, 720);
 

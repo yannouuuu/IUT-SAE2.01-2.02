@@ -20,6 +20,7 @@ import sae.decision.linguistic.service.AppariementService;
 
 public class MainViewController {
 
+    private static MainController mainController;
     // Boutons du header
     @FXML
     private Button chargerCSVButton;
@@ -74,6 +75,10 @@ public class MainViewController {
     private Affectation currentAffectation;
     private static final String HISTORY_FILE_PATH = "data/history.dat";
 
+    public static void setMainController(MainController controller) {
+        mainController = controller;
+    }
+    
     @FXML
     public void initialize() {
         System.out.println("MainViewController initialisé.");
@@ -97,6 +102,15 @@ public class MainViewController {
         sauvegarderButton.setOnAction(e -> handleSaveHistory());
         // Le bouton chargerCSV n'est plus utile ici, l'import se fait dans StudentManager
         chargerCSVButton.setVisible(false);
+        
+        reglagesHeaderButton.setOnAction(e -> {
+            if (mainController != null) {
+                mainController.loadView("Settings.fxml");
+                 if (SidebarController.getInstance() != null) {
+                    SidebarController.getInstance().setActiveButton("Settings.fxml");
+                }
+            }
+        });
     }
     
     private void handlePairing() {

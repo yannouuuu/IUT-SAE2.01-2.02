@@ -48,7 +48,7 @@ public class SidebarController {
         setupModernSidebarButtons();
         
         // Activer le bouton Accueil par défaut
-        setActiveButton("MainView.fxml");
+        setActiveButton("StudentManager.fxml");
     }
     
     private void setupModernSidebarButtons() {

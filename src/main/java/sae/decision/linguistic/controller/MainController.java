@@ -16,7 +16,7 @@ public class MainController {
     @FXML
     public void initialize() {
         // Charge la vue par défaut au démarrage
-        loadView("MainView.fxml");
+        loadView("StudentManager.fxml");
     }
 
     /**
