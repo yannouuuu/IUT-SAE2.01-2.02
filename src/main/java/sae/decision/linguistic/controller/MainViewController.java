@@ -103,6 +103,12 @@ public class MainViewController {
         // Le bouton chargerCSV n'est plus utile ici, l'import se fait dans StudentManager
         chargerCSVButton.setVisible(false);
         
+        gestionAppariementsButton.setOnAction(_ -> {
+            if (SidebarController.getInstance() != null) {
+                SidebarController.getInstance().goToListeAppariements(null);
+            }
+        });
+
         reglagesHeaderButton.setOnAction(_ -> {
             if (mainController != null) {
                 mainController.loadView("Settings.fxml");

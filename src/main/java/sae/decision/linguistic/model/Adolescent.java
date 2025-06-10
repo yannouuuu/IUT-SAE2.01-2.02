@@ -468,7 +468,7 @@ public class Adolescent implements Serializable {
         }
 
         // Si l'hôte n'accepte aucun régime particulier et que le visiteur en a un
-        if (hostDiet == null || hostDiet.isEmpty()) {
+        if (hostDiet == null || hostDiet.isEmpty() && guestDiet != null && !guestDiet.isEmpty()) {
             // On compte le nombre de régimes demandés par le visiteur comme incompatibles
             int incompatiblesDiets = 0;
             String[] guestDiets = guestDiet.split(",");

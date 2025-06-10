@@ -6,7 +6,7 @@
 
     <groupId>sae.decision.linguistic</groupId>
     <artifactId>D7</artifactId>
-    <version>3.0</version>
+    <version>4.0</version>
 
     <properties>
         <maven.compiler.source>24</maven.compiler.source>
@@ -60,6 +60,28 @@
                 <configuration>
                     <mainClass>sae.decision.linguistic.AppFX</mainClass>
                 </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>3.6.0</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                        <configuration>
+                            <createDependencyReducedPom>false</createDependencyReducedPom>
+                            <transformers>
+                                <transformer
+                                        implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                                    <mainClass>sae.decision.linguistic.Launcher</mainClass>
+                                </transformer>
+                            </transformers>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>

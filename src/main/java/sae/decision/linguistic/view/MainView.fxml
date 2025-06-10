@@ -141,7 +141,7 @@
     <HBox alignment="CENTER_LEFT" spacing="12.0">
         <children>
             <Button fx:id="voirDetailsButton" text="Voir les Détails" />
-            <Button fx:id="gestionAppariementsButton" text="Gestion des Appariements" />
+            <Button fx:id="gestionAppariementsButton" text="Voir la liste des appariements" />
             <Button fx:id="gestionElevesButton" text="Gestion des Élèves" />
             <Region HBox.hgrow="ALWAYS" />
             <Label fx:id="derniereMajLabel" text="Dernière mise à jour : jamais" style="-fx-font-size: 12px; -fx-font-weight: 500; -fx-text-fill: #868e96;" />

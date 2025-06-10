@@ -66,12 +66,12 @@ Cette commande va compiler le projet, télécharger les dépendances nécessaire
 
 ### Exécutables JAR (Prochainement)
 
-Actuellement, le projet est lancé via Maven. Dans une future mise à jour, deux fichiers JAR exécutables seront fournis pour un lancement simplifié :
+Actuellement, le projet est lancé via Maven. Dans la dernière mise à jour du repo, deux fichiers JAR exécutables sont fournis pour un lancement simplifié :
 
 -   `D7-app-gui.jar` : Pour démarrer l'interface graphique.
 -   `D7-app-cli.jar` : Pour utiliser l'application en ligne de commande.
 
-Ces fichiers seront disponibles à la racine du projet et pourront être exécutés avec les commandes `java -jar D7-app-gui.jar` et `java -jar D7-app-cli.jar` respectivement.
+Ces fichiers sont disponibles à la racine du projet et peuvent être exécutés avec les commandes `java -jar D7-app-gui.jar` et `java -jar D7-app-cli.jar` respectivement.
 
 ---
 
