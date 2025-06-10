@@ -29,7 +29,7 @@ public class Main {
     private static final String GUESTS_CSV_PATH = "src/test/resources/sample_guests.csv";
     private static final String EXPORT_CSV_PATH = "src/test/resources/exported_affectations.csv";
     private static final String HISTORY_FILE_PATH = "src/test/resources/affectation_history.dat";
-    private static final String CONFIG_FILE_PATH = "affinity_config.properties"; 
+    private static final String CONFIG_FILE_PATH = "src/test/resources/config/affinity_config.properties"; 
     private static final int MAX_DISPLAYED_PAIRS = 10;
 
     // Format d'affichage du tableau des résultats
