@@ -352,17 +352,6 @@ public class Adolescent implements Serializable {
         compatibilityChecks.put("animals", isAnimalCompatible);
         compatibilityChecks.put("history", historyStrictlyCompatible); 
         compatibilityChecks.put("french", isFrenchCompatible);
-        // System.out.println("\nDiet compatibility: " + isDietCompatible);
-        // System.out.println("Animal compatibility: " + isAnimalCompatible);
-        // System.out.println("History compatibility: " + historyStrictlyCompatible);
-        // System.out.println("French hobby compatibility: " + isFrenchCompatible);
-        // System.out.println("------------------------------------------------------");
-        // System.out.println((ConfigurationService.isStrictCompatibility("diet")) ||
-        //     (ConfigurationService.isStrictCompatibility("french")) ||
-        //     (ConfigurationService.isStrictCompatibility("animal")) ||
-        //     (ConfigurationService.isStrictCompatibility("history")));
-        // System.out.println(!isDietCompatible || !isFrenchCompatible || !isAnimalCompatible || !historyStrictlyCompatible);
-        // System.out.println("\n");
 
         // Si incompatibilité de base (et compatibilité stricte activée), on arrête le calcul
         if ((ConfigurationService.isStrictCompatibility("diet") && !isDietCompatible) ||
@@ -479,9 +468,13 @@ public class Adolescent implements Serializable {
     }
 
     public int dietScore(Adolescent other) {
+
+        Adolescent host = this.isHost ? this : other;
+        Adolescent guest = this.isHost ? other : this;
+
         // Vérification des régimes alimentaires
-        String hostDiet = this.getCriterion(Criteria.HOST_FOOD);
-        String guestDiet = other.getCriterion(Criteria.GUEST_FOOD);
+        String hostDiet = host.getCriterion(Criteria.HOST_FOOD);
+        String guestDiet = guest.getCriterion(Criteria.GUEST_FOOD);
 
         // Si le visiteur n'a pas de régime spécial, c'est toujours compatible
         if (guestDiet == null || guestDiet.isEmpty()) {
@@ -527,12 +520,12 @@ public class Adolescent implements Serializable {
      * @return 0 si compatible concernant les animaux, pénalité configurée sinon.
      */
     public int animalScore(Adolescent other) {
-        // Vérification des allergies aux animaux
-        String hostHasAnimal = this.getCriterion(Criteria.HOST_HAS_ANIMAL);
-        String guestAllergy = other.getCriterion(Criteria.GUEST_ANIMAL_ALLERGY);
+        Adolescent host = this.isHost ? this : other;
+        Adolescent guest = this.isHost ? other : this;
 
-        System.out.println("Host has animal: " + hostHasAnimal);
-        System.out.println("Guest allergy: " + guestAllergy);
+        // Vérification des allergies aux animaux
+        String hostHasAnimal = host.getCriterion(Criteria.HOST_HAS_ANIMAL);
+        String guestAllergy = guest.getCriterion(Criteria.GUEST_ANIMAL_ALLERGY);
 
         if ((guestAllergy != null && guestAllergy.equals("yes")) && (hostHasAnimal != null && hostHasAnimal.equals("yes"))) {
             return (int) ConfigurationService.getDouble("penalty.animal_allergy");
