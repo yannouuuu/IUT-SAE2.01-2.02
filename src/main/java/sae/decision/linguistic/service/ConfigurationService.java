@@ -47,6 +47,7 @@ public class ConfigurationService {
         // Pénalités et bonus
         DEFAULT_VALUES.put("bonus.history_same", 10.0);
         DEFAULT_VALUES.put("bonus.one_history_same", 5.0);
+        DEFAULT_VALUES.put("penalty.history_incompatible", -10.0);
         DEFAULT_VALUES.put("penalty.diet_incompatible", -10.0);
         DEFAULT_VALUES.put("penalty.animal_allergy", -25.0);
         
@@ -59,10 +60,10 @@ public class ConfigurationService {
         DEFAULT_VALUES.put("strict.animal_compatibility", true);
         DEFAULT_VALUES.put("strict.history_compatibility", true);
         DEFAULT_VALUES.put("strict.host_guest_criteria", true);
+        DEFAULT_VALUES.put("strict.french_compatibility", true);
         
         // Seuils de compatibilité
         DEFAULT_VALUES.put("threshold.min_score_for_compatibility", 0.0);
-        DEFAULT_VALUES.put("threshold.french_hobby_required", true);
     }
     
     /**
@@ -272,6 +273,7 @@ public class ConfigurationService {
         props.setProperty("# Pénalités et bonus", "");
         props.setProperty("bonus.history_same", DEFAULT_VALUES.get("bonus.history_same").toString());
         props.setProperty("bonus.one_history_same", DEFAULT_VALUES.get("bonus.one_history_same").toString());
+        props.setProperty("penalty.history_incompatible", DEFAULT_VALUES.get("penalty.history_incompatible").toString());
         props.setProperty("penalty.diet_incompatible", DEFAULT_VALUES.get("penalty.diet_incompatible").toString());
         props.setProperty("penalty.animal_allergy", DEFAULT_VALUES.get("penalty.animal_allergy").toString());
         
@@ -284,10 +286,11 @@ public class ConfigurationService {
         props.setProperty("strict.animal_compatibility", DEFAULT_VALUES.get("strict.animal_compatibility").toString());
         props.setProperty("strict.history_compatibility", DEFAULT_VALUES.get("strict.history_compatibility").toString());
         props.setProperty("strict.host_guest_criteria", DEFAULT_VALUES.get("strict.host_guest_criteria").toString());
-        
+        props.setProperty("strict.french_compatibility", DEFAULT_VALUES.get("strict.french_compatibility").toString());
+
         props.setProperty("# Seuils de compatibilité", "");
         props.setProperty("threshold.min_score_for_compatibility", DEFAULT_VALUES.get("threshold.min_score_for_compatibility").toString());
-        props.setProperty("threshold.french_hobby_required", DEFAULT_VALUES.get("threshold.french_hobby_required").toString());
+
         
         try (OutputStream output = new FileOutputStream(filename)) {
             props.store(output, "Fichier de configuration d'exemple pour le système d'appariement d'adolescents");

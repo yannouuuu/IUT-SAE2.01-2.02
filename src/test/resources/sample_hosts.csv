@@ -1,51 +1,51 @@
 FORENAME;NAME;COUNTRY;BIRTH_DATE;GENDER;GUEST_ANIMAL_ALLERGY;HOST_HAS_ANIMAL;GUEST_FOOD;HOST_FOOD;HOBBIES;PAIR_GENDER;HISTORY
 Thomas;Dubois;France;2007-10-20;male;;yes;;vegetarian;sport;female;other
 Emma;Verhoeven;Belgium;2008-03-10;female;;yes;;halal;music;male;same
-Noah;Müller;Switzerland;2009-01-05;male;;yes;;both;reading;female;other
+Noah;Müller;Switzerland;2009-01-05;male;;yes;;;reading;female;other
 Chloé;Lefebvre;France;2008-08-15;female;;yes;;gluten-free;drawing;male;
-Lucas;Janssens;Belgium;2007-11-25;male;;yes;;none;video games;female;same
+Lucas;Janssens;Belgium;2007-11-25;male;;yes;;;video games;female;same
 Sofia;Weber;Switzerland;2009-05-01;female;;yes;;halal;photography;male;other
 Gabriel;Moreau;France;2008-02-12;male;;yes;;vegetarian;hiking;female;
-Olivia;Peeters;Belgium;2007-09-30;female;;yes;;both;dancing;male;same
+Olivia;Peeters;Belgium;2007-09-30;female;;yes;;;dancing;male;same
 Liam;Schmid;Switzerland;2009-06-20;male;;yes;;halal;gaming;female;other
 Léa;Roux;France;2008-04-03;female;;yes;;gluten-free;cooking;male;
 Arthur;Maes;Belgium;2007-12-18;male;;yes;;vegetarian;sport;female;same
-Mia;Fischer;Switzerland;2009-07-08;female;;yes;;both;music;male;other
+Mia;Fischer;Switzerland;2009-07-08;female;;yes;;;music;male;other
 Louis;Petit;France;2008-01-22;male;;yes;;halal;reading;female;
 Alice;Willems;Belgium;2007-08-05;female;;yes;;vegetarian;drawing;male;same
 Ethan;Keller;Switzerland;2009-03-15;male;;yes;;gluten-free;video games;female;other
-Zoé;Dupont;France;2008-06-28;female;;yes;;both;photography;male;
+Zoé;Dupont;France;2008-06-28;female;;yes;;;photography;male;
 Hugo;Claes;Belgium;2007-11-10;male;;yes;;halal;hiking;female;same
 Charlotte;Meyer;Switzerland;2009-04-25;female;;yes;;vegetarian;dancing;male;other
-Jules;Martin;France;2008-02-01;male;;yes;;both;gaming;female;
+Jules;Martin;France;2008-02-01;male;;yes;;;gaming;female;
 Elena;Dubois;Belgium;2007-09-15;female;;yes;;gluten-free;cooking;male;same
 Samuel;Huber;Switzerland;2009-06-01;male;;yes;;vegetarian;sport;female;other
-Clara;Leroy;France;2008-03-20;female;;yes;;both;music;male;
+Clara;Leroy;France;2008-03-20;female;;yes;;;music;male;
 Nathan;Jacobs;Belgium;2007-10-05;male;;yes;;halal;reading;female;same
 Lina;Schneider;Switzerland;2009-01-20;female;;yes;;vegetarian;drawing;male;other
 Raphael;Mercier;France;2008-08-01;male;;yes;;gluten-free;video games;female;
-Juliette;De Smet;Belgium;2007-11-15;female;;yes;;both;photography;male;same
+Juliette;De Smet;Belgium;2007-11-15;female;;yes;;;photography;male;same
 Maxime;Berger;Switzerland;2009-05-15;male;;yes;;halal;hiking;female;other
 Manon;Fournier;France;2008-02-28;female;;yes;;vegetarian;dancing;male;
-Antoine;Lefevre;Belgium;2007-09-01;male;;yes;;both;gaming;female;same
+Antoine;Lefevre;Belgium;2007-09-01;male;;yes;;;gaming;female;same
 Eva;Brunner;Switzerland;2009-06-25;female;;yes;;gluten-free;cooking;male;other
 Adam;Girard;France;2008-04-15;male;;yes;;vegetarian;sport;female;
 Camille;Wouters;Belgium;2007-12-01;female;;yes;;halal;music;male;same
-Paul;Wagner;Switzerland;2009-07-15;male;;yes;;both;reading;female;other
+Paul;Wagner;Switzerland;2009-07-15;male;;yes;;;reading;female;other
 Sarah;Perrin;France;2008-01-08;female;;yes;;vegetarian;drawing;male;
 Simon;Van Damme;Belgium;2007-08-20;male;;yes;;gluten-free;video games;female;same
-Emma;Roth;Switzerland;2009-03-01;female;;yes;;both;photography;male;other
+Emma;Roth;Switzerland;2009-03-01;female;;yes;;;photography;male;other
 Léo;Morel;France;2008-06-15;male;;yes;;halal;hiking;female;
 Jade;Mertens;Belgium;2007-11-25;female;;yes;;vegetarian;dancing;male;same
-Victor;Zimmermann;Switzerland;2009-04-10;male;;yes;;both;gaming;female;other
+Victor;Zimmermann;Switzerland;2009-04-10;male;;yes;;;gaming;female;other
 Louise;Faure;France;2008-02-15;female;;yes;;gluten-free;cooking;male;
 Mathis;De Vos;Belgium;2007-09-25;male;;yes;;vegetarian;sport;female;same
-Anna;Meier;Switzerland;2009-06-15;female;;yes;;both;music;male;other
+Anna;Meier;Switzerland;2009-06-15;female;;yes;;;music;male;other
 Etienne;Blanc;France;2008-03-01;male;;yes;;halal;reading;female;
 Maëlle;Lambert;Belgium;2007-10-15;female;;yes;;vegetarian;drawing;male;same
 Théo;Wyder;Switzerland;2009-01-30;male;;yes;;gluten-free;video games;female;other
-Inès;Durand;France;2008-08-15;female;;yes;;both;photography;male;
+Inès;Durand;France;2008-08-15;female;;yes;;;photography;male;
 Noah;Janssen;Belgium;2007-11-01;male;;yes;;halal;hiking;female;same
 Lucie;Steiner;Switzerland;2009-05-01;female;;yes;;vegetarian;dancing;male;other
-Alexandre;Petit;France;2008-02-15;male;;yes;;both;gaming;female;
+Alexandre;Petit;France;2008-02-15;male;;yes;;;gaming;female;
 Victoria;Vandenberghe;Belgium;2007-09-30;female;;yes;;gluten-free;cooking;male;same

@@ -2,50 +2,50 @@ FORENAME;NAME;COUNTRY;BIRTH_DATE;GENDER;GUEST_ANIMAL_ALLERGY;HOST_HAS_ANIMAL;GUE
 Ambre;Lefevre;France;2009-03-01;female;yes;;vegetarian;;reading;male;other
 Thomas;Van den Berg;Belgium;2008-07-10;male;no;;no-pork;;sport;female;same
 Elena;Hoffmann;Switzerland;2010-02-20;female;yes;;gluten-free;;music;other;
-Hugo;Bernard;France;2009-11-05;male;no;;none;;video games;female;other
+Hugo;Bernard;France;2009-11-05;male;no;;;;video games;female;other
 Sophie;Dubois;Belgium;2008-05-15;female;yes;;halal;;drawing;male;same
 David;Weber;Switzerland;2010-01-01;male;no;;vegetarian;;coding;female;other
-Juliette;Lambert;France;2009-08-25;female;yes;;none;;photography;male;
+Juliette;Lambert;France;2009-08-25;female;yes;;;;photography;male;
 Maxime;De Vries;Belgium;2008-04-01;male;no;;no-pork;;hiking;other;same
 Anna;Müller;Switzerland;2010-03-10;female;yes;;gluten-free;;dancing;male;other
-Louis;Girard;France;2009-12-20;male;no;;none;;gaming;female;
+Louis;Girard;France;2009-12-20;male;no;;;;gaming;female;
 Camille;Peeters;Belgium;2008-06-05;female;yes;;vegetarian;;reading;male;same
 Samuel;Fischer;Switzerland;2010-01-15;male;no;;halal;;sport;other;other
-Lou;Martin;France;2009-09-10;female;yes;;none;;music;male;
+Lou;Martin;France;2009-09-10;female;yes;;;;music;male;
 Nathan;Jacobs;Belgium;2008-04-25;male;no;;no-pork;;video games;female;same
 Sara;Schmid;Switzerland;2010-02-01;female;yes;;gluten-free;;drawing;other;other
-Théo;Rousseau;France;2009-11-20;male;no;;none;;coding;female;
+Théo;Rousseau;France;2009-11-20;male;no;;;;coding;female;
 Léa;Vermeulen;Belgium;2008-05-01;female;yes;;vegetarian;;photography;male;same
 Luca;Wagner;Switzerland;2010-03-25;male;no;;halal;;hiking;other;other
-Manon;Petit;France;2009-12-05;female;yes;;none;;dancing;male;
+Manon;Petit;France;2009-12-05;female;yes;;;;dancing;male;
 Lucas;Maes;Belgium;2008-06-20;male;no;;no-pork;;gaming;female;same
 Julia;Keller;Switzerland;2010-01-10;female;yes;;gluten-free;;reading;other;other
-Gabriel;Dubois;France;2009-09-25;male;no;;none;;sport;female;
+Gabriel;Dubois;France;2009-09-25;male;no;;;;sport;female;
 Emma;Claes;Belgium;2008-04-10;female;yes;;vegetarian;;music;male;same
 Noah;Roth;Switzerland;2010-03-01;male;no;;halal;;video games;other;other
-Chloé;Fournier;France;2009-12-15;female;yes;;none;;drawing;male;
+Chloé;Fournier;France;2009-12-15;female;yes;;;;drawing;male;
 Antoine;Janssen;Belgium;2008-06-25;male;no;;no-pork;;coding;female;same
 Sophia;Huber;Switzerland;2010-01-25;female;yes;;gluten-free;;photography;other;other
-Arthur;Leroy;France;2009-09-01;male;no;;none;;hiking;female;
+Arthur;Leroy;France;2009-09-01;male;no;;;;hiking;female;
 Alice;Willems;Belgium;2008-04-15;female;yes;;vegetarian;;dancing;male;same
 Elias;Schneider;Switzerland;2010-02-15;male;no;;halal;;gaming;other;other
-Lina;Morel;France;2009-11-10;female;yes;;none;;reading;male;
+Lina;Morel;France;2009-11-10;female;yes;;;;reading;male;
 Victor;Wouters;Belgium;2008-05-20;male;no;;no-pork;;sport;female;same
 Mia;Berger;Switzerland;2010-03-05;female;yes;;gluten-free;;music;other;other
-Ethan;Mercier;France;2009-12-01;male;no;;none;;video games;female;
+Ethan;Mercier;France;2009-12-01;male;no;;;;video games;female;
 Zoé;De Smet;Belgium;2008-06-10;female;yes;;halal;;drawing;male;same
 Benjamin;Meyer;Switzerland;2010-01-05;male;no;;vegetarian;;coding;other;other
-Louise;Durand;France;2009-08-30;female;yes;;none;;photography;male;
+Louise;Durand;France;2009-08-30;female;yes;;;;photography;male;
 Adam;Mertens;Belgium;2008-04-05;male;no;;no-pork;;hiking;female;same
 Olivia;Zimmermann;Switzerland;2010-02-25;female;yes;;gluten-free;;dancing;other;other
-Nicolas;Faure;France;2009-11-15;male;no;;none;;gaming;female;
+Nicolas;Faure;France;2009-11-15;male;no;;;;gaming;female;
 Charlotte;Van Damme;Belgium;2008-05-25;female;yes;;halal;;reading;male;same
 Felix;Brunner;Switzerland;2010-01-20;male;no;;vegetarian;;sport;other;other
-Inès;Blanc;France;2009-09-05;female;yes;;none;;music;male;
+Inès;Blanc;France;2009-09-05;female;yes;;;;music;male;
 Maëlle;Verhoeven;Belgium;2007-09-30;female;no;;vegetarian;;dancing;male;same
 Paul;Leclerc;France;2008-10-15;male;yes;;no-pork;;gaming;female;other
 Elise;Van Hoof;Belgium;2009-02-18;female;no;;halal;;reading;male;same
 Matthias;Gruber;Switzerland;2008-06-05;male;yes;;gluten-free;;sport;female;other
 Julie;Renard;France;2009-07-22;female;no;;vegetarian;;music;male;same
-Maximilian;Schwarz;Switzerland;2008-12-10;male;yes;;none;;photography;other;other
+Maximilian;Schwarz;Switzerland;2008-12-10;male;yes;;;;photography;other;other
 Paul-Arnaud;Delavictoire;Italie;2006-06-06;male;;yes;;vegetarian;reading;female;same
