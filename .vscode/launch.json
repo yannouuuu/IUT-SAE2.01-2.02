@@ -3,6 +3,13 @@
     "configurations": [
         {
             "type": "java",
+            "name": "TerminalApp",
+            "request": "launch",
+            "mainClass": "sae.decision.linguistic.TerminalApp",
+            "projectName": "D7"
+        },
+        {
+            "type": "java",
             "name": "Launcher",
             "request": "launch",
             "mainClass": "sae.decision.linguistic.Launcher",

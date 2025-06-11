@@ -1,51 +1,51 @@
 VISITOR_LASTNAME;VISITOR_FIRSTNAME;VISITOR_COUNTRY;HOST_LASTNAME;HOST_FIRSTNAME;HOST_COUNTRY
-Van den Berg;Thomas;Belgium;Verhoeven;Emma;Belgium
-Renard;Julie;France;De Vos;Mathis;Belgium
-Mercier;Ethan;France;Keller;Ethan;Switzerland
+Van den Berg;Thomas;Belgium;Lambert;Maëlle;Belgium
+Renard;Julie;France;Faure;Louise;France
+Mercier;Ethan;France;Wyder;Théo;Switzerland
 Dubois;Sophie;Belgium;Lefebvre;Chloé;France
-Schmid;Sara;Switzerland;Maes;Arthur;Belgium
-Verhoeven;Maëlle;Belgium;Van Damme;Simon;Belgium
-Morel;Lina;France;Schneider;Lina;Switzerland
-Zimmermann;Olivia;Switzerland;Wouters;Camille;Belgium
-Van Damme;Charlotte;Belgium;Wagner;Paul;Switzerland
-Girard;Louis;France;Zimmermann;Victor;Switzerland
+Schmid;Sara;Switzerland;Fischer;Mia;Switzerland
+Verhoeven;Maëlle;Belgium;Fournier;Manon;France
+Morel;Lina;France;De Smet;Juliette;Belgium
+Zimmermann;Olivia;Switzerland;Wagner;Paul;Switzerland
+Van Damme;Charlotte;Belgium;Perrin;Sarah;France
+Girard;Louis;France;Schmid;Liam;Switzerland
 Lambert;Juliette;France;Janssens;Lucas;Belgium
 Dubois;Gabriel;France;Huber;Samuel;Switzerland
-Schwarz;Maximilian;Switzerland;Meier;Anna;Switzerland
-Roth;Noah;Switzerland;Schmid;Liam;Switzerland
+Schwarz;Maximilian;Switzerland;De Vos;Mathis;Belgium
+Roth;Noah;Switzerland;Verhoeven;Emma;Belgium
 Leroy;Arthur;France;Berger;Maxime;Switzerland
-Lefevre;Ambre;France;Janssen;Noah;Belgium
-Petit;Manon;France;Willems;Alice;Belgium
-Durand;Louise;France;Brunner;Eva;Switzerland
+Lefevre;Ambre;France;Dubois;Thomas;France
+Petit;Manon;France;Keller;Ethan;Switzerland
+Durand;Louise;France;Janssen;Noah;Belgium
 Leclerc;Paul;France;Roth;Emma;Switzerland
 Müller;Anna;Switzerland;Moreau;Gabriel;France
-De Smet;Zoé;Belgium;Lefevre;Antoine;Belgium
-Gruber;Matthias;Switzerland;Faure;Louise;France
-Faure;Nicolas;France;Petit;Alexandre;France
-Berger;Mia;Switzerland;Fournier;Manon;France
+De Smet;Zoé;Belgium;Brunner;Eva;Switzerland
+Gruber;Matthias;Switzerland;Mertens;Jade;Belgium
+Faure;Nicolas;France;Zimmermann;Victor;Switzerland
+Berger;Mia;Switzerland;Lefevre;Antoine;Belgium
 Hoffmann;Elena;Switzerland;Müller;Noah;Switzerland
-Delavictoire;Paul-Arnaud;Italie;Vandenberghe;Victoria;Belgium
+Delavictoire;Paul-Arnaud;Italie;Petit;Louis;France
 Peeters;Camille;Belgium;Peeters;Olivia;Belgium
-Blanc;Inès;France;Perrin;Sarah;France
-Wouters;Victor;Belgium;De Smet;Juliette;Belgium
-Janssen;Antoine;Belgium;Dubois;Elena;Belgium
+Blanc;Inès;France;Van Damme;Simon;Belgium
+Wouters;Victor;Belgium;Petit;Alexandre;France
+Janssen;Antoine;Belgium;Leroy;Clara;France
 Weber;David;Switzerland;Meyer;Charlotte;Switzerland
 Fischer;Samuel;Switzerland;Weber;Sofia;Switzerland
-Huber;Sophia;Switzerland;Leroy;Clara;France
-De Vries;Maxime;Belgium;Blanc;Etienne;France
-Maes;Lucas;Belgium;Durand;Inès;France
-Fournier;Chloé;France;Martin;Jules;France
-Willems;Alice;Belgium;Wyder;Théo;Switzerland
-Schneider;Elias;Switzerland;Jacobs;Nathan;Belgium
-Keller;Julia;Switzerland;Dupont;Zoé;France
-Claes;Emma;Belgium;Claes;Hugo;Belgium
-Jacobs;Nathan;Belgium;Roux;Léa;France
-Brunner;Felix;Switzerland;Dubois;Thomas;France
-Van Hoof;Elise;Belgium;Mertens;Jade;Belgium
+Huber;Sophia;Switzerland;Jacobs;Nathan;Belgium
+De Vries;Maxime;Belgium;Meier;Anna;Switzerland
+Maes;Lucas;Belgium;Dupont;Zoé;France
+Fournier;Chloé;France;Dubois;Elena;Belgium
+Willems;Alice;Belgium;Schneider;Lina;Switzerland
+Schneider;Elias;Switzerland;Wouters;Camille;Belgium
+Keller;Julia;Switzerland;Claes;Hugo;Belgium
+Claes;Emma;Belgium;Martin;Jules;France
+Jacobs;Nathan;Belgium;Maes;Arthur;Belgium
+Brunner;Felix;Switzerland;Girard;Adam;France
+Van Hoof;Elise;Belgium;Blanc;Etienne;France
 Wagner;Luca;Switzerland;Morel;Léo;France
-Mertens;Adam;Belgium;Girard;Adam;France
+Mertens;Adam;Belgium;Durand;Inès;France
 Bernard;Hugo;France;Mercier;Raphael;France
-Vermeulen;Léa;Belgium;Petit;Louis;France
+Vermeulen;Léa;Belgium;Willems;Alice;Belgium
 Meyer;Benjamin;Switzerland;Steiner;Lucie;Switzerland
-Martin;Lou;France;Lambert;Maëlle;Belgium
-Rousseau;Théo;France;Fischer;Mia;Switzerland
+Martin;Lou;France;Roux;Léa;France
+Rousseau;Théo;France;Vandenberghe;Victoria;Belgium
