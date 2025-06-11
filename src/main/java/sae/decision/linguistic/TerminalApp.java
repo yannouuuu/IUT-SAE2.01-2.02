@@ -95,8 +95,6 @@ public class TerminalApp {
         System.out.println("8. Quitter");
     }
     
-    // --- Logique d'ajout manuel mise à jour ---
-
     private void addManualPair() {
         printSectionTitle("Forcer un Appariement Manuel");
     
@@ -127,7 +125,6 @@ public class TerminalApp {
         currentPairs.put(selectedVisitor, selectedHost);
         System.out.println(AnsiColors.GREEN.code + "\n✅ Paire forcée : " + selectedVisitor + " est maintenant avec " + selectedHost + "." + AnsiColors.RESET.code);
     
-        // 5. Adaptation : Ré-optimisation des paires restantes
         System.out.println("\nLancement de la ré-optimisation pour les adolescents restants...");
         
         // Création des listes d'ados disponibles pour le nouvel appariement
@@ -150,9 +147,6 @@ public class TerminalApp {
             System.out.println(AnsiColors.GREEN.code + "✅ Ré-optimisation terminée. " + newOptimalPairs.size() + " nouvelles paires formées." + AnsiColors.RESET.code);
         }
     }
-
-
-    // --- Le reste du code reste majoritairement inchangé ---
     
     private void handleManualPairing() {
         printSectionTitle("Gestion Manuelle des Appariements");
