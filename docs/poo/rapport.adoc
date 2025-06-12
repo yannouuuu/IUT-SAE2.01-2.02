@@ -90,8 +90,6 @@ image::UML_plantuml/SAE_UML_Version3.png[UML Version 5-6]
 
 ==== Fichier `src/main/CSVService.java`
 
-==== Fichier `src/main/CSVService.java`
-
 * **Méthode `importAdolescents(String filePath, boolean isHost)` :**
     ** Prend en paramètre le chemin du fichier CSV et un booléen `isHost` pour indiquer si les adolescents sont des hôtes ou des visiteurs.
     ** Lit le fichier ligne par ligne :
@@ -262,3 +260,146 @@ image::UML_plantuml/SAE_UML_Version3.png[UML Version 5-6]
 
 * **`createGuestsFile()`:**
     ** Crée le fichier `sample_guests.csv` avec quelques lignes de données d'exemple pour les visiteurs, si le fichier n'existe pas déjà.
+
+
+== Semaine 7-8
+
+=== UML Version 7-8
+
+image::UML_plantuml/SAE_UML_Version4.png[UML Version 7-8]
+
+=== Principales évolutions (Version 5-6 vers Version 7-8)
+
+Cette période a été marquée par une refactorisation architecturale majeure visant à améliorer la flexibilité, la modularité et la maintenabilité de l'application. Les changements clés incluent :
+
+1. **Création d'un système de configuration externe pour permettre un paramétrage fin des algorithmes via un fichier de configuration.**
+2. **Refonte du calcul d'affinité pour le rendre plus transparent, configurable et puissant.**
+3. **Intégration effective de l'historique des affectations dans le processus de calcul.**
+4. **Développement d'une nouvelle interface utilisateur en terminal pour une distinction avec celle réalisée en JavaFX.**
+5. **Structuration du projet en packages (`model`, `service`,etc...) pour une meilleure organisation du code.**
+
+
+==== Fichier `sae.decision.linguistic.model.Adolescent.java`
+
+* **Méthode `calculateAffinityDetails(Adolescent other)` :**
+    ** Nouvelle méthode centrale pour le calcul de l'affinité.
+    ** Retourne un objet `AffinityBreakdown` qui contient le score final, les scores des composants et les vérifications de compatibilité effectuée.
+    ** Met fin au calcul prématurément si les adolescents partagent le même pays d'origine et renvoie un score final de 0.
+    ** Effectue des vérifications de compatibilité "strictes" (régime, animaux, historique, nationalité française) en se basant sur les paramètres de `ConfigurationService`. 
+    ** Si une incompatibilité stricte est détectée, le calcul prend fin et le score final est de 0.
+    ** Calcule des scores pondérés pour l'âge, le genre et les hobbies, où les poids sont récupérés depuis `ConfigurationService`.
+    ** Si la compatibilité stricte est désactivée pour certains critères, applique des pénalités (pour le régime ou les animaux) ou des bonus/malus (pour l'historique).
+    ** Le score final est borné par des valeurs minimales et maximales définies dans la configuration.
+
+* **Méthode `calculateAffinity(Adolescent other)` :**
+    ** Agit maintenant comme une simple façade, appelant `calculateAffinityDetails(other)` et retournant uniquement le score final (`getFinalScore()`).
+
+* **Méthode `isHistoryCompatible(Adolescent other)` :**
+    ** Sa logique est déclenchée uniquement si la compatibilité historique stricte est activée via `ConfigurationService`.
+    ** Vérifie si un adolescent refuse de revoir son ancien partenaire (`other`) ou s'il exige de revoir son ancien partenaire (`same`).
+    ** Utilise l'attribut `previousPartnerFullName` pour effectuer ces vérifications.
+
+* **Méthode `getHistoryAffinityBonus(Adolescent other, Boolean isHistoryCompatible)` :**
+    ** Applique une pénalité configurable si les historiques sont incompatibles mais que le mode strict est désactivé.
+    ** Applique des bonus configurables si un ou deux adolescents souhaitent être ré-appariés (`same`) et que la condition est remplie.
+
+* **Méthodes `dietScore(Adolescent other)` et `animalScore(Adolescent other)` :**
+    ** Identifient désormais correctement qui est l'hôte et qui est le visiteur dans la paire.
+    ** Retournent une pénalité dont la valeur est définie dans `ConfigurationService` en cas d'incompatibilité (allergie aux animaux ou régime non pris en charge). Retournent 0 si compatible.
+
+==== Fichier `sae.decision.linguistic.model.Affectation.java`
+
+* **Méthode `merge(Affectation other)` :**
+    ** Fusionne les paires, les listes d'hôtes et de visiteurs d'une autre instance d'`Affectation` dans l'instance courante.
+    ** Utilise des `Set` pour garantir l'unicité des hôtes et des visiteurs lors de la fusion.
+
+
+==== Fichier `sae.decision.linguistic.service.AppariementService.java`
+
+* **Méthode `effectuerAppariement(List<Adolescent> hosts, List<Adolescent> visitors, String historyFilePath)` :**
+    ** Orchestre le processus d'appariement : charge l'historique, crée une instance d'`Affectation`, et appelle `calculatePairing` sur cette instance.
+    ** Gère le cas où les listes d'entrée sont vides pour éviter les erreurs.
+    ** Retourne l'objet `Affectation` contenant les paires calculées.
+
+* **Méthode `sauvegarderAffectation(...)` :**
+    ** Charge l'historique existant, y ajoute la nouvelle affectation avec une clé formatée (année, pays d'origine, pays de destination), puis sauvegarde l'historique mis à jour.
+
+* **Méthode `exporterAffectation(Affectation affectation, String outputCsvPath)` :**
+    ** Délègue l'exportation des paires de l'affectation vers un fichier CSV avec `CSVService`.
+    ** Vérifie si des paires existent avant de tenter l'exportation.
+
+==== Fichier `sae.decision.linguistic.service.ConfigurationService.java`
+
+* **Méthode `loadConfiguration(String configFile)` :**
+    ** Charge les propriétés depuis un fichier `.properties` spécifié.
+    ** Tente de convertir les valeurs en `Double` ou `Boolean` et les stocke dans la map de configuration interne.
+
+* **Méthodes `getDouble(String key)`, `getBoolean(String key)`, `getString(String key)` :**
+    ** Fournissent un accès typé à une valeur de configuration.
+    ** Si la clé n'est pas trouvée dans la configuration chargée, elles retournent la valeur par défaut correspondante.
+
+* **Méthode `isStrictCompatibility(String criteriaType)` :**
+    ** Méthode utilitaire qui construit la clé (ex: `strict.diet_compatibility`) et retourne la valeur booléenne correspondante.
+
+* **Méthode `createExampleConfigFile(String filename)` :**
+    ** Génère un fichier de configuration `.properties` complet avec toutes les valeurs par défaut.
+
+==== Fichier sae.decision.linguistic.TerminalApp.java
+
+* **Méthode `run()` :**
+    ** Contient la boucle principale du programme.
+    ** Affiche le menu, attend la saisie de l'utilisateur et appelle la méthode de traitement appropriée (handle...) via une instruction switch.
+    ** Orchestre l'initialisation de l'application : chargement de la configuration, des chemins et des données initiales.
+
+* **Méthode `handleFullPairingProcess()` :**
+    ** Gère le processus d'appariement complet, de bout en bout.
+    ** Appelle AppariementService pour effectuer le calcul d'affinité, exporter les résultats en CSV et sauvegarder l'affectation dans l'historique.
+    ** Interagit avec l'utilisateur pour obtenir les chemins des fichiers nécessaires (historique, export).
+
+* **Méthode `addManualPair()` :**
+    ** Permet à l'utilisateur de sélectionner manuellement un visiteur et un hôte pour former une paire.
+    ** Libère les partenaires précédents des adolescents sélectionnés, s'ils en avaient.
+    ** Force la nouvelle paire, puis relance une optimisation sur les adolescents restés disponibles en appelant calculatePairing sur une nouvelle instance d'Affectation.
+
+* **Méthode `removePair()` :**
+    ** Affiche la liste des paires actuelles et permet à l'utilisateur d'en sélectionner une à supprimer.
+    ** Retire la paire de l'objet lastAffectation, rendant les deux adolescents de nouveau disponibles.
+
+* **Méthode `handleDetailedComparison()` :**
+    ** Permet à l'utilisateur de choisir un visiteur et un hôte.
+    ** Appelle visitor.calculateAffinityDetails(host) pour obtenir une ventilation complète du score.
+    ** Affiche de manière formatée le score final, les scores par composant et les résultats des vérifications de compatibilité stricte.
+
+* **Méthode `handleModifyConfiguration()` :**
+    ** Permet à l'utilisateur de modifier une valeur de la configuration en cours de session.
+    ** Détecte le type de la valeur (Double, Boolean, etc.) pour appeler la méthode de modification appropriée (modifyDoubleValue, modifyBooleanValue...).
+    ** Appelle ConfigurationService.setValue() pour mettre à jour la configuration en mémoire.
+
+* **Méthode `handleChangeDataFiles(boolean isInitial)` :**
+    ** Gère le changement des fichiers CSV des hôtes et des visiteurs.
+    ** Utilise CSVService pour importer les données.
+    ** Met à jour l'état de l'application (loadedHosts, loadedVisitors) et réinitialise l'affectation précédente (lastAffectation).
+
+==== Fichier `sae.decision.linguistic.Main.java`
+
+* **Méthode `run()` :**
+    ** Son rôle a été étendu pour intégrer les nouvelles briques de l'application.
+        *Étape 0 - Chargement de la configuration :* Une nouvelle première étape a été ajoutée pour appeler `ConfigurationService.loadConfiguration()`.
+        *Elle gère le cas où le fichier de configuration est absent en se rabattant sur les valeurs par défaut.
+        *Étape 1.5 - Enrichissement par l'historique :* Avant le calcul des paires, la méthode charge désormais l'historique des affectations passées.
+        *Elle appelle ensuite la nouvelle méthode `SetAdolescentsPreviousPartners` pour enrichir les objets `Adolescent` actuels avec leur dernier partenaire.
+    ** L'orchestration globale reste la même (chargement, calcul, affichage, export, sauvegarde), mais les données en entrée du calcul sont maintenant plus riches.
+
+* **Nouvelle méthode `SetAdolescentsPreviousPartners(...)` (privée) :**
+    ** C'est une méthode entièrement essentielle pour la prise en compte de l'historique.
+    ** Son but est de faire le lien entre les affectations passées et les adolescents de la session courante.
+    ** Elle parcourt toutes les paires de toutes les affectations de l'historique.
+    ** Pour chaque adolescent historique, elle recherche son équivalent dans les listes actuelles (basé sur le nom et prénom).
+    ** Si un adolescent correspondant est trouvé, elle met à jour son attribut `previousPartnerFullName` en appelant `setPreviousPartnerFullName()`.
+
+* **Méthode `displayPairings(Map<Adolescent, Adolescent> pairings)` :*
+    **Le calcul de l'affinité pour chaque paire (uniquement pour l'affichage) est maintenant entouré d'un bloc `try-catch`.
+    **En cas d'erreur sur une paire, une valeur d'erreur est affichée sans faire planter tout le programme.
+
+* **Méthodes `saveToHistory(Affectation affectation)` et `generateHistoryKey(Affectation affectation)` :**
+    ** La logique interne de ces méthodes reste globalement la même que dans l'ancienne version.
