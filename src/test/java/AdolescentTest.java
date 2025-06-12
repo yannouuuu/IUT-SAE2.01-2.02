@@ -151,7 +151,7 @@ public class AdolescentTest {
     void testGlobalCompatibilityOk() {
         // Compatible sur allergie ET régime
         Adolescent host1 = new Adolescent("Host", "A", "male", "Italia", Map.of(Criteria.HOST_HAS_ANIMAL, "no", Criteria.HOST_FOOD, "vegetarian"), LocalDate.now(),true);
-        Adolescent visitor1 = new Adolescent("Visitor", "X", "female", "Italia", Map.of(Criteria.GUEST_ANIMAL_ALLERGY, "yes", Criteria.GUEST_FOOD, "vegetarian"), LocalDate.now(),false);
+        Adolescent visitor1 = new Adolescent("Visitor", "X", "female", "Spain", Map.of(Criteria.GUEST_ANIMAL_ALLERGY, "yes", Criteria.GUEST_FOOD, "vegetarian"), LocalDate.now(),false);
         assertTrue(host1.isCompatible(visitor1), "Compatible globalement (allergie ok, régime ok)");
     }
 
