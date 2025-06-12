@@ -326,6 +326,14 @@ public class Adolescent implements Serializable {
         Map<String, Double> componentScores = new HashMap<>();
         Map<String, Boolean> compatibilityChecks = new HashMap<>();
 
+        boolean areCountriesDifferent = !this.getCountryOfOrigin().equalsIgnoreCase(other.getCountryOfOrigin());
+        compatibilityChecks.put("different_country", areCountriesDifferent);
+
+        if (!areCountriesDifferent) {
+            // Si les pays sont les mêmes, l'affinité est nulle. Pas besoin de calculer plus loin.
+            return new AffinityBreakdown(0, componentScores, compatibilityChecks);
+        }
+
         // 1. Hard compatibility checks (basés sur la configuration)
         boolean isDietCompatible = true;
         boolean isAnimalCompatible = true;

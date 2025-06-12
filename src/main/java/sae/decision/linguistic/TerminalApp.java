@@ -1,20 +1,19 @@
 package sae.decision.linguistic;
 
-import sae.decision.linguistic.model.Adolescent;
-import sae.decision.linguistic.model.AffinityBreakdown;
-import sae.decision.linguistic.model.Affectation;
-import sae.decision.linguistic.service.AppariementService;
-import sae.decision.linguistic.service.CSVService;
-import sae.decision.linguistic.service.ConfigurationService;
-
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Scanner;
 import java.util.stream.Collectors;
+
+import sae.decision.linguistic.model.Adolescent;
+import sae.decision.linguistic.model.Affectation;
+import sae.decision.linguistic.model.AffinityBreakdown;
+import sae.decision.linguistic.service.AppariementService;
+import sae.decision.linguistic.service.CSVService;
+import sae.decision.linguistic.service.ConfigurationService;
 
 /**
  * Classe principale pour l'utilisation non-graphique (terminal) de l'application.
@@ -87,7 +86,7 @@ public class TerminalApp {
         printBoxedTitle("MENU PRINCIPAL");
         System.out.println("1. Lancer l'appariement global");
         System.out.println("2. Lancer un appariement spécifique (par pays)");
-        System.out.println("3. " + AnsiColors.MAGENTA.code + "Gérer les appariements (Forcer/Supprimer)" + AnsiColors.RESET.code);
+        System.out.println("3. " + AnsiColors.MAGENTA.code + "Gérer les appariements (Créer/Supprimer)" + AnsiColors.RESET.code);
         System.out.println("4. Comparer en détail deux adolescents");
         System.out.println("5. Changer les fichiers de données (Hôtes/Visiteurs)");
         System.out.println("6. Afficher la configuration actuelle");
@@ -96,7 +95,7 @@ public class TerminalApp {
     }
     
     private void addManualPair() {
-        printSectionTitle("Forcer un Appariement Manuel");
+        printSectionTitle("Créer un Appariement Manuel");
     
         // 1. Sélection libre de n'importe quel adolescent
         Adolescent selectedVisitor = selectAdolescent(loadedVisitors, "visiteur");
@@ -148,6 +147,42 @@ public class TerminalApp {
         }
     }
     
+    private void handleSpecificPairing() {
+        printSectionTitle("Appariement Spécifique par Pays");
+        if (loadedHosts == null || loadedVisitors == null) {
+            System.out.println(AnsiColors.YELLOW.code + "⚠️ Données non chargées. Veuillez utiliser l'option 5." + AnsiColors.RESET.code);
+            return;
+        }
+
+        System.out.print(AnsiColors.YELLOW.code + "Pays des visiteurs : " + AnsiColors.RESET.code);
+        String visitorCountry = scanner.nextLine();
+        System.out.print(AnsiColors.YELLOW.code + "Pays des hôtes : " + AnsiColors.RESET.code);
+        String hostCountry = scanner.nextLine();
+
+        List<Adolescent> filteredVisitors = loadedVisitors.stream()
+            .filter(v -> v.getCountryOfOrigin().equalsIgnoreCase(visitorCountry))
+            .toList();
+
+        List<Adolescent> filteredHosts = loadedHosts.stream()
+            .filter(h -> h.getCountryOfOrigin().equalsIgnoreCase(hostCountry))
+            .toList();
+
+        if (filteredVisitors.isEmpty() || filteredHosts.isEmpty()) {
+            System.out.println(AnsiColors.RED.code + "❌ Aucun adolescent trouvé pour les pays spécifiés." + AnsiColors.RESET.code);
+            return;
+        }
+
+        System.out.printf("\nCalcul en cours pour %d visiteurs de '%s' et %d hôtes de '%s'...\n",
+            filteredVisitors.size(), visitorCountry, filteredHosts.size(), hostCountry);
+
+        Affectation specificAffectation = new Affectation(filteredHosts, filteredVisitors);
+        specificAffectation.calculatePairing(); //
+        
+        System.out.println(AnsiColors.GREEN.code + "✅ Appariement spécifique terminé." + AnsiColors.RESET.code);
+        System.out.println(AnsiColors.YELLOW.code + "Note : Ce résultat est à titre informatif et n'est pas sauvegardé." + AnsiColors.RESET.code);
+        displayPairingsSummary(specificAffectation.getPairs());
+    }
+    
     private void handleManualPairing() {
         printSectionTitle("Gestion Manuelle des Appariements");
         if (lastAffectation == null) {
@@ -155,7 +190,7 @@ public class TerminalApp {
             return;
         }
 
-        System.out.println("1. " + AnsiColors.MAGENTA.code + "Forcer/Ajouter une paire (avec ré-optimisation)" + AnsiColors.RESET.code);
+        System.out.println("1. " + AnsiColors.MAGENTA.code + "Créer une paire (avec ré-optimisation)" + AnsiColors.RESET.code);
         System.out.println("2. Supprimer une paire existante");
         System.out.println("3. Retour au menu principal");
         System.out.print(AnsiColors.YELLOW.code + "Votre choix : " + AnsiColors.RESET.code);
@@ -197,7 +232,26 @@ public class TerminalApp {
         }
     }
 
-    // --- FONCTIONS EXISTANTES (adaptées) ---
+    private void handleChangeDataFiles(boolean isInitial) {
+        if (!isInitial) printSectionTitle("Changement des Fichiers de Données");
+        
+        String hostsPath = promptForFilePath("Chemin du fichier CSV des hôtes", "sample_hosts.csv");
+        String visitorsPath = promptForFilePath("Chemin du fichier CSV des visiteurs", "sample_guests.csv");
+
+        List<Adolescent> newHosts = csvService.importAdolescents(hostsPath, true); //
+        List<Adolescent> newVisitors = csvService.importAdolescents(visitorsPath, false); //
+
+        if (newHosts.isEmpty() || newVisitors.isEmpty()) {
+            System.out.println(AnsiColors.RED.code + "❌ Erreur de chargement. Un des fichiers est invalide, vide ou non trouvé. Les données précédentes sont conservées." + AnsiColors.RESET.code);
+        } else {
+            this.loadedHosts = newHosts;
+            this.loadedVisitors = newVisitors;
+            this.lastAffectation = null; // L'affectation précédente n'est plus valide
+            System.out.println(AnsiColors.GREEN.code + "✅ Nouveaux fichiers de données chargés avec succès." + AnsiColors.RESET.code);
+            System.out.println(AnsiColors.YELLOW.code + "⚠️ L'appariement précédent a été réinitialisé." + AnsiColors.RESET.code);
+        }
+    }
+
     private void clearScreen() {
         try {
             String os = System.getProperty("os.name").toLowerCase();
