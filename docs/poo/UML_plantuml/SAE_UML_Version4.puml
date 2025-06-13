@@ -1,0 +1,129 @@
+@startuml SAE_UML_Version4
+'!theme vibrant
+skinparam backgroundColor #FFFFFF
+skinparam classBackgroundColor #FFF9DB
+skinparam classBorderColor #000000
+skinparam classFontColor #000000
+skinparam classFontSize 16
+skinparam classFontStyle bold
+skinparam classAttributeFontColor #000000
+skinparam classAttributeFontSize 14
+skinparam classAttributeFontStyle normal
+skinparam classStereotypeFontColor #000000
+skinparam classStereotypeFontSize 12
+skinparam classStereotypeFontStyle italic
+skinparam shadowing false
+skinparam ArrowColor #000000
+skinparam ArrowFontColor #000000
+skinparam interfaceBackgroundColor #FFF9DB
+skinparam interfaceBorderColor #000000
+skinparam interfaceFontColor #000000
+skinparam interfaceFontSize 16
+skinparam interfaceFontStyle bold
+skinparam interfaceStereotypeFontColor #000000
+skinparam interfaceStereotypeFontSize 12
+skinparam interfaceStereotypeFontStyle italic
+skinparam linetype ortho
+skinparam classAttributeIconSize 0
+
+class Adolescent {
+    ...
+    ---
+    ...
+    + getHistoryAffinityBonus(Adolescent, Boolean): int
+    + calculateAffinityDetails(Adolescent): AffinityBreakdown
+    + setPreviousPartnerFullName(String): void
+    ...
+}
+
+class Affectation {
+  ...
+  ---
+  ...
+  + calculatePairing(Map<String, Affectation>): Map<Adolescent, Adolescent>
+  + merge(Affectation): void
+  ...
+}
+
+enum Criteria {
+  ...
+  ---
+  ...
+}
+
+class CSVService {
+  ...
+  ---
+  ...
+}
+
+class HistoryService {
+  ...
+  ---
+  ...
+}
+
+class ConfigurationService {
+  ...
+  ---
+  + loadConfiguration(String): void
+  + saveConfiguration(String): void
+  + getDouble(String): double
+  + getBoolean(String): boolean
+  + getString(String): String
+  + setValue(String, Object): void
+  + getAllWeights(): Map<String, Double>
+  + resetToDefaults(): void
+  + isStrictCompatibility(String): boolean
+  + createExampleConfigFile(String): void
+}
+
+class AppariementService {
+  ...
+  ---
+  + effectuerAppariement(String, String, String): Affectation
+  + effectuerAppariement(List<Adolescent>, List<Adolescent>, String): Affectation
+  + sauvegarderAffectation(Affectation, String, String, String, String): void
+  + exporterAffectation(Affectation, String): void
+}
+
+class TerminalApp {
+  ...
+  ---
+  + run(): void
+  + handleFullPairingProcess(): void
+  + addManualPair(): void
+  + removePair(): void
+  + handleDetailedComparison(): void
+  + handleModifyConfiguration(): void
+  + handleChangeDataFiles(boolean): void
+}
+
+class Main {
+  ...
+  ---
+  + run(): void
+  - SetAdolescentsPreviousPartners(Map<String, Affectation>, List<Adolescent>, List<Adolescent>): void
+  + displayPairings(Map<Adolescent, Adolescent>): void
+  + saveToHistory(Affectation): void
+  + generateHistoryKey(Affectation): String
+}
+
+Affectation "1" --> "0..*" Adolescent : uses
+Adolescent "1" --> "0..*" Criteria : uses
+CSVService "1" ..> "0..*" Adolescent : creates
+CSVService "1" ..> "0..*" Criteria : uses
+CSVService "1" ..> "0..*" Affectation : uses (for export)
+HistoryService "1" ..> "0..*" Affectation : saves/loads
+AppariementService "1" ..> "1" CSVService : uses
+AppariementService "1" ..> "1" HistoryService : uses
+AppariementService "1" ..> "0..*" Affectation : creates
+ConfigurationService "1" ..> "0..*" Criteria : configures
+TerminalApp "1" ..> "1" AppariementService : uses
+TerminalApp "1" ..> "1" ConfigurationService : uses
+TerminalApp "1" ..> "1" CSVService : uses
+Main "1" ..> "1" ConfigurationService : uses
+Main "1" ..> "1" HistoryService : uses
+Main "1" ..> "0..*" Affectation : uses
+
+@enduml
