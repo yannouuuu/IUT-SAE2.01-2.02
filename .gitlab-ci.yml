@@ -2,6 +2,7 @@ image: maven:3.9-eclipse-temurin-24
 
 stages:
   - deploy
+  - push_tags
   - build
   - javadoc
   - pages
@@ -21,7 +22,7 @@ deploy_to_yannouuuu_github:
     - main
 
 push_tags_to_github:
-  stage: deploy
+  stage: push_tags
   script:
     - apt-get update && apt-get install -y git
     - git config --global user.email "yannrenard1025@gmail.com"
