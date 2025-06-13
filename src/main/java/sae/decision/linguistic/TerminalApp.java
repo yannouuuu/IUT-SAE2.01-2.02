@@ -176,7 +176,7 @@ public class TerminalApp {
             filteredVisitors.size(), visitorCountry, filteredHosts.size(), hostCountry);
 
         Affectation specificAffectation = new Affectation(filteredHosts, filteredVisitors);
-        specificAffectation.calculatePairing(); //
+        specificAffectation.calculatePairing();
         
         System.out.println(AnsiColors.GREEN.code + "✅ Appariement spécifique terminé." + AnsiColors.RESET.code);
         System.out.println(AnsiColors.YELLOW.code + "Note : Ce résultat est à titre informatif et n'est pas sauvegardé." + AnsiColors.RESET.code);
@@ -316,7 +316,11 @@ public class TerminalApp {
         System.out.print("\n" + AnsiColors.YELLOW.code + "Entrez le chemin du dossier des ressources [" + this.resourceBasePath + "]: " + AnsiColors.RESET.code);
         String inputPath = scanner.nextLine();
         if (!inputPath.isBlank()) {
-            this.resourceBasePath = inputPath.endsWith(File.separator) ? inputPath : inputPath + File.separator;
+            if (inputPath.endsWith(File.separator)) {
+                this.resourceBasePath = inputPath;
+            } else {
+                this.resourceBasePath = inputPath + File.separator;
+            }
         }
     }
 
@@ -324,9 +328,12 @@ public class TerminalApp {
         String defaultPath = this.resourceBasePath + defaultFileName;
         System.out.print(AnsiColors.YELLOW.code + fileDescription + " [" + defaultPath + "]: " + AnsiColors.RESET.code);
         String inputPath = scanner.nextLine();
-        return inputPath.isBlank() ? defaultPath : inputPath;
+        if (inputPath.isBlank()) {
+            return defaultPath;
+        } else {
+            return inputPath;
+        }
     }
-    
     private void handleDetailedComparison() {
         printSectionTitle("Comparaison Détaillée d'Affinité");
         if (loadedVisitors == null || loadedHosts == null) {

@@ -1,5 +1,6 @@
 ### Referenced to the project ###
-data/
+src/main/resources/affectation_history.dat
+src/main/resources/exported_affections.csv
 
 ### Class ###
 *.class
