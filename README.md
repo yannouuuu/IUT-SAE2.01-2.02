@@ -8,6 +8,11 @@
 </p>
 
 <p align="center">
+    <a href="https://github.com/yannouuuu/IUT-SAE2.01-2.02/" title="Voir le projet sur GitHub"><img src="https://img.shields.io/badge/Voir%20le%20projet%20sur-GitHub-blue?logo=github" alt="GitHub"/></a>
+    <a href="https://gitlab.com/yannouuuu/IUT-SAE2.01-2.02" title="Voir le projet sur GitLab"><img src="https://img.shields.io/badge/Voir%20le%20projet%20sur-GitLab-orange?logo=gitlab" alt="GitLab"/></a>
+</p>
+
+<p align="center">
     Module d'initiation au Developpement d'une application en BUT1 d'Informatique
     <br/>
     Développement d'une application 
@@ -19,9 +24,15 @@
     <a href="https://moodle.univ-lille.fr/course/view.php?id=30827&sectionid=266879"><strong>Voir la page sur le moodle »</strong></a>
     <br/>
     <br/>
-    <a href="https://github.com/yannouuuu/IUT-SAE2.01-2.02/"><strong>Voir le projet complet sur GitHub »</strong></a>
 </p>
 
+## Documentation Technique (Javadoc)
+
+La documentation technique complète du code source (Javadoc) est générée automatiquement à chaque nouvelle version. Elle détaille l'ensemble des classes, méthodes et leurs interactions.
+
+> **Consulter la Javadoc en ligne :**
+> - [Sur GitLab](https://gitlabpages.univ-lille.fr/d7-a7a56e/) (nécessite une connexion au portail de l'Université de Lille)
+> - [Sur GitHub](https://yannouuuu.github.io/IUT-SAE2.01-2.02/)
 
 ## Structure des fichiers
 
@@ -54,6 +65,17 @@ Ce projet est structuré en trois grandes parties : **Graphes**, **POO**, et **I
 
 Ce projet utilise [Apache Maven](https://maven.apache.org/) pour la gestion des dépendances et la construction du projet. Assurez-vous d'avoir Maven et un JDK 24 (ou supérieur) installés sur votre système.
 
+### Lancement en ligne de commande (CLI)
+
+Pour lancer l'application en mode ligne de commande, exécutez la commande Maven suivante à la racine du projet :
+
+```bash
+mvn clean compile exec:java
+```
+
+Cette commande va d'abord nettoyer et compiler le projet puis démarrer l'application en mode console.
+
+
 ### Lancement de l'interface graphique (JavaFX)
 
 L'interface graphique est développée avec JavaFX. Pour lancer l'application, exécutez la commande Maven suivante à la racine du projet :
@@ -64,14 +86,43 @@ mvn javafx:run
 
 Cette commande va compiler le projet, télécharger les dépendances nécessaires et démarrer l'interface utilisateur.
 
-### Exécutables JAR (Prochainement)
+### Exécution des tests
 
-Actuellement, le projet est lancé via Maven. Dans la dernière mise à jour du repo, deux fichiers JAR exécutables sont fournis pour un lancement simplifié :
+Pour exécuter tous les tests unitaires du projet, utilisez la commande :
 
--   `D7-app-gui.jar` : Pour démarrer l'interface graphique.
--   `D7-app-cli.jar` : Pour utiliser l'application en ligne de commande.
+```bash
+mvn test
+```
 
-Ces fichiers sont disponibles à la racine du projet et peuvent être exécutés avec les commandes `java -jar D7-app-gui.jar` et `java -jar D7-app-cli.jar` respectivement.
+Pour exécuter un test spécifique, vous pouvez utiliser :
+
+```bash
+mvn test -Dtest=NomDeLaClasseDeTest
+```
+
+### Exécutables JAR
+
+Le projet est configurable pour produire deux fichiers JAR exécutables distincts, un pour l'interface graphique et un pour la ligne de commande.
+
+#### Compilation des JARs
+Pour compiler les JARs, vous devez utiliser les profils Maven appropriés :
+
+- **Pour compiler l'application Graphique (GUI) :**
+  ```bash
+  mvn clean package
+  ```
+  Cette commande génère le fichier `D7-app-gui.jar`.
+
+- **Pour compiler l'application Ligne de Commande (CLI) :**
+  ```bash
+  mvn clean package -P app-cli
+  ```
+  Cette commande génère le fichier `D7-app-cli.jar`.
+
+#### Lancement des JARs
+Une fois les fichiers générés à la racine du projet, vous pouvez les lancer avec `java -jar` :
+-   `java -jar D7-app-gui.jar` : Pour démarrer l'interface graphique.
+-   `java -jar D7-app-cli.jar` : Pour utiliser l'application en ligne de commande.
 
 ---
 
