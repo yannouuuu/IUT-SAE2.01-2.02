@@ -25,14 +25,26 @@ public class AffinityBreakdown {
         this.compatibilityChecks = compatibilityChecks;
     }
 
+    /**
+     * Récupère le score d'affinité final.
+     * @return Le score final.
+     */
     public int getFinalScore() {
         return finalScore;
     }
 
+    /**
+     * Récupère la map des scores des composants.
+     * @return La map des scores.
+     */
     public Map<String, Double> getComponentScores() {
         return componentScores;
     }
 
+    /**
+     * Récupère la map des vérifications de compatibilité.
+     * @return La map des compatibilités.
+     */
     public Map<String, Boolean> getCompatibilityChecks() {
         return compatibilityChecks;
     }

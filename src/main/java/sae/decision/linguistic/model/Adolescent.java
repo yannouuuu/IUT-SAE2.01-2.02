@@ -179,14 +179,26 @@ public class Adolescent implements Serializable {
         return new HashMap<>(criteria);
     }
 
+    /**
+     * Vérifie si l'adolescent est un hôte.
+     * @return true si l'adolescent est un hôte, false sinon.
+     */
     public boolean isHost() {
         return isHost;
     }
 
+    /**
+     * Récupère le nom complet du partenaire précédent.
+     * @return Le nom complet du partenaire précédent, ou null s'il n'y en a pas.
+     */
     public String getPreviousPartnerFullName() {
         return previousPartnerFullName;
     }
 
+    /**
+     * Définit le nom complet du partenaire précédent.
+     * @param previousPartnerFullName Le nom complet du partenaire.
+     */
     public void setPreviousPartnerFullName(String previousPartnerFullName) {
         this.previousPartnerFullName = previousPartnerFullName;
     }
@@ -199,6 +211,12 @@ public class Adolescent implements Serializable {
         return ChronoUnit.YEARS.between(this.dateOfBirth, LocalDate.now());
     }
 
+    /**
+     * Compare cet adolescent à un autre objet pour vérifier l'égalité.
+     * Deux adolescents sont considérés comme égaux s'ils ont le même prénom et nom de famille.
+     * @param o L'objet à comparer.
+     * @return true si les objets sont égaux, false sinon.
+     */
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -208,25 +226,41 @@ public class Adolescent implements Serializable {
                 Objects.equals(this.lastName, that.getLastName());
     }
 
+    /**
+     * Calcule le code de hachage pour cet adolescent.
+     * Le code de hachage est basé sur le prénom et le nom de famille.
+     * @return Le code de hachage.
+     */
     @Override
     public int hashCode() {
         return Objects.hash(firstName, lastName);
     }
 
+    /**
+     * Retourne une représentation textuelle de l'adolescent.
+     * La représentation est sous la forme "prénom nom".
+     * @return Le nom complet de l'adolescent.
+     */
     @Override
     public String toString() {
         return firstName + " " + lastName;
     }
 
     /**
-     * Récupère la valeur d'un critère
-     * @param criterion le critère à récupérer
-     * @return la valeur du critère ou null si non défini
+     * Récupère la valeur d'un critère.
+     * @param criterion le critère à récupérer.
+     * @return la valeur du critère ou null si non défini.
      */
     public String getCriterion(Criteria criterion) {
         return criteria.get(criterion);
     }
 
+    /**
+     * Vérifie la compatibilité globale avec un autre adolescent.
+     * La compatibilité est déterminée par un score d'affinité qui doit dépasser un seuil configurable.
+     * @param other L'autre adolescent à comparer.
+     * @return true si les adolescents sont compatibles, false sinon.
+     */
     public boolean isCompatible(Adolescent other) {
         // La compatibilité est maintenant déterminée par la configuration et le score calculé
         double minScore = ConfigurationService.getDouble("threshold.min_score_for_compatibility");
@@ -312,6 +346,12 @@ public class Adolescent implements Serializable {
         return true; // Aucun n'est français, la contrainte ne s'applique pas.
     }
 
+    /**
+     * Calcule le score d'affinité global avec un autre adolescent.
+     * Ce score est une version simplifiée de {@link #calculateAffinityDetails(Adolescent)}.
+     * @param other L'autre adolescent.
+     * @return Le score d'affinité final.
+     */
     public int calculateAffinity(Adolescent other) {
         return calculateAffinityDetails(other).getFinalScore();
     }
@@ -475,6 +515,12 @@ public class Adolescent implements Serializable {
         return bonusHistory; 
     }
 
+    /**
+     * Calcule le score de pénalité lié au régime alimentaire.
+     * Une pénalité est appliquée si l'hôte ne peut pas répondre aux exigences alimentaires du visiteur.
+     * @param other L'autre adolescent.
+     * @return Le score de pénalité (0 ou une valeur négative).
+     */
     public int dietScore(Adolescent other) {
 
         Adolescent host = this.isHost ? this : other;
@@ -522,15 +568,15 @@ public class Adolescent implements Serializable {
     }
 
     /**
-     * Vérifie la compatibilité concernant les animaux entre cet adolescent (hôte) et un autre (visiteur).
-     * L'adolescent est compatible si le visiteur n'est pas allergique aux animaux OU si l'hôte n'a pas d'animaux.
-     * @param other l'adolescent visiteur.
-     * @return 0 si compatible concernant les animaux, pénalité configurée sinon.
+     * Calcule le score de pénalité lié à la compatibilité avec les animaux.
+     * Une pénalité est appliquée en cas d'allergie de l'invité et de présence d'animaux chez l'hôte.
+     * @param other L'autre adolescent.
+     * @return Le score de pénalité (0 ou une valeur négative).
      */
     public int animalScore(Adolescent other) {
         Adolescent host = this.isHost ? this : other;
         Adolescent guest = this.isHost ? other : this;
-
+    
         // Vérification des allergies aux animaux
         String hostHasAnimal = host.getCriterion(Criteria.HOST_HAS_ANIMAL);
         String guestAllergy = guest.getCriterion(Criteria.GUEST_ANIMAL_ALLERGY);
@@ -542,9 +588,9 @@ public class Adolescent implements Serializable {
     }
 
     /**
-     * Calcule la différence d'âge en années entre cet adolescent et un autre
-     * @param other l'autre adolescent
-     * @return la différence d'âge en années (valeur absolue)
+     * Calcule la différence d'âge en années entre cet adolescent et un autre.
+     * @param other l'autre adolescent.
+     * @return la différence d'âge en années (valeur absolue).
      */
     public double calculateAgeDifference(Adolescent other) {
         return Math.abs(ChronoUnit.MONTHS.between(this.dateOfBirth, other.getDateOfBirth())) / 12.0;

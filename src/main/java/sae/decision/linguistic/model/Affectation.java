@@ -238,15 +238,49 @@ public class Affectation implements Serializable {
         return pairs;
     }
 
-    // Getters
     /**
      * Récupère la liste des adolescents hôtes.
      * @return La liste des hôtes.
      */
-    public List<Adolescent> getHosts() { return hosts; }
+    public List<Adolescent> getHosts() { 
+        return hosts; 
+    }
+
     /**
      * Récupère la liste des adolescents visiteurs.
      * @return La liste des visiteurs.
      */
-    public List<Adolescent> getVisitors() { return visitors; }
+    public List<Adolescent> getVisitors() { 
+        return visitors; 
+    }
+
+    /**
+     * Récupère la liste des hôtes non assignés.
+     * @return Une liste d'hôtes sans visiteur assigné.
+     */
+    public List<Adolescent> getUnassignedHosts() {
+        Set<Adolescent> assignedHosts = new HashSet<>(pairs.values());
+        List<Adolescent> unassigned = new ArrayList<>();
+        for (Adolescent host : hosts) {
+            if (!assignedHosts.contains(host)) {
+                unassigned.add(host);
+            }
+        }
+        return unassigned;
+    }
+
+    /**
+     * Récupère la liste des visiteurs non assignés.
+     * @return Une liste de visiteurs sans hôte assigné.
+     */
+    public List<Adolescent> getUnassignedVisitors() {
+        Set<Adolescent> assignedVisitors = new HashSet<>(pairs.keySet());
+        List<Adolescent> unassigned = new ArrayList<>();
+        for (Adolescent visitor : visitors) {
+            if (!assignedVisitors.contains(visitor)) {
+                unassigned.add(visitor);
+            }
+        }
+        return unassigned;
+    }
 }

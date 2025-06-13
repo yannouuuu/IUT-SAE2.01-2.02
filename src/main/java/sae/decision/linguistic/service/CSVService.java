@@ -66,8 +66,11 @@ public class CSVService {
     }
 
     /**
-     * Parse et valide les en-têtes du fichier CSV.
-     * @return Map des en-têtes et leurs positions, ou map vide si invalide
+     * Analyse et valide les en-têtes du fichier CSV.
+     * @param br Le lecteur de buffer pour lire le fichier.
+     * @param filePath Le chemin du fichier pour les messages d'erreur.
+     * @return Une carte des en-têtes et de leurs positions, ou une carte vide si invalide.
+     * @throws IOException Si une erreur se produit.
      */
     private Map<String, Integer> parseHeaders(BufferedReader br, String filePath) throws IOException {
         String headerLine = br.readLine();
@@ -92,7 +95,11 @@ public class CSVService {
     }
 
     /**
-     * Traite une ligne de données du CSV et crée un objet Adolescent.
+     * Traite une seule ligne de données du fichier CSV et crée un objet Adolescent.
+     * @param line La ligne de données à traiter.
+     * @param headerMap La carte des en-têtes pour l'interprétation des données.
+     * @param isHost Indique si l'adolescent est un hôte.
+     * @param adolescents La liste à laquelle ajouter le nouvel adolescent.
      */
     private void processDataLine(String line, Map<String, Integer> headerMap, boolean isHost, List<Adolescent> adolescents) {
         String[] data = line.split(CSV_DELIMITER, -1);
@@ -111,7 +118,11 @@ public class CSVService {
     }
 
     /**
-     * Extrait les critères d'une ligne de données.
+     * Extrait les critères d'une ligne de données en fonction des en-têtes.
+     * @param data Le tableau de chaînes de caractères de la ligne de données.
+     * @param headerMap La carte des en-têtes.
+     * @param isHost Indique si l'adolescent est un hôte.
+     * @return Une carte des critères extraits.
      */
     private Map<Criteria, String> extractCriteria(String[] data, Map<String, Integer> headerMap, boolean isHost) {
         Map<Criteria, String> criteria = new HashMap<>();
@@ -146,7 +157,9 @@ public class CSVService {
     }
 
     /**
-     * Vérifie si un critère peut avoir une valeur null.
+     * Vérifie si un champ de critère peut être null.
+     * @param critere Le critère à vérifier.
+     * @return true si le critère peut être null, sinon false.
      */
     private boolean isNullableField(Criteria critere) {
         return critere == Criteria.PAIR_GENDER || 
@@ -157,7 +170,12 @@ public class CSVService {
     }
 
     /**
-     * Crée un objet Adolescent à partir des données CSV.
+     * Crée un objet Adolescent à partir des données CSV analysées.
+     * @param data Le tableau de chaînes de caractères de la ligne de données.
+     * @param headerMap La carte des en-têtes.
+     * @param criteria La carte des critères pour l'adolescent.
+     * @param isHost Indique si l'adolescent est un hôte.
+     * @return Le nouvel objet Adolescent.
      */
     private Adolescent createAdolescent(String[] data, Map<String, Integer> headerMap, 
                                       Map<Criteria, String> criteria, boolean isHost) {
@@ -203,7 +221,10 @@ public class CSVService {
     }
 
     /**
-     * Journalise une erreur avec un message, un contexte et une exception optionnelle.
+     * Enregistre un message d'erreur avec un contexte et une exception facultative.
+     * @param message Le message d'erreur principal.
+     * @param context Le contexte dans lequel l'erreur s'est produite (par exemple, nom de fichier, ligne).
+     * @param e L'exception qui a été levée (peut être nulle).
      */
     private void logError(String message, String context, Exception e) {
         StringBuilder error = new StringBuilder(message);

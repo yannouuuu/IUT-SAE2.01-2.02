@@ -14,6 +14,12 @@ public class PairingDisplay {
     private final Adolescent host;
     private final Adolescent visitor;
 
+    /**
+     * Construit une nouvelle instance de PairingDisplay.
+     * @param host L'adolescent hôte.
+     * @param visitor L'adolescent visiteur.
+     * @param affinityScore Le score d'affinité entre l'hôte et le visiteur.
+     */
     public PairingDisplay(Adolescent host, Adolescent visitor, int affinityScore) {
         this.host = host;
         this.visitor = visitor;
@@ -22,17 +28,67 @@ public class PairingDisplay {
         this.affinityScore = new SimpleIntegerProperty(affinityScore);
     }
 
-    // Getters pour les propriétés JavaFX
-    public String getHostName() { return hostName.get(); }
-    public SimpleStringProperty hostNameProperty() { return hostName; }
+    /**
+     * Récupère le nom complet de l'hôte.
+     * @return Le nom de l'hôte.
+     */
+    public String getHostName() { 
+        return hostName.get(); 
+    }
 
-    public String getVisitorName() { return visitorName.get(); }
-    public SimpleStringProperty visitorNameProperty() { return visitorName; }
+    /**
+     * Récupère la propriété JavaFX du nom de l'hôte.
+     * @return La propriété du nom de l'hôte.
+     */
+    public SimpleStringProperty hostNameProperty() { 
+        return hostName; 
+    }
 
-    public int getAffinityScore() { return affinityScore.get(); }
-    public SimpleIntegerProperty affinityScoreProperty() { return affinityScore; }
+    /**
+     * Récupère le nom complet du visiteur.
+     * @return Le nom du visiteur.
+     */
+    public String getVisitorName() { 
+        return visitorName.get(); 
+    }
 
-    // Getters pour les objets originaux
-    public Adolescent getHost() { return host; }
-    public Adolescent getVisitor() { return visitor; }
+    /**
+     * Récupère la propriété JavaFX du nom du visiteur.
+     * @return La propriété du nom du visiteur.
+     */
+    public SimpleStringProperty visitorNameProperty() { 
+        return visitorName; 
+    }
+
+    /**
+     * Récupère le score d'affinité.
+     * @return Le score d'affinité.
+     */
+    public int getAffinityScore() { 
+        return affinityScore.get(); 
+    }
+
+    /**
+     * Récupère la propriété JavaFX du score d'affinité.
+     * @return La propriété du score d'affinité.
+     */
+    public SimpleIntegerProperty affinityScoreProperty() { 
+        return affinityScore; 
+    }
+
+    /**
+     * Récupère l'objet Adolescent de l'hôte.
+     * @return L'hôte.
+     */
+    public Adolescent getHost() { 
+        return host; 
+    }
+
+    /**
+     * Récupère l'objet Adolescent du visiteur.
+     * @return Le visiteur.
+     */
+    public Adolescent getVisitor() { 
+        return visitor; 
+    }
 } 
