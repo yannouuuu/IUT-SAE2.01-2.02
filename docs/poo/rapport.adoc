@@ -7,14 +7,18 @@
 :sectnums:
 :icons: font
 :source-highlighter: highlightjs
-:pdf-theme: custom-theme
-:pdf-themesdir: .
+:toc-title: Table des matières
+
+
+<<<
 
 ## Semaine 1-2
 
 ### UML Version 1-2
 
 image::UML_plantuml/SAE_UML_Version1.png[UML Version 1-2]
+
+<<<
 
 ## Semaine 3-4
 
@@ -60,6 +64,8 @@ Les modifications se concentrent sur les deux principaux aspects correspondant a
         *** Retourne `true` si toutes les validations passent.
         *** Lève une `IllegalArgumentException` avec un message d'erreur spécifique si la validation échoue.
 
+<<<
+
 ## Semaine 5-6
 
 ### UML Version 5-6
@@ -72,7 +78,7 @@ image::UML_plantuml/SAE_UML_Version3.png[UML Version 5-6]
 ==== Fichier `src/main/Affectation.java`
 
 * **Méthode `calculatePairing()`:**
-    ** Crée une matrice de coût où chaque élément `[i][j]` représente le négatif de l'affinité entre le i-ème visiteur et le j-ème hôte. Ce coût est calculé avec Adolescent.calculateAffinity(Adolescent hôte).
+    ** Crée une matrice de coût où chaque élément `[i][j]` représente le négatif de l'affinité entre le i-ème visiteur et le j-ème hôte. Ce coût est calculé avec `Adolescent.calculateAffinity(Adolescent hôte)`.
     ** Si le nombre d'hôtes et de visiteurs est différent, la matrice de coût est complétée avec des valeurs maximales pour la rendre carrée.
     ** Appelle la méthode `hungarianAlgorithm()` pour obtenir l'affectation optimale sous forme d'un tableau d'indices en utilisant donc l'algorithme hongrois.
     ** Construit et retourne une `Map<Adolescent, Adolescent>` où la clé est un visiteur et la valeur est l'hôte qui lui est apparié.
@@ -127,9 +133,9 @@ image::UML_plantuml/SAE_UML_Version3.png[UML Version 5-6]
     ** Une méthode utilitaire qui retourne `true` si le critère donné peut avoir une valeur `null` (c'est à dire: `PAIR_GENDER`, `HISTORY`, `GUEST_FOOD`, `HOST_FOOD`, `HOBBIES`), et `false` sinon.
 
 * **Méthode `createAdolescent(String[] data, Map<String, Integer> headerMap, Map<Criteria, String> criteria, boolean isHost)` (privée) :**
-    * Récupère les informations de base (nom, prénom, pays, date de naissance, genre) du tableau `data` en utilisant la `headerMap`.
-    * Parse la date de naissance en `LocalDate`.
-    * Instancie et retourne un nouvel objet `Adolescent` en lui donnant les informations de base, les critères extraits et le statut `isHost`.
+    ** Récupère les informations de base (nom, prénom, pays, date de naissance, genre) du tableau `data` en utilisant la `headerMap`.
+    ** Parse la date de naissance en `LocalDate`.
+    ** Instancie et retourne un nouvel objet `Adolescent` en lui donnant les informations de base, les critères extraits et le statut `isHost`.
 
 * **Méthode `exportAffectations(Map<Adolescent, Adolescent> pairings, String filePath)` :**
     ** Exporte les paires d'adolescents formées vers un fichier CSV.
@@ -189,16 +195,16 @@ image::UML_plantuml/SAE_UML_Version3.png[UML Version 5-6]
     ** Utilise maintenant la méthode `hasCommonHobbies(Adolescent other)` pour vérifier s'ils ont au moins 1 hobbie en commun si l'un d'eux est français.
 
 * **Nouvelle méthode privée `isFrenchParticipantInvolved(Adolescent other)` :**
-    * Retourne `true` si cet adolescent ou l'autre adolescent (`other`) est de nationalité française grâce à la constante FRANCE. 
+    ** Retourne `true` si cet adolescent ou l'autre adolescent (`other`) est de nationalité française grâce à la constante FRANCE. 
 
 * **Méthode `hasCommonHobbies(Adolescent other)` :**
-    * Utilise maintenant la méthode `parseHobbies(String hobbies, String personName)` pour convertir la chaîne de hobbies en un Set de hobbies.
-    * Simplification de la logique de vérification des hobbies communs grâce à `Collections.disjoint()` pour vérifier s'il existe des éléments communs entre les ensembles de hobbies. Retourne `true` s'il n'y a pas d'éléments disjoints (donc au moins un hobby en commun).
+    ** Utilise maintenant la méthode `parseHobbies(String hobbies, String personName)` pour convertir la chaîne de hobbies en un Set de hobbies.
+    ** Simplification de la logique de vérification des hobbies communs grâce à `Collections.disjoint()` pour vérifier s'il existe des éléments communs entre les ensembles de hobbies. Retourne `true` s'il n'y a pas d'éléments disjoints (donc au moins un hobby en commun).
 
 * **Nouvelle méthode privée `parseHobbies(String hobbies, String personName)` :**
-    * Prend une chaîne de hobbies (séparés par `,`) et le nom de la personne (ne servant qu'en cas d'erreur).
-    * Divise la chaîne en hobbies individuels, supprime les espaces superflus et les ajoute à un HashSet.
-    * Gère les `NullPointerException` qui pourraient survenir si la chaîne de hobbies est nulle.
+    ** Prend une chaîne de hobbies (séparés par `,`) et le nom de la personne (ne servant qu'en cas d'erreur).
+    ** Divise la chaîne en hobbies individuels, supprime les espaces superflus et les ajoute à un HashSet.
+    ** Gère les `NullPointerException` qui pourraient survenir si la chaîne de hobbies est nulle.
 
 ==== Fichier `src/main/Criteres.java`
 
@@ -261,6 +267,7 @@ image::UML_plantuml/SAE_UML_Version3.png[UML Version 5-6]
 * **`createGuestsFile()`:**
     ** Crée le fichier `sample_guests.csv` avec quelques lignes de données d'exemple pour les visiteurs, si le fichier n'existe pas déjà.
 
+<<<
 
 == Semaine 7-8
 
@@ -270,13 +277,13 @@ image::UML_plantuml/SAE_UML_Version4.png[UML Version 7-8]
 
 === Principales évolutions (Version 5-6 vers Version 7-8)
 
-Cette période a été marquée par une refactorisation architecturale majeure visant à améliorer la flexibilité, la modularité et la maintenabilité de l'application. Les changements clés incluent :
+Cette période a été marquée par une refactorisation de l'architecture majeure visant à améliorer la flexibilité, la modularité et la maintenabilité de l'application. Les changements clés incluent :
 
 1. **Création d'un système de configuration externe pour permettre un paramétrage fin des algorithmes via un fichier de configuration.**
 2. **Refonte du calcul d'affinité pour le rendre plus transparent, configurable et puissant.**
 3. **Intégration effective de l'historique des affectations dans le processus de calcul.**
 4. **Développement d'une nouvelle interface utilisateur en terminal pour une distinction avec celle réalisée en JavaFX.**
-5. **Structuration du projet en packages (`model`, `service`,etc...) pour une meilleure organisation du code.**
+5. **Structuration du projet en packages MVC (`model`, `service`, etc...) pour une meilleure organisation du code.**
 
 
 ==== Fichier `sae.decision.linguistic.model.Adolescent.java`
@@ -344,7 +351,7 @@ Cette période a été marquée par une refactorisation architecturale majeure v
 * **Méthode `createExampleConfigFile(String filename)` :**
     ** Génère un fichier de configuration `.properties` complet avec toutes les valeurs par défaut.
 
-==== Fichier sae.decision.linguistic.TerminalApp.java
+==== Fichier `sae.decision.linguistic.TerminalApp.java`
 
 * **Méthode `run()` :**
     ** Contient la boucle principale du programme.
@@ -384,10 +391,10 @@ Cette période a été marquée par une refactorisation architecturale majeure v
 
 * **Méthode `run()` :**
     ** Son rôle a été étendu pour intégrer les nouvelles briques de l'application.
-        *Étape 0 - Chargement de la configuration :* Une nouvelle première étape a été ajoutée pour appeler `ConfigurationService.loadConfiguration()`.
-        *Elle gère le cas où le fichier de configuration est absent en se rabattant sur les valeurs par défaut.
-        *Étape 1.5 - Enrichissement par l'historique :* Avant le calcul des paires, la méthode charge désormais l'historique des affectations passées.
-        *Elle appelle ensuite la nouvelle méthode `SetAdolescentsPreviousPartners` pour enrichir les objets `Adolescent` actuels avec leur dernier partenaire.
+    ** Étape 0 - Chargement de la configuration : Une nouvelle première étape a été ajoutée pour appeler `ConfigurationService.loadConfiguration()`.
+    ** Elle gère le cas où le fichier de configuration est absent en se rabattant sur les valeurs par défaut.
+    ** Étape 1.5 - Enrichissement par l'historique : Avant le calcul des paires, la méthode charge désormais l'historique des affectations passées.
+    ** Elle appelle ensuite la nouvelle méthode `SetAdolescentsPreviousPartners` pour enrichir les objets `Adolescent` actuels avec leur dernier partenaire.
     ** L'orchestration globale reste la même (chargement, calcul, affichage, export, sauvegarde), mais les données en entrée du calcul sont maintenant plus riches.
 
 * **Nouvelle méthode `SetAdolescentsPreviousPartners(...)` (privée) :**
@@ -397,9 +404,9 @@ Cette période a été marquée par une refactorisation architecturale majeure v
     ** Pour chaque adolescent historique, elle recherche son équivalent dans les listes actuelles (basé sur le nom et prénom).
     ** Si un adolescent correspondant est trouvé, elle met à jour son attribut `previousPartnerFullName` en appelant `setPreviousPartnerFullName()`.
 
-* **Méthode `displayPairings(Map<Adolescent, Adolescent> pairings)` :*
-    **Le calcul de l'affinité pour chaque paire (uniquement pour l'affichage) est maintenant entouré d'un bloc `try-catch`.
-    **En cas d'erreur sur une paire, une valeur d'erreur est affichée sans faire planter tout le programme.
+* **Méthode `displayPairings(Map<Adolescent, Adolescent> pairings)` :**
+    ** Le calcul de l'affinité pour chaque paire (uniquement pour l'affichage) est maintenant entouré d'un bloc `try-catch`.
+    ** En cas d'erreur sur une paire, une valeur d'erreur est affichée sans faire planter tout le programme.
 
 * **Méthodes `saveToHistory(Affectation affectation)` et `generateHistoryKey(Affectation affectation)` :**
     ** La logique interne de ces méthodes reste globalement la même que dans l'ancienne version.
