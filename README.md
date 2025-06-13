@@ -56,7 +56,6 @@ La documentation technique complète du code source (Javadoc) est générée aut
 └── README.md            # Documentation principale
 ```
 
-
 Ce projet est structuré en trois grandes parties : **Graphes**, **POO**, et **IHM**. Vous trouverez ci-dessous les détails pour chaque partie.
 
 ---
