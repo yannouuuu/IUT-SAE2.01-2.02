@@ -304,11 +304,11 @@ public class TerminalApp {
     private void loadConfiguration() {
         try {
             String configFile = "src/test/resources/config/affinity_config.properties";
-            ConfigurationService.loadConfiguration(configFile); //
+            ConfigurationService.loadConfiguration(configFile); 
             System.out.println(AnsiColors.GREEN.code + "✅ Configuration chargée depuis '" + configFile + "'" + AnsiColors.RESET.code);
         } catch (IOException e) {
             System.out.println(AnsiColors.YELLOW.code + "⚠️ Fichier de configuration non trouvé. Utilisation des valeurs par défaut." + AnsiColors.RESET.code);
-            ConfigurationService.resetToDefaults(); //
+            ConfigurationService.resetToDefaults(); 
         }
     }
 
@@ -347,11 +347,11 @@ public class TerminalApp {
             System.out.println("------------------------------------");
 
             System.out.println("\nScores par composant :");
-            details.getComponentScores().forEach((key, value) -> //
+            details.getComponentScores().forEach((key, value) -> 
                 System.out.printf("  - %-20s : %.2f\n", key, value));
 
             System.out.println("\nVérifications de compatibilité stricte :");
-            details.getCompatibilityChecks().forEach((key, value) -> //
+            details.getCompatibilityChecks().forEach((key, value) -> 
                 System.out.printf("  - %-20s : %s\n", key, value ? AnsiColors.GREEN.code + "✅ Compatible" : AnsiColors.RED.code + "❌ Incompatible" + AnsiColors.RESET.code));
             System.out.println("------------------------------------");
 
@@ -380,7 +380,7 @@ public class TerminalApp {
 
     private void handleViewConfiguration() {
         printSectionTitle("Configuration Actuelle");
-        Map<String, Object> config = ConfigurationService.getAllConfiguration(); //
+        Map<String, Object> config = ConfigurationService.getAllConfiguration(); 
         config.forEach((key, value) -> System.out.printf(AnsiColors.CYAN_BOLD.code + "%-35s" + AnsiColors.RESET.code + " = %s\n", key, value.toString()));
     }
     
@@ -411,7 +411,7 @@ public class TerminalApp {
             System.out.print(AnsiColors.YELLOW.code + "Entrez la nouvelle valeur numérique pour '" + key + "' : " + AnsiColors.RESET.code);
             try {
                 double newValue = Double.parseDouble(scanner.nextLine());
-                ConfigurationService.setValue(key, newValue); //
+                ConfigurationService.setValue(key, newValue); 
                 System.out.println(AnsiColors.GREEN.code + "✅ Valeur mise à jour." + AnsiColors.RESET.code);
                 break;
             } catch (NumberFormatException e) {
@@ -425,7 +425,7 @@ public class TerminalApp {
             System.out.print(AnsiColors.YELLOW.code + "Entrez la nouvelle valeur (true/false) pour '" + key + "' : " + AnsiColors.RESET.code);
             String input = scanner.nextLine().toLowerCase().trim();
             if (input.equals("true") || input.equals("false")) {
-                ConfigurationService.setValue(key, Boolean.parseBoolean(input)); //
+                ConfigurationService.setValue(key, Boolean.parseBoolean(input));
                 System.out.println(AnsiColors.GREEN.code + "✅ Valeur mise à jour." + AnsiColors.RESET.code);
                 break;
             } else {
@@ -452,7 +452,7 @@ public class TerminalApp {
         pairings.entrySet().stream()
             .limit(15)
             .forEach(entry -> {
-                int score = entry.getKey().calculateAffinity(entry.getValue()); //
+                int score = entry.getKey().calculateAffinity(entry.getValue());
                 System.out.format(rowFormat, entry.getKey(), entry.getValue(), score);
             });
         
